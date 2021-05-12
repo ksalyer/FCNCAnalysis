@@ -8,6 +8,8 @@
 #include <THStack.h>
 #include <TLegend.h>
 
+using namespace std;
+
 float deltaR( float obj1_eta, float obj1_phi, float obj2_eta, float obj2_phi ){
     float deltaEta = obj1_eta - obj2_eta;
     float deltaPhi = obj1_phi - obj2_phi;
@@ -21,6 +23,41 @@ float mt( float obj1_pt, float obj1_phi, float obj2_pt, float obj2_phi ){
     float mt = sqrt( 2*obj1_pt*obj2_pt * ( 1 - cos(obj1_phi - obj2_phi) ) );
     
     return mt;
+}
+
+float coneCorrPt(int year, int id, float lep_pt, float mini_iso, float jet_iso, float pt_rel) {
+    float ptrel_cut = 0;
+    float miniIso_cut = 0;
+    float ptRatio_cut = 0;
+    if (year == 2016){
+        if(abs(id)==11){
+            ptrel_cut = 7.2;
+            miniIso_cut = 0.12;
+            ptRatio_cut = 0.80;
+        }else if(abs(id)==13){
+            ptrel_cut = 7.2;
+            miniIso_cut = 0.12;
+            ptRatio_cut = 0.76;
+        }
+    }else{
+        if(abs(id)==11){
+            ptrel_cut = 8.0;
+            miniIso_cut = 0.07;
+            ptRatio_cut = 0.78;
+        }else if(abs(id)==13){
+            ptrel_cut = 6.8;
+            miniIso_cut = 0.11;
+            ptRatio_cut = 0.74;
+        }
+    }
+    float pt_ratio = 1/(jet_iso + 1);
+
+    float jet_pt = lep_pt / pt_ratio;
+    if (pt_rel > ptrel_cut) {
+        return lep_pt * (1 + std::max(float(0), mini_iso - miniIso_cut));
+    } else {
+        return std::max(lep_pt, jet_pt * ptRatio_cut);
+    }
 }
 
 bool passesIso(float mini_iso, float mini_iso_cut, float jet_iso, float pt_ratio_cut, float pt_rel, float pt_rel_cut){
@@ -74,7 +111,7 @@ bool isGoodElectron( float dxy, float dz, float sip3d, float tightCharge, int lo
 
     bool isGood = 0;
 
-    if ( abs(dxy)<0.05 && abs(dz)<0.01 && abs(sip3d)<4 && tightCharge ==2 ){
+    if ( abs(dxy)<0.05 && abs(dz)<0.1 && abs(sip3d)<4 && tightCharge ==2 ){
         if ( lostHits==0 && convVeto==1 ){
             isGood=1;
         }
@@ -89,7 +126,7 @@ bool isGoodMuon( float dxy, float dz, float sip3d, float tightCharge, bool mediu
 
     bool isGood = 0;
 
-    if ( abs(dxy)<0.05 && abs(dz)<0.01 && abs(sip3d)<4 && tightCharge ==2 ){
+    if ( abs(dxy)<0.05 && abs(dz)<0.1 && abs(sip3d)<4 && tightCharge ==2 ){
         if ( mediumID == 1 && chargeQuality < 0.2 ){
             isGood = 1;
         }

@@ -19,12 +19,18 @@ df = pd.read_csv("/home/users/ksalyer/FCNCAnalysis/analysis/plots/tables/yieldsT
 df = df.drop(["total signal", "tot sig error", "S/B", "S/B error"], axis=1)
 #df = df.drop(["signal hut","signal hut error","signal hct","signal hct error"], axis=1)
 #df = df.rename(columns={"total signal":"signal","tot sig error":"signal error"})
-print(df)
+#print(df)
 print("got yields and stat errors")
+
+#df["signal hut"] = 83.88144*df["signal hut"]/12.539955536
+#df["signal hut error"] = 83.88144*df["signal hut error"]/12.539955536
+#df["signal hct"] = 83.88144*df["signal hct"]/12.537756236
+#df["signal hct error"] = 83.88144*df["signal hct error"]/12.537756236
 
 #now we need to add the SF and OF dilepton cases
 nJets = [2, 3, 4]
 nBjets = [0, 1, 2]
+#nBjets = [1, 2]
 
 for j in nJets:
     for b in nBjets:
@@ -53,8 +59,40 @@ for j in nJets:
         
         df = df.drop([sf_idx[0],of_idx[0]], axis=0)
         df = df.append(new_ss_df, ignore_index=True)
-print(df)
+#print(df)
 print("combined SF and OF dilepton cases")
+
+"""trilep_df_1b = df.loc[ (df["nLeptons"]=="3l") & (df["nBtags"]==1) ]
+trilep_df_2b = df.loc[ (df["nLeptons"]=="3l") & (df["nBtags"]==2) ]
+trilep_df = trilep_df_1b
+trilep_df = trilep_df.append(trilep_df_2b)
+print(trilep_df)
+otherTotal = trilep_df["other"].sum()
+fakesTotal = trilep_df["fakes"].sum()
+flipsTotal = trilep_df["flips"].sum()
+bkgTotal = trilep_df["total background"].sum()
+hctTotal = trilep_df["signal hct"].sum()
+hutTotal = trilep_df["signal hut"].sum()
+print(otherTotal)
+print(fakesTotal)
+print(flipsTotal)
+print(bkgTotal)
+print(hctTotal)
+print(hutTotal)
+print("*****************")
+dilep_df = df.loc[ (df["nLeptons"]=="SS2l") ]
+otherTotal = dilep_df["other"].sum()
+fakesTotal = dilep_df["fakes"].sum()
+flipsTotal = dilep_df["flips"].sum()
+bkgTotal = dilep_df["total background"].sum()
+hctTotal = dilep_df["signal hct"].sum()
+hutTotal = dilep_df["signal hut"].sum()
+print(otherTotal)
+print(fakesTotal)
+print(flipsTotal)
+print(bkgTotal)
+print(hctTotal)
+print(hutTotal)"""
 
 #now we have imported the data and manipulated it into the categories we want
 #we will do the rest in a loop over signals
@@ -68,6 +106,7 @@ for s in signals:
     nLeps = ["3l", "SS2l"]
     nJets = ["2j","3j","4j"]
     nBtags = ["0b","1b","2b"]
+    #nBtags = ["1b","2b"]
     numBins = len(nLeps)*len(nJets)*len(nBtags)
     nProc = ["signal", "other", "fakes", "flips"]
     numBackgrounds = len(nProc)-1
@@ -108,20 +147,20 @@ for s in signals:
                     procIndex.append(counterString)
                     counter+=1
 
-
     # ok, now I have headers, I can start making the titles for my rows
     rowTitles = []
+    numParameters = 0
     for p in nProc:
         iterator = 0
-        while iterator < 18:
+        while iterator < numBins:
             title = p+"_stat_"+str(iterator)
+            numParameters+=1
             while len(title) <17:
                 title+=" "
             title+="lnN"
             rowTitles.append(title)
             iterator+=1
 
-    numParameters = 0
     for p in nProc:
         title = p+"_syst"
         while len(title)<17:
@@ -162,13 +201,18 @@ for s in signals:
                     else:
                         dcPercentage = 1
 
-                    statUnc.append([l,j,b,dcPercentage])
-
+                    statUnc.append([l,j,b,1+dcPercentage])
+        #print(statUnc)
         for i in range(len(statUnc)):
             lep = statUnc[i][0]
+            if lep=="3l":
+                lep="trilep"
             jet = statUnc[i][1]
             btag = statUnc[i][2]
             unc = statUnc[i][3]
+
+            if unc < 0:
+                unc = 2.0
 
             cTitle = lep+"_"+jet+"_"+btag+"_"+p
             rTitle = p+"_stat_"+str(i)
@@ -177,6 +221,10 @@ for s in signals:
             while len(rTitle) < 17:
                 rTitle+=" "
             rTitle+="lnN"
+
+            #print(cTitle)
+            #print(rTitle)
+            #print(unc)
 
 
             for column in dcard_df:
@@ -191,6 +239,7 @@ for s in signals:
                         filler += " "
                     dcard_df.at[rTitle,column] = filler
     print("filled stat uncertainties")
+    #print(dcard_df)
 
     #get MC yields in correct order of bins/processes
     rates = []
@@ -215,8 +264,12 @@ for s in signals:
                     if p == "signal":
                         p = s
                         p = p.replace("_", " ")
-                    yld = row[p].values[0]
-                    observed = round(yld,0)
+                        yld = row[p].values[0]
+                    else:
+                        yld = row[p].values[0]
+
+                    if yld<0:
+                        yld = 0.01
 
                     yldString = str(yld)
                     while len(yldString)<20:
