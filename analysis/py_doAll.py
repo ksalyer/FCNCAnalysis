@@ -10,7 +10,8 @@ import glob
 import ast
 import time
 #sys.path.append('/home/users/fgolf/fcnc/current/samples/')
-sys.path.append('/home/users/ksalyer/FCNCAnalysis/samples/')
+# sys.path.append('/home/users/ksalyer/FCNCAnalysis/samples/')
+sys.path.append('/home/users/ksalyer/tttt/ana/samples/')
 import samples
 from samples import get_sample_path
 
@@ -89,14 +90,21 @@ if __name__ == "__main__":
 
     # for _ in range(10): print "SKIMTEST"
     basedirs = {
-            2016: "/nfs-7/userdata/ksalyer/fcnc/{}/2016/".format(args.tag),
-            2017: "/nfs-7/userdata/ksalyer/fcnc/{}/2017/".format(args.tag),
-            2018: "/nfs-7/userdata/ksalyer/fcnc/{}/2018/".format(args.tag),
+            # 2016: "/nfs-7/userdata/ksalyer/fcnc/{}/2016/".format(args.tag),
+            # 2017: "/nfs-7/userdata/ksalyer/fcnc/{}/2017/".format(args.tag),
+            # 2018: "/nfs-7/userdata/ksalyer/fcnc/{}/2018/".format(args.tag),
+            2016: "/ceph/cms/store/group/tttt/Skims/220705/2016_APV/",
+            # 2016: "/ceph/cms/store/group/tttt/Skims/220705/2016_NonAPV/",
+            2017: "/ceph/cms/store/group/tttt/Skims/220705/2017/",
+            2018: "/ceph/cms/store/group/tttt/Skims/220705/2018/",
             }
     datadirs = {
-            2016: "/nfs-7/userdata/ksalyer/fcnc/{}/2016/".format(args.datatag),
-            2017: "/nfs-7/userdata/ksalyer/fcnc/{}/2017/".format(args.datatag),
-            2018: "/nfs-7/userdata/ksalyer/fcnc/{}/2018/".format(args.datatag),
+            # 2016: "/nfs-7/userdata/ksalyer/fcnc/{}/2016/".format(args.datatag),
+            # 2017: "/nfs-7/userdata/ksalyer/fcnc/{}/2017/".format(args.datatag),
+            # 2018: "/nfs-7/userdata/ksalyer/fcnc/{}/2018/".format(args.datatag),
+            2016: "/ceph/cms/store/group/tttt/Skims/220705/2016_NonAPV/",
+            2017: "/ceph/cms/store/group/tttt/Skims/220705/2017/",
+            2018: "/ceph/cms/store/group/tttt/Skims/220705/2018/",
             }
 
     outputdir = args.out
@@ -374,7 +382,10 @@ if __name__ == "__main__":
             "zzz": make_obj([basedirs[2016]+get_sample_path("zzz", 2016,args.tag) + ".root",], options=options[2016]),
             "tttj": make_obj([basedirs[2016]+get_sample_path("tttj", 2016,args.tag) + ".root",], options=options[2016]),
             "tttw": make_obj([basedirs[2016]+get_sample_path("tttw", 2016,args.tag) + ".root",], options=options[2016]),
-            "tttt": make_obj([basedirs[2016]+get_sample_path("tttt", 2016,args.tag) + ".root",], options=options[2016]),
+            "tttt": make_obj(
+                glob.glob(basedirs[2016] + get_sample_path("TTTT",2016,args.tag) + "*.root"), options=options[2016]
+                # [basedirs[2016]+get_sample_path("tttt", 2016,args.tag) + ".root",], options=options[2016]
+                ),
             "ttzh": make_obj([basedirs[2016]+get_sample_path("ttzh", 2016,args.tag) + ".root",], options=options[2016]),
             "ttwz": make_obj([basedirs[2016]+get_sample_path("ttwz", 2016,args.tag) + ".root",], options=options[2016]),
             "ttwh": make_obj([basedirs[2016]+get_sample_path("ttwh", 2016,args.tag) + ".root",], options=options[2016]),
@@ -670,7 +681,11 @@ if __name__ == "__main__":
             "zzz": make_obj([basedirs[2017]+get_sample_path("zzz", 2017,args.tag) + ".root",], options=options[2017]),
             "tttj": make_obj([basedirs[2017]+get_sample_path("tttj", 2017,args.tag) + ".root",], options=options[2017]),
             "tttw": make_obj([basedirs[2017]+get_sample_path("tttw", 2017,args.tag) + ".root",], options=options[2017]),
-            "tttt": make_obj([basedirs[2017]+get_sample_path("tttt", 2017,args.tag) + ".root",], options=options[2017]),
+            "tttt": make_obj(
+                # glob.glob(basedirs[2017] + get_sample_path("TTTT",2017,args.tag) + "*.root"), options=options[2017]
+                glob.glob(basedirs[2017] + get_sample_path("TTTT",2017,args.tag) + "*23*.root"), options=options[2017]
+                # [basedirs[2017]+get_sample_path("tttt", 2017,args.tag) + ".root",], options=options[2017]
+                ),
             "ttzh": make_obj([basedirs[2017]+get_sample_path("ttzh", 2017,args.tag) + ".root",], options=options[2017]),
             "ttwz": make_obj([basedirs[2017]+get_sample_path("ttwz", 2017,args.tag) + ".root",], options=options[2017]),
             "ttwh": make_obj([basedirs[2017]+get_sample_path("ttwh", 2017,args.tag) + ".root",], options=options[2017]),
@@ -1112,7 +1127,10 @@ if __name__ == "__main__":
             "zzz": make_obj(basedirs[2018] + get_sample_path("zzz", 2018,args.tag) + ".root",options=options[2018]),
             "tttj": make_obj(basedirs[2018] + get_sample_path("tttj", 2018,args.tag) + ".root",options=options[2018]),
             "tttw": make_obj(basedirs[2018] + get_sample_path("tttw", 2018,args.tag) + ".root",options=options[2018]),
-            "tttt": make_obj(basedirs[2018] + get_sample_path("tttt", 2018,args.tag) + ".root",options=options[2018]),
+            "tttt": make_obj(
+                glob.glob(basedirs[2018] + get_sample_path("TTTT",2018,args.tag) + "*.root"), options=options[2018]
+                # basedirs[2018] + get_sample_path("tttt", 2018,args.tag) + ".root",options=options[2018]
+                ),
             "multiboson": make_obj([
                 basedirs[2018]+get_sample_path("qqww", 2018,args.tag) + ".root",
                 basedirs[2018]+get_sample_path("wz", 2018,args.tag) + ".root",
@@ -1127,7 +1145,12 @@ if __name__ == "__main__":
     }
 
     if args.verbosity>=1:
-        print(basedirs[2016]+get_sample_path("ttw",2016,args.tag)+".root")
+        # print(basedirs[2016]+get_sample_path("ttw",2016,args.tag)+".root")
+        print(basedirs[2016] + get_sample_path("TTTT",2016,args.tag) + "*.root")
+        # "tttt": make_obj(
+        #         glob.glob(basedirs[2016] + get_sample_path("TTTT",2016,args.tag) + "*.root"), options=options[2016]
+        #         # [basedirs[2016]+get_sample_path("tttt", 2016,args.tag) + ".root",], options=options[2016]
+        #         ),
 
     do_slim = args.slim
 
@@ -1178,7 +1201,7 @@ if __name__ == "__main__":
     # Make sure all the requested root files actually exist
     for ch,title,opts,_ in to_run:
         for fname in [str(x) for x in ch]:
-            #print fname
+            # print(fname)
             if not os.path.exists(fname):
                 print("[!] {} does not exist!".format(fname))
 
@@ -1252,7 +1275,7 @@ if __name__ == "__main__":
             import plot_all
 
 
-            signames = ["tttt"]
+            signames = ["TTTT"]
             if args.ss:
                 signames = ["fs_t1tttt_m1600_m600"]
                 # signames = fastsim_procnames[:1]

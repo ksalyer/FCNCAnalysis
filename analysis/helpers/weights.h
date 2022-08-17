@@ -5,7 +5,8 @@
 
 using namespace std;
 
-double getEventWeight (string fileName, string sampleName, int year, bool verbose=false){
+// double getEventWeight (string fileName, string sampleName, int year, bool verbose=false){
+double getEventWeight (string fileName, string sampleName, int year, double sum_wgts, bool verbose=false){
     if (verbose) std::cout << "sampleName: " << fileName << std::endl;
     
     double eventWeight;
@@ -29,11 +30,15 @@ double getEventWeight (string fileName, string sampleName, int year, bool verbos
         fname = short_to_long(sName_short.Data(), year)+'_'+tag+fileEnding;
         if (verbose) std::cout << "fname: " << fname << std::endl;
     }
-    else if (TString(fileName).Contains("nfs")) {
+    // else if (TString(fileName).Contains("nfs")) {
+    else if (TString(fileName).Contains("ceph")) {
         sName_short = ((TObjString*)tokens->At(nentries-1))->GetString();
         TObjArray *tmp_string = sName_short.Tokenize(".");
         sName_short = ((TObjString*)(tmp_string->At(0)))->GetString();
         delete tmp_string;
+        TObjArray *tmp_string2 = sName_short.Tokenize("_");
+        sName_short = ((TObjString*)(tmp_string2->At(0)))->GetString();
+        delete tmp_string2;
         //sName_short = ((TObjString*)sName_short.Tokenize(".")->At(0) )->GetString();
         if (verbose) std::cout << "sName: " << sName_short << std::endl;
         string fileEnding = "_n_events.txt";
@@ -41,18 +46,18 @@ double getEventWeight (string fileName, string sampleName, int year, bool verbos
         if (verbose) std::cout << "fname: " << fname << std::endl;
     }
     //get the number of MC events from sample
-    ifstream inFile;
-    inFile.open("./n_events/"+fname);
+    // ifstream inFile;
+    // inFile.open("./n_events/"+fname);
 
-    int lineToGet = 2;
-    string numEvents;
-    for ( int i = 0; i < lineToGet; i++ ){
-        std::getline(inFile, numEvents);
-        if (verbose) cout << "line " << i << ": "<< numEvents << endl;
-    }
-    //delete &sName_short;
-    double nEvents = stod(numEvents);
-    //cout << "num effective events: " << nEvents << endl;
+    // int lineToGet = 2;
+    // string numEvents;
+    // for ( int i = 0; i < lineToGet; i++ ){
+    //     std::getline(inFile, numEvents);
+    //     if (verbose) cout << "line " << i << ": "<< numEvents << endl;
+    // }
+    // //delete &sName_short;
+    // double nEvents = stod(numEvents);
+    // //cout << "num effective events: " << nEvents << endl;
 
 
     //get name of sample for xsec map
@@ -67,9 +72,10 @@ double getEventWeight (string fileName, string sampleName, int year, bool verbos
     if (verbose) cout << "xsecWeight: " << xsecWeight << std::endl;
     
     //calculate weight
-    eventWeight = xsecWeight/nEvents;
+    // eventWeight = xsecWeight/nEvents;
+    eventWeight = xsecWeight;
     if (verbose) cout << "scale1fb: " << eventWeight << std::endl;
-    inFile.close();
+    // inFile.close();
     delete tokens; //potential memory leak
     return eventWeight;
 }//close function

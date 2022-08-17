@@ -10,10 +10,10 @@ std::string HistContainer::getRegionName(int hyp_type, int njets, int  nbjets) {
 }
 
 std::vector<std::string> HistContainer::getRegionNames() {
-    std::vector<std::string> rnames = { "br","mr","ml","mlsf","ss","os","sf","df","mldf",
+    std::vector<std::string> rnames = { "br"/*,"mr","ml","mlsf","ss","os","sf","df","mldf",
                                         "osest","mlsfest","sfest","mldfest","dfest",
                                         "sfpp","dfpp","mlsfppp","mldfppp",
-                                        "sfppest","dfppest","mlsfpppest","mldfpppest"/*,
+                                        "sfppest","dfppest","mlsfpppest","mldfpppest"*//*,
                                         "vrcr_fake","vrcrest_fake","vrsr_fake",
                                         "vrcr_flip","vrcrest_flip","vrsr_flip"*/};
 
@@ -63,15 +63,34 @@ std::vector<std::string> HistContainer::getRegionNames() {
 }
 
 int HistContainer::getSR(int hyp_type, int njets, int nbjets) {
-    // if(hyp_type==2 && njets>3 && nbjets >1){cout << "njets: " << njets << "  nbjets: " << nbjets << "  hyptype: " << hyp_type << endl;}
-    if ( !(hyp_type==2 || hyp_type==4) ) return -1;
-    int ret=0;
-    int joffset = 3;
-    if (hyp_type==2){joffset = 4;};
-    int offset=(std::min(njets,4)-1)+joffset*std::min(nbjets,2);
-    int loffset=0;
-    if (hyp_type==2) loffset=10;
-    return loffset+offset;
+    int bin = 20;
+    if (hyp_type==4){
+        //dilepton
+        if(nbjets==2){
+            if(njets<=5){bin=0;}
+            if(njets==6){bin=1;}
+            if(njets==7){bin=2;}
+            if(njets>=8){bin=3;}
+        }else if(nbjets==3){
+            if(njets==5){bin=4;}
+            if(njets==6){bin=5;}
+            if(njets==7){bin=6;}
+            if(njets>=8){bin=7;}
+        }else if(nbjets>=4){
+            if(njets>=5){bin=8;}
+        }
+    }else if(hyp_type==2){
+        if(nbjets==2){
+            if(njets==5){bin=9;}
+            if(njets==6){bin=10;}
+            if(njets>=7){bin=11;}
+        }else if(nbjets>=3){
+            if(njets==4){bin=12;}
+            if(njets==5){bin=13;}
+            if(njets>=6){bin=14;}
+        }
+    }
+    return bin;
 }
 
 int HistContainer::getCRbin(int nleps, int njets, int nbjets) {
@@ -380,7 +399,7 @@ void HistContainer::loadHists(std::string sample) {
     // addHist1d("mt_tl_met",sample,20,0,400);
     // addHist1d("mt_thirdl_met",sample,20,0,400);
     // // addHist1d("cutflow",sample,7,0.5,7.5,"br");
-    // addHist1d("sr",sample,21,0.5,21.5);//,"br");
+    addHist1d("sr",sample,15,0.5,15.5);//,"br");
     // addHist1d("ljcscore",sample,20,0,1);
     // addHist1d("tjcscore",sample,20,0,1);
     // addHist1d("thirdjcscore",sample,20,0,1);
@@ -395,8 +414,8 @@ void HistContainer::loadHists(std::string sample) {
     // addHist1d("zll",sample,20,70,110);
     // addHist1d("bdtScoreOnZ_hct",sample,20,hctbins_);//,"br");
     // addHist1d("bdtScoreOnZ_hut",sample,20,hutbins_);//,"br");
-    addHist1d("bdtScore_hct",sample,20,hctbins_);//,"br");
-    addHist1d("bdtScore_hut",sample,20,hutbins_);//,"br");
+    // addHist1d("bdtScore_hct",sample,20,hctbins_);//,"br");
+    // addHist1d("bdtScore_hut",sample,20,hutbins_);//,"br");
     // addHist1d("fakeVal_bdtScore_hct",sample,20,hctbins_);//,"br");
     // addHist1d("fakeVal_bdtScore_hut",sample,20,hutbins_);//,"br");
     // addHist1d("flipVal_bdtScore_hct2016",sample,20,hct2016bins_);//,"br");
@@ -487,6 +506,16 @@ void HistContainer::write() {
     for (it1d=hists1d_.begin();it1d!=hists1d_.end();it1d++) {it1d->second->Write();}
     for (it2d=hists2d_.begin();it2d!=hists2d_.end();it2d++) {it2d->second->Write();}
     for (it4d=hists4d_.begin();it4d!=hists4d_.end();it4d++) {it4d->second->Write();}
+    return;
+}
+
+void HistContainer::scaleHisto(float scale){
+    std::map<std::string,TH1D*>::iterator it1d;
+    // std::map<std::string,TH2D*>::iterator it2d;
+    // std::map<std::string,THnF*>::iterator it4d;
+    for (it1d=hists1d_.begin();it1d!=hists1d_.end();it1d++) {it1d->second->Scale(1/scale);}
+    // for (it2d=hists2d_.begin();it2d!=hists2d_.end();it2d++) {it2d->second->Scale(1/scale);}
+    // for (it4d=hists4d_.begin();it4d!=hists4d_.end();it4d++) {it4d->second->Scale(1/scale);}
     return;
 }
 
@@ -819,17 +848,17 @@ void HistContainer::fill(std::string sample, int best_hyp_type, Leptons &leps, J
         fill1d("tjpt",name,sample,jets[1].pt(),fillWeight);
         fill1d("thirdjpt",name,sample,jets[2].pt(),fillWeight);
         fill1d("ljbscore",name,sample,jets[0].bdisc(),fillWeight);
-        fill1d("ljcscore",name,sample,jets[0].cdisc(),fillWeight);
+        // fill1d("ljcscore",name,sample,jets[0].cdisc(),fillWeight);
         fill1d("weight",name,sample,fillWeight,1);
         // fill1d("tjbscore",name,sample,jets[1].bdisc(),fillWeight);
         if(njets>=2){
             fill1d("tjbscore",name,sample,jets[1].bdisc(),fillWeight);
-            fill1d("tjcscore",name,sample,jets[1].cdisc(),fillWeight);
+            // fill1d("tjcscore",name,sample,jets[1].cdisc(),fillWeight);
         }
         // else if(nbjets>0){fill1d("tjbscore",name,sample,bjets[0].bdisc(),fillWeight);}
         if(njets>=3){
             fill1d("thirdjbscore",name,sample,jets[2].bdisc(),fillWeight);
-            fill1d("thirdjcscore",name,sample,jets[2].cdisc(),fillWeight);
+            // fill1d("thirdjcscore",name,sample,jets[2].cdisc(),fillWeight);
         }
         fill1d("met",name,sample,met,fillWeight);
         if (nbjets>0){
@@ -898,8 +927,7 @@ void HistContainer::fill(std::string sample, int best_hyp_type, Leptons &leps, J
                 fill1d("flipSF_inclMET_nbjets",name,sample,nbjets,fillWeight);
             }
             float met_ = 0.;
-            if(nt.year()==2017){met_=nt.METFixEE2017_T1_pt();}
-            else{met_=nt.MET_pt();}
+            met_=nt.MET_pt();
             if(met<50.){
                 fill1d("flipSFcr_l50MET",name,sample,cr,fillWeight);
                 if(nbjets==0){
