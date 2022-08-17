@@ -33,11 +33,12 @@ if __name__ == '__main__':
     if args.dryrun: dryrun=True
 
     basedirs = {
-        2016: "/hadoop/cms/store/user/ksalyer/FCNC_NanoSkim/{}/".format(tag),
-        2017: "/hadoop/cms/store/user/ksalyer/FCNC_NanoSkim/{}/".format(tag),
-        2018: "/hadoop/cms/store/user/ksalyer/FCNC_NanoSkim/{}/".format(tag),
+        2016: "/hadoop/cms/store/user/ksalyer/all/FCNC_NanoSkim/{}/".format(tag),
+        2017: "/hadoop/cms/store/user/ksalyer/all/FCNC_NanoSkim/{}/".format(tag),
+        2018: "/hadoop/cms/store/user/ksalyer/all/FCNC_NanoSkim/{}/".format(tag),
     }
-    outdir = '/nfs-7/userdata/{}/fcnc/'.format(pwd.getpwuid(os.getuid())[0])
+    # outdir = '/nfs-7/userdata/{}/fcnc/'.format(pwd.getpwuid(os.getuid())[0])
+    outdir = '/ceph/cms/store/user/{}/fcnc_mergedSkims/'.format(pwd.getpwuid(os.getuid())[0])
     if args.out != "": outdir = args.out
     procs = [x.strip() for x in args.proc.strip().split()]
     exprocs = [x.strip() for x in args.excludeproc.strip().split()]
@@ -45,22 +46,26 @@ if __name__ == '__main__':
     count=0
     for year in years:
         for sname, lname in samples_2016.items():
+            # print(sname, lname)
             if sname=="data": continue
             if len(procs) and sname not in procs: continue
             if sname in exprocs: continue
             ifnames = []
-            ifpath = basedirs[year]+get_sample_path(sname,year,args.tag)+'/'
-            for f in os.listdir(ifpath):
-                if f.endswith('.root'): ifnames.append(f)
-            ofpath = outdir+'/{}/{}/'.format(tag,year)
-            if not os.path.isdir(ofpath):
-                os.system('mkdir -p {}'.format(ofpath))
-            ofname = ofpath+'%s.root' % (sname)
-            ifnames_long = [ifpath+ f for f in ifnames]
-            command='haddnano.py %s %s' % (ofname, ' '.join(ifnames_long))
-            if args.verbosity: print command
-            count += 1
-            if not dryrun:
-                os.nice(4)
-                os.system(command)
-                if count%5==0: time.sleep(60)
+            sample_paths = get_sample_path(sname,year,args.tag)
+            for p in sample_paths:
+                ifpath = basedirs[year]+p+'/'
+                # print(ifpath)
+                for f in os.listdir(ifpath):
+                    if f.endswith('.root'): ifnames.append(f)
+                ofpath = outdir+'/{}/{}/'.format(tag,year)
+                if not os.path.isdir(ofpath):
+                    os.system('mkdir -p {}'.format(ofpath))
+                ofname = ofpath+'%s.root' % (sname)
+                ifnames_long = [ifpath+ f for f in ifnames]
+                command='haddnano.py %s %s' % (ofname, ' '.join(ifnames_long))
+                if args.verbosity: print command
+                count += 1
+                if not dryrun:
+                    os.nice(4)
+                    os.system(command)
+                    if count%5==0: time.sleep(60)

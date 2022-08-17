@@ -185,6 +185,42 @@ class HistContainer {
         int counter_;
     public:
         HistContainer () : counter_(0) {region_names_=getRegionNames();}
+        void setHctBins(std::string hctBinBoundaries){
+            std::size_t pos = 0;
+            std::vector<double> v_hctBinBoundaries;
+            double boundary = 0.0;
+
+            while (pos < hctBinBoundaries.size()){
+                if((pos = hctBinBoundaries.find_first_of(",",pos)) != std::string::npos){
+                    hctBinBoundaries[pos] = ' ';
+                }
+            }
+
+            std::stringstream sub_hctBoundaries(hctBinBoundaries);
+            while (sub_hctBoundaries >> boundary){
+                v_hctBinBoundaries.push_back(boundary);
+            }
+
+            hctbins_ = v_hctBinBoundaries;
+        };
+        void setHutBins(std::string hutBinBoundaries){
+            std::size_t pos = 0;
+            std::vector<double> v_hutBinBoundaries;
+            double boundary = 0.0;
+
+            while (pos < hutBinBoundaries.size()){
+                if((pos = hutBinBoundaries.find_first_of(",",pos)) != std::string::npos){
+                    hutBinBoundaries[pos] = ' ';
+                }
+            }
+
+            std::stringstream sub_hutBoundaries(hutBinBoundaries);
+            while (sub_hutBoundaries >> boundary){
+                v_hutBinBoundaries.push_back(boundary);
+            }
+
+            hutbins_ = v_hutBinBoundaries;
+        };
         void addHist1d(std::string quantity, std::string sample, int nbins, float min, float max, std::string region="");
         void addHist1d(std::string quantity, std::string sample, int nbins, std::vector<double> xbins, std::string region="");
         void addHist2d(std::string quantity, std::string sample, int nbinsx, float xmin, float xmax, int nbinsy, float ymin, float ymax, std::string region="");

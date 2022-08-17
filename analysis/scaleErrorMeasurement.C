@@ -79,37 +79,37 @@ int scaleError(std::string inputDir, bool isBDT=0)
         TH2D* rares6_temp_tuh;
         
         if (isBDT){
-            tch0_temp = (TH2D*) tchFile->Get("h_0_renorm_scale_bdtScore_syst_hct2016_signal_tch");
-            tch1_temp = (TH2D*) tchFile->Get("h_1_renorm_scale_bdtScore_syst_hct2016_signal_tch");
-            tch2_temp = (TH2D*) tchFile->Get("h_2_renorm_scale_bdtScore_syst_hct2016_signal_tch");
-            tch3_temp = (TH2D*) tchFile->Get("h_3_renorm_scale_bdtScore_syst_hct2016_signal_tch");
-            tch4_temp = (TH2D*) tchFile->Get("h_4_renorm_scale_bdtScore_syst_hct2016_signal_tch");
-            tch5_temp = (TH2D*) tchFile->Get("h_5_renorm_scale_bdtScore_syst_hct2016_signal_tch");
-            tch6_temp = (TH2D*) tchFile->Get("h_6_renorm_scale_bdtScore_syst_hct2016_signal_tch");
+            tch0_temp = (TH2D*) tchFile->Get("h_0_renorm_scale_bdtScore_syst_hct_signal_tch");
+            tch1_temp = (TH2D*) tchFile->Get("h_1_renorm_scale_bdtScore_syst_hct_signal_tch");
+            tch2_temp = (TH2D*) tchFile->Get("h_2_renorm_scale_bdtScore_syst_hct_signal_tch");
+            tch3_temp = (TH2D*) tchFile->Get("h_3_renorm_scale_bdtScore_syst_hct_signal_tch");
+            tch4_temp = (TH2D*) tchFile->Get("h_4_renorm_scale_bdtScore_syst_hct_signal_tch");
+            tch5_temp = (TH2D*) tchFile->Get("h_5_renorm_scale_bdtScore_syst_hct_signal_tch");
+            tch6_temp = (TH2D*) tchFile->Get("h_6_renorm_scale_bdtScore_syst_hct_signal_tch");
 
-            tuh0_temp = (TH2D*) tuhFile->Get("h_0_renorm_scale_bdtScore_syst_hut2016_signal_tuh");
-            tuh1_temp = (TH2D*) tuhFile->Get("h_1_renorm_scale_bdtScore_syst_hut2016_signal_tuh");
-            tuh2_temp = (TH2D*) tuhFile->Get("h_2_renorm_scale_bdtScore_syst_hut2016_signal_tuh");
-            tuh3_temp = (TH2D*) tuhFile->Get("h_3_renorm_scale_bdtScore_syst_hut2016_signal_tuh");
-            tuh4_temp = (TH2D*) tuhFile->Get("h_4_renorm_scale_bdtScore_syst_hut2016_signal_tuh");
-            tuh5_temp = (TH2D*) tuhFile->Get("h_5_renorm_scale_bdtScore_syst_hut2016_signal_tuh");
-            tuh6_temp = (TH2D*) tuhFile->Get("h_6_renorm_scale_bdtScore_syst_hut2016_signal_tuh");
+            tuh0_temp = (TH2D*) tuhFile->Get("h_0_renorm_scale_bdtScore_syst_hut_signal_tuh");
+            tuh1_temp = (TH2D*) tuhFile->Get("h_1_renorm_scale_bdtScore_syst_hut_signal_tuh");
+            tuh2_temp = (TH2D*) tuhFile->Get("h_2_renorm_scale_bdtScore_syst_hut_signal_tuh");
+            tuh3_temp = (TH2D*) tuhFile->Get("h_3_renorm_scale_bdtScore_syst_hut_signal_tuh");
+            tuh4_temp = (TH2D*) tuhFile->Get("h_4_renorm_scale_bdtScore_syst_hut_signal_tuh");
+            tuh5_temp = (TH2D*) tuhFile->Get("h_5_renorm_scale_bdtScore_syst_hut_signal_tuh");
+            tuh6_temp = (TH2D*) tuhFile->Get("h_6_renorm_scale_bdtScore_syst_hut_signal_tuh");
 
-            rares0_temp_tch = (TH2D*) raresFile->Get("h_0_renorm_scale_bdtScore_syst_hct2016_rares");
-            rares1_temp_tch = (TH2D*) raresFile->Get("h_1_renorm_scale_bdtScore_syst_hct2016_rares");
-            rares2_temp_tch = (TH2D*) raresFile->Get("h_2_renorm_scale_bdtScore_syst_hct2016_rares");
-            rares3_temp_tch = (TH2D*) raresFile->Get("h_3_renorm_scale_bdtScore_syst_hct2016_rares");
-            rares4_temp_tch = (TH2D*) raresFile->Get("h_4_renorm_scale_bdtScore_syst_hct2016_rares");
-            rares5_temp_tch = (TH2D*) raresFile->Get("h_5_renorm_scale_bdtScore_syst_hct2016_rares");
-            rares6_temp_tch = (TH2D*) raresFile->Get("h_6_renorm_scale_bdtScore_syst_hct2016_rares");
+            rares0_temp_tch = (TH2D*) raresFile->Get("h_0_renorm_scale_bdtScore_syst_hct_rares");
+            rares1_temp_tch = (TH2D*) raresFile->Get("h_1_renorm_scale_bdtScore_syst_hct_rares");
+            rares2_temp_tch = (TH2D*) raresFile->Get("h_2_renorm_scale_bdtScore_syst_hct_rares");
+            rares3_temp_tch = (TH2D*) raresFile->Get("h_3_renorm_scale_bdtScore_syst_hct_rares");
+            rares4_temp_tch = (TH2D*) raresFile->Get("h_4_renorm_scale_bdtScore_syst_hct_rares");
+            rares5_temp_tch = (TH2D*) raresFile->Get("h_5_renorm_scale_bdtScore_syst_hct_rares");
+            rares6_temp_tch = (TH2D*) raresFile->Get("h_6_renorm_scale_bdtScore_syst_hct_rares");
 
-            rares0_temp_tuh = (TH2D*) raresFile->Get("h_0_renorm_scale_bdtScore_syst_hut2016_rares");
-            rares1_temp_tuh = (TH2D*) raresFile->Get("h_1_renorm_scale_bdtScore_syst_hut2016_rares");
-            rares2_temp_tuh = (TH2D*) raresFile->Get("h_2_renorm_scale_bdtScore_syst_hut2016_rares");
-            rares3_temp_tuh = (TH2D*) raresFile->Get("h_3_renorm_scale_bdtScore_syst_hut2016_rares");
-            rares4_temp_tuh = (TH2D*) raresFile->Get("h_4_renorm_scale_bdtScore_syst_hut2016_rares");
-            rares5_temp_tuh = (TH2D*) raresFile->Get("h_5_renorm_scale_bdtScore_syst_hut2016_rares");
-            rares6_temp_tuh = (TH2D*) raresFile->Get("h_6_renorm_scale_bdtScore_syst_hut2016_rares");
+            rares0_temp_tuh = (TH2D*) raresFile->Get("h_0_renorm_scale_bdtScore_syst_hut_rares");
+            rares1_temp_tuh = (TH2D*) raresFile->Get("h_1_renorm_scale_bdtScore_syst_hut_rares");
+            rares2_temp_tuh = (TH2D*) raresFile->Get("h_2_renorm_scale_bdtScore_syst_hut_rares");
+            rares3_temp_tuh = (TH2D*) raresFile->Get("h_3_renorm_scale_bdtScore_syst_hut_rares");
+            rares4_temp_tuh = (TH2D*) raresFile->Get("h_4_renorm_scale_bdtScore_syst_hut_rares");
+            rares5_temp_tuh = (TH2D*) raresFile->Get("h_5_renorm_scale_bdtScore_syst_hut_rares");
+            rares6_temp_tuh = (TH2D*) raresFile->Get("h_6_renorm_scale_bdtScore_syst_hut_rares");
         }else{
             tch0_temp = (TH2D*) tchFile->Get("h_0_renorm_scale_sr_syst_signal_tch");
             tch1_temp = (TH2D*) tchFile->Get("h_1_renorm_scale_sr_syst_signal_tch");

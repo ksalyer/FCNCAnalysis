@@ -40,11 +40,34 @@ procs = ["signal","rares","fakes_mc","flips_mc"]
 mcProcs_bdt = ["signal", "rares"]
 mcProcs_cc = ["signal_tch", "signal_tuh", "rares"]
 
-uncertainties = [   "LepSF","PU","Trigger","jes",
-                    "ctag_stat","ctag_EleIDSF","ctag_LHEScaleWeightmuF","ctag_LHEScaleWeightmuR",
-                    "ctag_MuIDSF","ctag_PSWeightFSR","ctag_PSWeightISR","ctag_PUWeight",
-                    "ctag_XSecDYJets","ctag_XSecST","ctag_XSecWJets","ctag_XSecttbar",
-                    "ctag_bFrag","ctag_jer","ctag_jesTotal","ctag_ValuesSystOnly"#,
+# uncertainties = [   "LepSF","PU","Trigger","jes",
+#                     "ctag_stat","ctag_EleIDSF","ctag_LHEScaleWeightmuF","ctag_LHEScaleWeightmuR",
+#                     "ctag_MuIDSF","ctag_PSWeightFSR","ctag_PSWeightISR","ctag_PUWeight",
+#                     "ctag_XSecDYJets","ctag_XSecST","ctag_XSecWJets","ctag_XSecttbar",
+#                     "ctag_bFrag","ctag_jer","ctag_jesTotal","ctag_ValuesSystOnly"#,
+#                     #"ctag_TotalUnc"
+#                     ]
+uncertainties = [   "EleSF",
+                    "MuSF",
+                    "PU",
+                    "Trigger",
+                    "jes",
+                    "ctag_stat",
+                    # "ctag_EleIDSF",
+                    # "ctag_MuIDSF",
+                    # "ctag_LHEScaleWeightmuF",
+                    # "ctag_LHEScaleWeightmuR",
+                    "ctag_PSWeightFSR",
+                    "ctag_PSWeightISR",
+                    # "ctag_PUWeight",
+                    "ctag_XSecDYJets",
+                    "ctag_XSecST",
+                    "ctag_XSecWJets",
+                    "ctag_XSecttbar",
+                    "ctag_bFrag",
+                    "ctag_jer",
+                    # "ctag_jesTotal",
+                    # "ctag_ValuesSystOnly"#,
                     #"ctag_TotalUnc"
                     ]
 
@@ -52,7 +75,7 @@ bdtSRs = ["bin_"+str(x) for x in range(20)]
 ccSRs = getCCColumns(ccSRDict, 21)
 
 ##BDT##
-for y in years:
+for u in uncertainties:
     for s in signals:
         if "tch" in s: altSig = "hct"
         else: altSig = "hut"
@@ -60,7 +83,13 @@ for y in years:
             if "signal" in p:
                 p += "_"
                 p += s
-            for u in uncertainties:
+
+            # print(y,s,p)
+            ctagUp = [0 for x in range(20)]
+            ctagDown = [0 for x in range(20)]
+            # print(ctagUp, ctagDown)
+
+            for y in years:
                 values_up = []
                 values_down = []
                 for b in bdtSRs:
@@ -73,6 +102,25 @@ for y in years:
                 values_down.sort()
                 print("\t", values_down[int(0.16*len(values_down))-1])
                 print("\t", values_down[len(values_down)-int(0.16*len(values_down))-1])
+                if "ctag" in u:
+                    if "bFrag" in u and y==2018: continue
+                    iterator = 0
+                    for b in bdtSRs:
+                        # print(u, ctagUp[iterator], abs(1-bdtSyst[str(y)][str(s)][str(p)][str(u)][str(b)]["up"]))
+                        # print(u, ctagDown[iterator], abs(1-bdtSyst[str(y)][str(s)][str(p)][str(u)][str(b)]["down"]))
+                        ctagUp[iterator] = np.sqrt(ctagUp[iterator]**2+abs(1-bdtSyst[str(y)][str(s)][str(p)][str(u)][str(b)]["up"])**2)
+                        ctagDown[iterator] = np.sqrt(ctagDown[iterator]**2+abs(1-bdtSyst[str(y)][str(s)][str(p)][str(u)][str(b)]["down"])**2)
+                        iterator+=1
+            # print(y,s,p,"ctag")
+            # # print(ctagUp, ctagDown)
+            # ctagUp.sort()
+            # ctagDown.sort()
+            # # print(ctagUp, ctagDown)
+            # print("\t", ctagUp[int(0.16*len(ctagUp))-1])
+            # print("\t", ctagUp[len(ctagUp)-int(0.16*len(ctagUp))-1])
+            # print("\t", ctagDown[int(0.16*len(ctagDown))-1])
+            # print("\t", ctagDown[len(ctagDown)-int(0.16*len(ctagDown))-1])
+
 
 
 print("***************************************************")

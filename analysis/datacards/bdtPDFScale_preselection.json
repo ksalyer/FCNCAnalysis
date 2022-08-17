@@ -2,205 +2,205 @@
     "tch":{
        "signal_tch":{
             "bin_0":{
-                "pdf_down":0.923693,
-                "pdf_up":0.996376,
+                "pdf_down":0.977909,
+                "pdf_up":1.02085,
                 "scale":1.07829
             },
             "bin_1":{
-                "pdf_down":0.924296,
-                "pdf_up":0.998839,
+                "pdf_down":0.981636,
+                "pdf_up":1.01843,
                 "scale":1.07214
             },
             "bin_2":{
-                "pdf_down":0.924452,
-                "pdf_up":0.999474,
+                "pdf_down":0.984348,
+                "pdf_up":1.01403,
                 "scale":1.07535
             },
             "bin_3":{
-                "pdf_down":0.924889,
-                "pdf_up":1.00273,
+                "pdf_down":0.988015,
+                "pdf_up":1.01176,
                 "scale":1.06993
             },
             "bin_4":{
-                "pdf_down":0.924847,
-                "pdf_up":1.00299,
+                "pdf_down":0.989226,
+                "pdf_up":1.01101,
                 "scale":1.07125
             },
             "bin_5":{
-                "pdf_down":0.925055,
-                "pdf_up":1.00201,
+                "pdf_down":0.991109,
+                "pdf_up":1.00917,
                 "scale":1.07192
             },
             "bin_6":{
-                "pdf_down":0.924994,
-                "pdf_up":1.00422,
+                "pdf_down":0.991117,
+                "pdf_up":1.00904,
                 "scale":1.06941
             },
             "bin_7":{
-                "pdf_down":0.925389,
-                "pdf_up":1.00329,
+                "pdf_down":0.991854,
+                "pdf_up":1.00815,
                 "scale":1.07179
             },
             "bin_8":{
-                "pdf_down":0.925124,
-                "pdf_up":1.00214,
+                "pdf_down":0.990336,
+                "pdf_up":1.00969,
                 "scale":1.06657
             },
             "bin_9":{
-                "pdf_down":0.925232,
-                "pdf_up":1.00345,
+                "pdf_down":0.992591,
+                "pdf_up":1.00742,
                 "scale":1.0709
             },
             "bin_10":{
-                "pdf_down":0.925473,
-                "pdf_up":1.0024,
+                "pdf_down":0.99354,
+                "pdf_up":1.00703,
                 "scale":1.06596
             },
             "bin_11":{
-                "pdf_down":0.925569,
-                "pdf_up":1.00269,
+                "pdf_down":0.992652,
+                "pdf_up":1.00783,
                 "scale":1.0703
             },
             "bin_12":{
-                "pdf_down":0.925411,
-                "pdf_up":1.00251,
+                "pdf_down":0.993399,
+                "pdf_up":1.00593,
                 "scale":1.0646
             },
             "bin_13":{
-                "pdf_down":0.92588,
-                "pdf_up":1.00365,
+                "pdf_down":0.990866,
+                "pdf_up":1.00877,
                 "scale":1.06809
             },
             "bin_14":{
-                "pdf_down":0.925882,
-                "pdf_up":1.00464,
+                "pdf_down":0.992621,
+                "pdf_up":1.00894,
                 "scale":1.06833
             },
             "bin_15":{
-                "pdf_down":0.9258,
-                "pdf_up":1.00386,
+                "pdf_down":0.994672,
+                "pdf_up":1.0058,
                 "scale":1.06337
             },
             "bin_16":{
-                "pdf_down":0.925533,
-                "pdf_up":1.00581,
+                "pdf_down":0.99157,
+                "pdf_up":1.00555,
                 "scale":1.06313
             },
             "bin_17":{
-                "pdf_down":0.925794,
-                "pdf_up":1.00585,
+                "pdf_down":0.991628,
+                "pdf_up":1.00878,
                 "scale":1.0628
             },
             "bin_18":{
-                "pdf_down":0.925802,
-                "pdf_up":1.00522,
+                "pdf_down":0.988063,
+                "pdf_up":1.01326,
                 "scale":1.05559
             },
             "bin_19":{
-                "pdf_down":0.925856,
-                "pdf_up":1.00636,
+                "pdf_down":0.989435,
+                "pdf_up":1.01156,
                 "scale":1.05524
             }
         },
         "rares":{
             "bin_0":{
-                "pdf_down":1.04087,
-                "pdf_up":0.959132,
+                "pdf_down":1.01667,
+                "pdf_up":0.983326,
                 "scale":0.802424
             },
             "bin_1":{
-                "pdf_down":1.04379,
-                "pdf_up":0.956214,
+                "pdf_down":1.01998,
+                "pdf_up":0.980018,
                 "scale":0.828347
             },
             "bin_2":{
-                "pdf_down":1.03769,
-                "pdf_up":0.962314,
+                "pdf_down":1.01417,
+                "pdf_up":0.985834,
                 "scale":0.87094
             },
             "bin_3":{
-                "pdf_down":1.04571,
-                "pdf_up":0.954293,
+                "pdf_down":1.02211,
+                "pdf_up":0.977887,
                 "scale":0.847694
             },
             "bin_4":{
-                "pdf_down":1.04447,
-                "pdf_up":0.955526,
+                "pdf_down":1.02016,
+                "pdf_up":0.979838,
                 "scale":0.889896
             },
             "bin_5":{
-                "pdf_down":1.03851,
-                "pdf_up":0.961487,
+                "pdf_down":1.01662,
+                "pdf_up":0.983382,
                 "scale":0.925326
             },
             "bin_6":{
-                "pdf_down":1.04099,
-                "pdf_up":0.959015,
+                "pdf_down":1.01717,
+                "pdf_up":0.982825,
                 "scale":0.89827
             },
             "bin_7":{
-                "pdf_down":1.04465,
-                "pdf_up":0.955345,
+                "pdf_down":1.02144,
+                "pdf_up":0.978564,
                 "scale":0.861275
             },
             "bin_8":{
-                "pdf_down":1.04606,
-                "pdf_up":0.953942,
+                "pdf_down":1.02219,
+                "pdf_up":0.977809,
                 "scale":0.872687
             },
             "bin_9":{
-                "pdf_down":1.04561,
-                "pdf_up":0.954391,
+                "pdf_down":1.024,
+                "pdf_up":0.976,
                 "scale":0.851123
             },
             "bin_10":{
-                "pdf_down":1.03914,
-                "pdf_up":0.96085,
+                "pdf_down":1.01607,
+                "pdf_up":0.983933,
                 "scale":0.922392
             },
             "bin_11":{
-                "pdf_down":1.04698,
-                "pdf_up":0.953016,
+                "pdf_down":1.0241,
+                "pdf_up":0.975898,
                 "scale":1.1122
             },
             "bin_12":{
-                "pdf_down":1.04306,
-                "pdf_up":0.956937,
+                "pdf_down":1.01012,
+                "pdf_up":0.989884,
                 "scale":0.867018
             },
             "bin_13":{
-                "pdf_down":1.04244,
-                "pdf_up":0.95756,
+                "pdf_down":1.02033,
+                "pdf_up":0.979673,
                 "scale":0.830654
             },
             "bin_14":{
-                "pdf_down":1.04459,
-                "pdf_up":0.955408,
+                "pdf_down":1.02437,
+                "pdf_up":0.975628,
                 "scale":0.892354
             },
             "bin_15":{
-                "pdf_down":1.04647,
-                "pdf_up":0.953535,
+                "pdf_down":1.02373,
+                "pdf_up":0.976272,
                 "scale":0.885246
             },
             "bin_16":{
-                "pdf_down":1.04666,
-                "pdf_up":0.953342,
+                "pdf_down":1.01704,
+                "pdf_up":0.982957,
                 "scale":0.871263
             },
             "bin_17":{
-                "pdf_down":1.0475,
-                "pdf_up":0.952502,
+                "pdf_down":1.02473,
+                "pdf_up":0.975271,
                 "scale":0.877903
             },
             "bin_18":{
-                "pdf_down":1.04455,
-                "pdf_up":0.955451,
+                "pdf_down":1.02202,
+                "pdf_up":0.977978,
                 "scale":0.895947
             },
             "bin_19":{
-                "pdf_down":1.04722,
-                "pdf_up":0.952779,
+                "pdf_down":1.02627,
+                "pdf_up":0.973729,
                 "scale":0.847279
             }
         }
@@ -208,205 +208,205 @@
     "tuh":{
         "signal_tuh":{
             "bin_0":{
-                "pdf_down":0.926976,
-                "pdf_up":1.01296,
+                "pdf_down":0.978459,
+                "pdf_up":1.0181,
                 "scale":1.02147
             },
             "bin_1":{
-                "pdf_down":0.927081,
-                "pdf_up":1.00409,
+                "pdf_down":0.986041,
+                "pdf_up":1.01278,
                 "scale":1.02195
             },
             "bin_2":{
-                "pdf_down":0.9272,
-                "pdf_up":1.00184,
+                "pdf_down":0.989078,
+                "pdf_up":1.00886,
                 "scale":1.0246
             },
             "bin_3":{
-                "pdf_down":0.924904,
-                "pdf_up":1.00298,
+                "pdf_down":0.988323,
+                "pdf_up":1.01036,
                 "scale":1.02501
             },
             "bin_4":{
-                "pdf_down":0.926917,
-                "pdf_up":1.00032,
+                "pdf_down":0.986323,
+                "pdf_up":1.01106,
                 "scale":0.979449
             },
             "bin_5":{
-                "pdf_down":0.925048,
-                "pdf_up":1.00293,
+                "pdf_down":0.991232,
+                "pdf_up":1.00704,
                 "scale":0.977142
             },
             "bin_6":{
-                "pdf_down":0.927204,
-                "pdf_up":1.00142,
+                "pdf_down":0.988584,
+                "pdf_up":1.00859,
                 "scale":1.02259
             },
             "bin_7":{
-                "pdf_down":0.927101,
-                "pdf_up":1.00169,
+                "pdf_down":0.987548,
+                "pdf_up":1.00994,
                 "scale":1.02139
             },
             "bin_8":{
-                "pdf_down":0.927149,
-                "pdf_up":1.00277,
+                "pdf_down":0.990283,
+                "pdf_up":1.00698,
                 "scale":0.976676
             },
             "bin_9":{
-                "pdf_down":0.927075,
-                "pdf_up":1.00261,
+                "pdf_down":0.989276,
+                "pdf_up":1.00779,
                 "scale":0.979534
             },
             "bin_10":{
-                "pdf_down":0.927136,
-                "pdf_up":1.00251,
+                "pdf_down":0.99,
+                "pdf_up":1.00786,
                 "scale":1.01924
             },
             "bin_11":{
-                "pdf_down":0.927027,
-                "pdf_up":1.00284,
+                "pdf_down":0.991935,
+                "pdf_up":1.00622,
                 "scale":0.981329
             },
             "bin_12":{
-                "pdf_down":0.926965,
-                "pdf_up":1.00146,
+                "pdf_down":0.99262,
+                "pdf_up":1.00609,
                 "scale":0.979325
             },
             "bin_13":{
-                "pdf_down":0.927069,
-                "pdf_up":1.00277,
+                "pdf_down":0.992058,
+                "pdf_up":1.00713,
                 "scale":0.979022
             },
             "bin_14":{
-                "pdf_down":0.927069,
-                "pdf_up":1.00128,
+                "pdf_down":0.990854,
+                "pdf_up":1.00745,
                 "scale":0.979175
             },
             "bin_15":{
-                "pdf_down":0.927141,
-                "pdf_up":1.00161,
+                "pdf_down":0.990269,
+                "pdf_up":1.00778,
                 "scale":0.981033
             },
             "bin_16":{
-                "pdf_down":0.926978,
-                "pdf_up":1.00354,
+                "pdf_down":0.992589,
+                "pdf_up":1.00699,
                 "scale":1.01979
             },
             "bin_17":{
-                "pdf_down":0.927038,
-                "pdf_up":1.00127,
+                "pdf_down":0.99335,
+                "pdf_up":1.00561,
                 "scale":0.979178
             },
             "bin_18":{
-                "pdf_down":0.926994,
-                "pdf_up":1.00087,
+                "pdf_down":0.9937,
+                "pdf_up":1.00606,
                 "scale":1.01914
             },
             "bin_19":{
-                "pdf_down":0.926851,
-                "pdf_up":1.00301,
+                "pdf_down":0.993155,
+                "pdf_up":1.00562,
                 "scale":1.0183
             }
         },
         "rares":{
             "bin_0":{
-                "pdf_down":1.04158,
-                "pdf_up":0.95842,
+                "pdf_down":1.01671,
+                "pdf_up":0.983291,
                 "scale":0.793724
             },
             "bin_1":{
-                "pdf_down":1.0421,
-                "pdf_up":0.957903,
+                "pdf_down":1.0195,
+                "pdf_up":0.980496,
                 "scale":0.844176
             },
             "bin_2":{
-                "pdf_down":1.04309,
-                "pdf_up":0.956905,
+                "pdf_down":1.02041,
+                "pdf_up":0.979587,
                 "scale":0.863818
             },
             "bin_3":{
-                "pdf_down":1.04023,
-                "pdf_up":0.959772,
+                "pdf_down":1.0174,
+                "pdf_up":0.9826,
                 "scale":0.843945
             },
             "bin_4":{
-                "pdf_down":1.04554,
-                "pdf_up":0.954457,
+                "pdf_down":1.0228,
+                "pdf_up":0.977196,
                 "scale":0.880419
             },
             "bin_5":{
-                "pdf_down":1.03842,
-                "pdf_up":0.96158,
+                "pdf_down":1.01468,
+                "pdf_up":0.985319,
                 "scale":0.875918
             },
             "bin_6":{
-                "pdf_down":1.03716,
-                "pdf_up":0.962843,
+                "pdf_down":1.01202,
+                "pdf_up":0.987975,
                 "scale":0.880004
             },
             "bin_7":{
-                "pdf_down":1.04428,
-                "pdf_up":0.955722,
+                "pdf_down":1.02231,
+                "pdf_up":0.977687,
                 "scale":1.12287
             },
             "bin_8":{
-                "pdf_down":1.04267,
-                "pdf_up":0.957331,
+                "pdf_down":1.02055,
+                "pdf_up":0.979449,
                 "scale":0.893954
             },
             "bin_9":{
-                "pdf_down":1.04512,
-                "pdf_up":0.954877,
+                "pdf_down":1.0209,
+                "pdf_up":0.979096,
                 "scale":0.880962
             },
             "bin_10":{
-                "pdf_down":1.04921,
-                "pdf_up":0.950794,
+                "pdf_down":1.02666,
+                "pdf_up":0.97334,
                 "scale":0.877473
             },
             "bin_11":{
-                "pdf_down":1.03806,
-                "pdf_up":0.96193,
+                "pdf_down":1.01621,
+                "pdf_up":0.983787,
                 "scale":0.873874
             },
             "bin_12":{
-                "pdf_down":1.04723,
-                "pdf_up":0.952774,
+                "pdf_down":1.0245,
+                "pdf_up":0.975496,
                 "scale":0.875404
             },
             "bin_13":{
-                "pdf_down":1.04391,
-                "pdf_up":0.95609,
+                "pdf_down":1.02032,
+                "pdf_up":0.979676,
                 "scale":0.869672
             },
             "bin_14":{
-                "pdf_down":1.05053,
-                "pdf_up":0.949466,
+                "pdf_down":1.03016,
+                "pdf_up":0.969838,
                 "scale":0.873489
             },
             "bin_15":{
-                "pdf_down":1.04394,
-                "pdf_up":0.956059,
+                "pdf_down":1.02149,
+                "pdf_up":0.978513,
                 "scale":0.889675
             },
             "bin_16":{
-                "pdf_down":1.04907,
-                "pdf_up":0.950934,
+                "pdf_down":1.02423,
+                "pdf_up":0.97577,
                 "scale":0.890997
             },
             "bin_17":{
-                "pdf_down":1.04481,
-                "pdf_up":0.955191,
+                "pdf_down":1.01845,
+                "pdf_up":0.981555,
                 "scale":1.07608
             },
             "bin_18":{
-                "pdf_down":1.0384,
-                "pdf_up":0.961597,
+                "pdf_down":1.01169,
+                "pdf_up":0.988309,
                 "scale":1.13077
             },
             "bin_19":{
-                "pdf_down":1.0439,
-                "pdf_up":0.956102,
+                "pdf_down":1.02064,
+                "pdf_up":0.979363,
                 "scale":1.12364
             }
         }

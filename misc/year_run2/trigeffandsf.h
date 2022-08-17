@@ -13,6 +13,7 @@ double LegEffcyorSF(TFile* myf, TString legname, double pt, double eta, TString 
     if(debug)  cout << legname<<"  " ; 
     TString hname = year+"/"+legname;
     TString hname_mc = hname+"_mc";
+    if(debug)  cout << hname<<"  " ; 
 
     TH2D* myhdata; // NJA
     TH2D* myhmc;
