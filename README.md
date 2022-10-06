@@ -10,11 +10,12 @@ mkdir fcnc <br>
 cd fcnc <br>
 git clone https://github.com/ksalyer/FCNCAnalysis.git ana <br>
 cd ana <br>
-git checkout franksFork <br>
+git checkout fourtop <br>
 cd .. <br>
 git clone https://github.com/ksalyer/NanoTools.git <br>
 pushd . <br>
 cd NanoTools/NanoCORE <br>
+git checkout fourtop <br>
 make -j8 <br>
 popd <br>
 
