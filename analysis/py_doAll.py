@@ -477,15 +477,24 @@ if __name__ == "__main__":
                 basedirs[2017] + get_sample_path("zg", 2017,args.tag) + ".root",
 
                 ], options=options[2017] + "doTruthFlip doStitch"),
-            "top": make_obj([
-                basedirs[2017] + get_sample_path("tt2lep", 2017,args.tag) + ".root",
-                basedirs[2017] + get_sample_path("tt1lep", 2017,args.tag) + ".root",
-                # # basedirs[2017] + get_sample_path("ttjets", 2017,args.tag) + ".root",
-                # basedirs[2017] + get_sample_path("tw_top", 2017,args.tag) + ".root",
-                # basedirs[2017] + get_sample_path("tw_atop", 2017,args.tag) + ".root",
-                # basedirs[2017] + get_sample_path("ttg_dilep", 2017,args.tag) + ".root",
-                # basedirs[2017] + get_sample_path("ttg_1lep", 2017,args.tag) + ".root",
-                ], options=options[2017] + " doStitch"),
+            "top": make_obj(
+                glob.glob(basedirs[2017] + get_sample_path("TT_2l2nu",2017,args.tag) + "*.root")
+                # +
+                # glob.glob(basedirs[2017] + get_sample_path("TT_lnu_top_lo",2017,args.tag) + "*.root")+
+                # glob.glob(basedirs[2017] + get_sample_path("TT_lnu_nlo",2017,args.tag) + "*.root")+
+                # glob.glob(basedirs[2017] + get_sample_path("TTJets",2017,args.tag) + "*.root")
+                ,
+                options=options[2017]
+                ),
+
+                # basedirs[2017] + get_sample_path("tt2lep", 2017,args.tag) + ".root",
+                # basedirs[2017] + get_sample_path("tt1lep", 2017,args.tag) + ".root",
+                # # # basedirs[2017] + get_sample_path("ttjets", 2017,args.tag) + ".root",
+                # # basedirs[2017] + get_sample_path("tw_top", 2017,args.tag) + ".root",
+                # # basedirs[2017] + get_sample_path("tw_atop", 2017,args.tag) + ".root",
+                # # basedirs[2017] + get_sample_path("ttg_dilep", 2017,args.tag) + ".root",
+                # # basedirs[2017] + get_sample_path("ttg_1lep", 2017,args.tag) + ".root",
+                # ], options=options[2017] + " doStitch"),
             "wboson": make_obj([
                 basedirs[2017] + get_sample_path("wjets", 2017,args.tag) + ".root",
                 # basedirs[2017] + get_sample_path("wg", 2017,args.tag) + ".root",

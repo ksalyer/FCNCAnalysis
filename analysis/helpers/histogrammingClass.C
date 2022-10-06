@@ -10,7 +10,7 @@ std::string HistContainer::getRegionName(int hyp_type, int njets, int  nbjets) {
 }
 
 std::vector<std::string> HistContainer::getRegionNames() {
-    std::vector<std::string> rnames = { "br"/*,"mr","ml","mlsf","ss","os","sf","df","mldf",
+    std::vector<std::string> rnames = { "br","mr","ml",/*"mlsf",*/"ss","os",/*"sf","df","mldf",
                                         "osest","mlsfest","sfest","mldfest","dfest",
                                         "sfpp","dfpp","mlsfppp","mldfppp",
                                         "sfppest","dfppest","mlsfpppest","mldfpppest"*//*,
@@ -354,10 +354,10 @@ void HistContainer::addHist4d(std::string quantity, std::string sample, int nbin
 }
 
 void HistContainer::loadHists(std::string sample) {
-    // addHist1d("njets",sample,5,-0.5,4.5);
-    // addHist1d("nbjets",sample,3,-0.5,2.5);
-    // addHist1d("nleps",sample,5,-0.5,4.5);
-    // addHist1d("neles",sample,5,-0.5,4.5);
+    addHist1d("njets",sample,5,-0.5,4.5);
+    addHist1d("nbjets",sample,3,-0.5,2.5);
+    addHist1d("nleps",sample,5,-0.5,4.5);
+    addHist1d("neles",sample,5,-0.5,4.5);
     // // addHist1d("nmus",sample,5,-0.5,4.5);
     // // // addHist1d("nvtxs",sample,100,0,100);
     // // // addHist1d("elpt_emu",sample,100,0,200);
@@ -399,7 +399,7 @@ void HistContainer::loadHists(std::string sample) {
     // addHist1d("mt_tl_met",sample,20,0,400);
     // addHist1d("mt_thirdl_met",sample,20,0,400);
     // // addHist1d("cutflow",sample,7,0.5,7.5,"br");
-    addHist1d("sr",sample,15,0.5,15.5);//,"br");
+    // addHist1d("sr",sample,15,0.5,15.5);//,"br");
     // addHist1d("ljcscore",sample,20,0,1);
     // addHist1d("tjcscore",sample,20,0,1);
     // addHist1d("thirdjcscore",sample,20,0,1);
@@ -523,7 +523,7 @@ void HistContainer::fill1d(std::string quantity, std::string region, std::string
     std::map<std::string,TH1D*>::iterator it1d;
     // cout << quantity << " " << region << " " << sample << endl;
     for (it1d=hists1d_.begin();it1d!=hists1d_.end();it1d++) {
-        //cout << it1d->first << endl;
+        // cout << it1d->first << endl;
         if (it1d->first.find(sample)==std::string::npos)  continue;
         if (it1d->first.find(quantity)==std::string::npos) continue;
         if (it1d->first.find(region)==std::string::npos) continue;
@@ -844,10 +844,10 @@ void HistContainer::fill(std::string sample, int best_hyp_type, Leptons &leps, J
         fill1d("thirdldz",name,sample,leps[2].dz(),fillWeight);
         fill1d("llminiiso",name,sample,leps[0].miniIso(),fillWeight);
         fill1d("ltminiiso",name,sample,leps[1].miniIso(),fillWeight);
-        fill1d("ljpt",name,sample,jets[0].pt(),fillWeight);
-        fill1d("tjpt",name,sample,jets[1].pt(),fillWeight);
-        fill1d("thirdjpt",name,sample,jets[2].pt(),fillWeight);
-        fill1d("ljbscore",name,sample,jets[0].bdisc(),fillWeight);
+        if(njets>=1){fill1d("ljpt",name,sample,jets[0].pt(),fillWeight);}
+        if(njets>=2){fill1d("tjpt",name,sample,jets[1].pt(),fillWeight);}
+        if(njets>=3){fill1d("thirdjpt",name,sample,jets[2].pt(),fillWeight);}
+        if(njets>=1){fill1d("ljbscore",name,sample,jets[0].bdisc(),fillWeight);}
         // fill1d("ljcscore",name,sample,jets[0].cdisc(),fillWeight);
         fill1d("weight",name,sample,fillWeight,1);
         // fill1d("tjbscore",name,sample,jets[1].bdisc(),fillWeight);

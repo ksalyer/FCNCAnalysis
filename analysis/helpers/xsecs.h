@@ -178,7 +178,7 @@ double getXSec( string sampleName ){
     xsecs["tw_atop"] = 19.47;
     xsecs["ttjets"] = 831.762;
     xsecs["tt1lep"] = 364.35;
-    xsecs["tt2lep"] = 87.31;
+    xsecs["TT_2l2nu"] = 87.31;
     xsecs["tg"] = 2.967;
     xsecs["wg"] = 405.271;
     xsecs["wjets"] = 61334.9;

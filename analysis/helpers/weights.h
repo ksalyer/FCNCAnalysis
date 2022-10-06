@@ -17,7 +17,7 @@ double getEventWeight (string fileName, string sampleName, int year, double sum_
     unsigned int nentries = tokens->GetEntries();
     //cout << sName << endl;
 
-    TString sTag = ((TObjString*)tokens->At(nentries-3))->GetString();
+    TString sTag = ((TObjString*)tokens->At(nentries-2))->GetString();
     if (verbose) std::cout << "sTag: " << sTag << std::endl;
     std::string tag = sTag.Data();
 
@@ -68,7 +68,8 @@ double getEventWeight (string fileName, string sampleName, int year, double sum_
     //sampleName.pop_back();
 
     //get xsec
-    double xsecWeight = 1000 * getXSec(sName_short.Data());
+    // double xsecWeight = 1000 * getXSec(sName_short.Data());
+    double xsecWeight = 1000 * getXSec(sTag.Data());
     if (verbose) cout << "xsecWeight: " << xsecWeight << std::endl;
     
     //calculate weight

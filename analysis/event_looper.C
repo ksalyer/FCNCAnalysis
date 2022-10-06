@@ -79,34 +79,189 @@ void print_sample_yields (ofstream& outfile, TString sampleName, float nFlip, fl
     outfile << sampleName << " " << nFake << " " << nFlip << " " << nRare << endl;
 }
 
-int getRegion(int hyp_type, int njets, int nbjets, int nleptons, int ntight, Leptons leptons) {
+int getRegion(int hyp_type, int njets, int nbjets, int nleptons, int ntight, Leptons leptons, Leptons tightLeptons, Leptons ttCandidateLeps) {
     // cout << "hyptype: " << hyp_type << "  njets: " << njets << "  nbjets: " << nbjets << "  nleptons: " << nleptons << "  ntight: " << ntight << endl;
     int bin = 20;
-    if(hyp_type==1){
-        std::pair<int,int> z_mass_info;
-        bool isZ = 0;
 
-        if (nleptons==2){
-            z_mass_info = makesResonance(leptons, leptons[0], leptons[1], 91,15);
-            // cout << z_mass_info.first << "\t" << z_mass_info.second << endl;
-            if(z_mass_info.first>=0){isZ = 1;}
+    if(hyp_type!=1){
+        for (auto &lep_a : leptons){
+            for(auto &lep_b : leptons){
+                if(lep_a.absid()!=lep_b.absid()){continue;}
+                if(lep_a.idx()==lep_b.idx()){continue;}
+                if(fabs(lep_a.eta())>2.5||fabs(lep_b.eta())>2.5){continue;}
+                if(lep_a.pt()<7||lep_b.pt()<7){continue;}
+                if(lep_a.idlevel()<SS::IDveto||lep_b.idlevel()<SS::IDveto){continue;}
+                if(lep_a.id() == -1*lep_b.id() &&(fabs((lep_a.p4() + lep_b.p4()).M() - 91.2) < 15.)){
+                    // cout << lep_a.pt() << "\t" << lep_b.pt() << endl;
+                    return 20;
+                }
+            }
         }
-        else{
+    }
+
+    if(hyp_type==1&&ntight>=3&&nbjets>=2){
+        std::pair<int,int> z_mass_info;
+        bool isss = 0;
+        bool isZ = 0;
+        int nZCandidates = 0; 
+
+        if(ntight>=3 && nbjets>=2){
             for(int i = 0; i < nleptons; i++){
                 for(int j = 0; j < nleptons; j++){
                     if(j == i){continue;}
-                    z_mass_info = makesResonance(leptons, leptons[i], leptons[j], 91, 15);
-                    if(z_mass_info.first>=0){isZ = 1;}
+                    // bool isttoverlap = 0;
+                    // for (auto lep : ttCandidateLeps) {
+                    //     // cout << lep.pt() << endl;
+                    //     // cout << leptons[i].pt() << "\t" << leptons[j].pt() << "\t" << lep.pt() << endl;
+                    //     if (leptons[i].pt()==lep.pt()) isttoverlap=1;
+                    //     if (leptons[j].pt()==lep.pt()) isttoverlap=1;
+                    // }
+                    // if(isttoverlap) continue;
+                    // if(leptons[i].idlevel() < SS::IDtight || leptons[j].idlevel() < SS::IDtight){continue;}
+                    // if(
+                    //     !((leptons[i].idlevel() == SS::IDtight || leptons[j].idlevel() == SS::IDtight)&&
+                    //     (leptons[i].idlevel() < SS::IDtight || leptons[j].idlevel() < SS::IDtight))
+                    //     ){continue;}
+                    // z_mass_info = makesResonance(leptons, leptons[i], leptons[j], 91.2, 15);
+
+                    // cout << i << "\t" << j << "\t" << leptons[i].pt() << "\t" << leptons[j].pt() << "\t" << (leptons[i].p4() + leptons[j].p4()).M() << endl;
+                    // cout << nZCandidates << endl;
+
+                    if(fabs((leptons[i].p4() + leptons[j].p4()).M() - 91.2) < 15. && leptons[i].id() == -leptons[j].id() && leptons[i].idlevel()>=SS::IDveto && leptons[j].idlevel()>=SS::IDveto){
+                        // cout << leptons[i].pt() << "\t" << leptons[j].pt() << endl;
+                        // cout << "close Z" << endl;
+                        if(leptons[i].idlevel()==SS::IDtight && leptons[j].idlevel()==SS::IDtight){
+                            // cout << "is tight" << endl;
+                            isZ = 1; 
+                            nZCandidates++;
+                        }else{
+                            // cout << "not tight" << endl;
+                            return 20;
+                        }
+                    }
+                    if((leptons[i].p4() + leptons[j].p4()).M() < 12. && leptons[i].id() == -leptons[j].id() && leptons[i].idlevel()>=SS::IDveto && leptons[j].idlevel()>=SS::IDveto){
+                        // cout << leptons[i].pt() << "\t" << leptons[j].pt() << endl;
+                        // cout << "low mass res" << endl;
+                        return 20; 
+                    }
+                    // cout << isZ << endl;
+
+
+
+                    // if(z_mass_info.first>=0){
+                    //     if(z_mass_info.first==1){
+                    //         if(leptons[i].absid()==11){
+                    //             if(leptons[i].id()==nt.Electron_pdgId()[z_mass_info.second]){isss=1;}
+                    //         }else{
+                    //             if(leptons[i].id()==nt.Muon_pdgId()[z_mass_info.second]){isss=1;}
+                    //         }
+                    //     }else if(z_mass_info.first==2){
+                    //         if(leptons[j].absid()==11){
+                    //             if(leptons[j].id()==nt.Electron_pdgId()[z_mass_info.second]){isss=1;}
+                    //         }else{
+                    //             if(leptons[j].id()==nt.Muon_pdgId()[z_mass_info.second]){isss=1;}
+                    //         }
+                    //     }
+                    //     if(!isss) {isZ = 1;}
+                    // }
                 }
+                // if (isZ) {nZCandidates++;}
             }
         }
         // std::pair<int,int> z_mass_info = makesResonance(leptons, lep1, lep2, 91,15);
         // cout << z_mass_info.first << "\t" << z_mass_info.second << endl;
         // if(z_mass_info.first>=0){bin=16;}
-        if(isZ){bin=16;}
+        // cout << "nZCandidates: " << nZCandidates << endl;
+        if(isZ && nZCandidates<=2){bin=16;}
+        else if(nZCandidates>2){bin=20;}
+        else{
+            if(nbjets==2){
+                if(njets==5){bin=9;}
+                if(njets==6){bin=10;}
+                if(njets>=7){bin=11;}
+            }else if(nbjets>=3){
+                if(njets==4){bin=12;}
+                if(njets==5){bin=13;}
+                if(njets>=6){bin=14;}
+            }
+        }
+    } else if(hyp_type==1&&ntight==2&&nbjets>=2){
+        std::pair<int,int> z_mass_info;
+        bool isss = 0;
+        bool isZ = 0;
+        int nZCandidates = 0;
+
+        for(int i = 0; i < nleptons; i++){
+            for(int j = 0; j < nleptons; j++){
+                if(j == i){continue;}
+                // if(leptons[i].idlevel() < SS::IDtight || leptons[j].idlevel() < SS::IDtight){continue;}
+                // z_mass_info = makesResonance(leptons, leptons[i], leptons[j], 91.2, 15);
+
+                // cout << leptons[i].pt() << "\t" << leptons[j].pt() << "\t" << (leptons[i].p4() + leptons[j].p4()).M() << endl;
+
+                if(fabs((leptons[i].p4() + leptons[j].p4()).M() - 91.2) < 15. && leptons[i].id() == -leptons[j].id() && leptons[i].idlevel()>=SS::IDveto && leptons[j].idlevel()>=SS::IDveto){
+                    // cout << leptons[i].pt() << "\t" << leptons[j].pt() << endl;
+                    if(leptons[i].idlevel()==SS::IDtight && leptons[j].idlevel()==SS::IDtight){
+                        // cout << "are tight z" << endl;
+                        isZ = 1; 
+                        nZCandidates++;
+                    }else{
+                        // cout << "not tight" << endl;
+                        return 20;
+                    }
+                }
+
+                if(fabs((leptons[i].p4() + leptons[j].p4()).M()) < 12. /*&& leptons[i].absid()!=11*/ && leptons[i].id()==-leptons[j].id() && leptons[i].idlevel()>=SS::IDveto && leptons[j].idlevel()>=SS::IDveto){
+                    bin = 20;
+                }else if(leptons[i].charge()==leptons[j].charge() && leptons[i].idlevel() == SS::IDtight && leptons[j].idlevel() == SS::IDtight){
+                    if(nbjets==2){
+                        if(njets<=5){bin=0;}
+                        if(njets==6){bin=1;}
+                        if(njets==7){bin=2;}
+                        if(njets>=8){bin=3;}
+                    }else if(nbjets==3){
+                        if(njets==5){bin=4;}
+                        if(njets==6){bin=5;}
+                        if(njets==7){bin=6;}
+                        if(njets>=8){bin=7;}
+                    }else if(nbjets>=4){
+                        if(njets>=5){bin=8;}
+                    }
+                }
+
+                // if(z_mass_info.first>0){
+                //     // cout << "found dilep z event" << endl;
+                //     isZ = 1;
+                // }
+
+                // if(z_mass_info.first>=0){
+                //     if(z_mass_info.first==1){
+                //         if(leptons[i].absid()==11){
+                //             if(leptons[i].id()==nt.Electron_pdgId()[z_mass_info.second]){isss=1;}
+                //         }else{
+                //             if(leptons[i].id()==nt.Muon_pdgId()[z_mass_info.second]){isss=1;}
+                //         }
+                //     }else if(z_mass_info.first==2){
+                //         if(leptons[j].absid()==11){
+                //             if(leptons[j].id()==nt.Electron_pdgId()[z_mass_info.second]){isss=1;}
+                //         }else{
+                //             if(leptons[j].id()==nt.Muon_pdgId()[z_mass_info.second]){isss=1;}
+                //         }
+                //     }
+                //     if(!isss) {isZ = 1;}
+                // }
+            }
+            // if (isZ) {nZCandidates++;}
+        }
+        // std::pair<int,int> z_mass_info = makesResonance(leptons, lep1, lep2, 91,15);
+        // cout << z_mass_info.first << "\t" << z_mass_info.second << endl;
+        // if(z_mass_info.first>=0){bin=16;}
+        if(isZ && nZCandidates<=2){bin=16;}
+        else if(nZCandidates>2){bin=20;}
     }
     // if (hyp_type==4){
-    else if (ntight==2){
+    else if (ntight==2 && tightLeptons[0].charge()==tightLeptons[1].charge()){
+
         //dilepton
         if(nbjets==2){
             if(njets<=5){bin=0;}
@@ -123,6 +278,18 @@ int getRegion(int hyp_type, int njets, int nbjets, int nleptons, int ntight, Lep
         }
     // }else if(hyp_type==2){
     }else if(ntight>2){
+        for(int k = 0; k < ntight; k++){
+            // cout << "inside >2l for loop" <<endl;
+            int nSSLeps = 1;
+            for(int l = 0; l < ntight; l++){
+                if (l==k) continue;
+                // cout << k << "\t" << l << "\t" << nSSLeps << endl;
+                // cout << tightLeptons[k].charge() << "\t" << tightLeptons[l].charge()<< endl;
+                if(tightLeptons[k].charge()==tightLeptons[l].charge()){nSSLeps++;}
+                // cout << nSSLeps << endl;
+            }
+            if(nSSLeps>2){return 20;}
+        }
         if(nbjets==2){
             if(njets==5){bin=9;}
             if(njets==6){bin=10;}
@@ -641,7 +808,8 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
     hists.loadHists(chainTitleCh);
 
     //nEvents in chain
-    unsigned int nEventsTotal = 0;
+    // unsigned int nEventsTotal = 0;
+    int nEventsTotal = 0;
     //unsigned int nEventsChain = chain->GetEntries();
     // std::cout << "Events in Chain: " << nEventsChain << endl;
 
@@ -760,27 +928,28 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
                 // cout << "lumi: " << lumi << endl;
             }else {weight = 1.;}
             // cout << weight << endl;
-            // double evtWeight = weight; 
+            double evtWeight = weight; 
             if (debugPrints){std::cout << "passed eventWeight for event " << nt.event() << endl;}
             if (debugPrints){std::cout << "elapsed time since start: " << duration_cast<seconds>(high_resolution_clock::now() - start).count() << endl;}
             if (debugPrints){std::cout << "elapsed time since b SF start: " << duration_cast<seconds>(high_resolution_clock::now() - startBOpening).count() << endl;}
 
             // cutflow counter
             int cutflow_counter=1;
-            hists.fill1d("cutflow","br",chainTitleCh,1,weight);
+            // hists.fill1d("cutflow","br",chainTitleCh,1,weight);
             cutflow_counter++;
 
-            // if(nt.event()!=4259865){continue;}
+            // if(nt.event()!=5116386){continue;}
 
             //MET CUT
-            if(!(
-                (nt.event()==3360750)||
-                (nt.event()==3360829)||
-                (nt.event()==3360831)
-                )){continue;}
-            cout << "***************************************************************" << endl;
-            cout << nt.event() << endl;
-            cout << "***************************************************************" << endl;
+            // if(!(
+            //     (nt.event()==3360165)||
+            //     (nt.event()==3360224)||
+            //     (nt.event()==3360672)||
+            //     (nt.event()==3362539)
+            //     )){continue;}
+            // cout << "***************************************************************" << endl;
+            // cout << nt.event() << endl;
+            // cout << "***************************************************************" << endl;
             // cout << "event passed skim: " << nt.event() << endl;
             //jes central
             float met = 0.;
@@ -806,7 +975,7 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
 
 
             // debug
-            // if(met < 50.){continue;}
+            if(met < 50.){continue;}
 
             // if (met > 50.){continue;}
 
@@ -815,7 +984,7 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
             // if (nt.MET_T1_pt_jesTotalUp() < 50.){continue;}
             //jes down
             // if (nt.MET_T1_pt_jesTotalDown() < 50.){continue;}
-            hists.fill1d("cutflow","br",chainTitleCh,2,weight);
+            // hists.fill1d("cutflow","br",chainTitleCh,2,weight);
             if (debugPrints){std::cout << "passed MET cut for event " << nt.event() << ": " << met << endl;}
             if (debugPrints){std::cout << "elapsed time since start: " << duration_cast<seconds>(high_resolution_clock::now() - start).count() << endl;}
             if (debugPrints){std::cout << "elapsed time since b SF start: " << duration_cast<seconds>(high_resolution_clock::now() - startBOpening).count() << endl;}
@@ -829,19 +998,71 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
             // Leptons loose_leptons = getLooseLeptons_ttHid();
             unsigned int nleps_tight = tight_leptons.size();
             unsigned int nleps_loose = loose_leptons.size();
+            unsigned int neles_tight = 0;
+            unsigned int nmus_tight = 0;
+            for(auto lep:tight_leptons){
+                if(lep.absid()==11){neles_tight++;}
+                if(lep.absid()==13){nmus_tight++;}
+            }
+
+            //debug
+            if((neles_tight!=1&&nmus_tight!=1)){continue;}
+
 
             unsigned int nleps_veto = 0;
+            Leptons veto_leptons;
             for(auto lep:leptons){
                 if(lep.idlevel() == SS::IDveto || lep.idlevel() == SS::IDfakable || lep.idlevel() == SS::IDtight){
                     nleps_veto++;
+                    veto_leptons.push_back(lep);
                 }
             }
+
 
             // for (auto lep : leptons){cout << "lepton " << lep.id() << " " << lep.eta() << " " << lep.pt() << endl;}
             // for (auto lep : tight_leptons){cout << "tight lepton " << lep.id() << " " << lep.eta() << " " << lep.pt() << endl;}
             // for (auto lep : loose_leptons){cout << "loose lepton " << lep.id() << " " << lep.eta() << " " << lep.pt() << endl;}
+            // for (auto lep : veto_leptons){cout << "veto lepton " << lep.id() << " " << lep.eta() << " " << lep.pt() << endl;}
             // cout << "*************" << endl;
             
+
+            // if(leptons.size()>4){continue;}
+
+            Leptons ttCandidate;
+            int npos = 0;
+            int nneg = 0;
+            for(auto lep : tight_leptons){
+                if(lep.charge()>0) npos++;
+                if(lep.charge()<0) nneg++;
+            }
+            if(npos>0 && npos%2==0){
+                for(auto lep : tight_leptons){
+                    if(lep.charge()>0){
+                        ttCandidate.push_back(lep);
+                    }
+                }
+            }else if(nneg>0 && nneg%2==0){
+                for(auto lep : tight_leptons){
+                    if(lep.charge()<0){
+                        ttCandidate.push_back(lep);
+                    }
+                }
+            }
+
+            bool has3SSleps = 0;
+            for (uint i = 0; i < nleps_tight; i++){
+                int nSSLeptons = 1;
+                for (uint j = 0; j < nleps_tight; j++){
+                    if(i==j) continue;
+                    // cout << tight_leptons[i].charge() << "\t" << tight_leptons[j].charge() << endl;
+                    if(tight_leptons[i].charge()==tight_leptons[j].charge()){nSSLeptons++;}
+                    // cout << "i: " << i << "\tj: " << j << "\tnSSL: " << nSSLeptons << endl;
+                }
+                if(nSSLeptons>2){has3SSleps=1;}
+            }
+            // cout << has3SSleps << endl;
+            if(has3SSleps==1) continue;
+
             if (!quiet) {
                 std::cout << "Event has " << nleps_loose << " loose leptons and "
                           << nleps_tight << " tight leptons." << std::endl;
@@ -855,7 +1076,10 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
             if (debugPrints){std::cout << "elapsed time since b SF start: " << duration_cast<seconds>(high_resolution_clock::now() - startBOpening).count() << endl;}
 
 
-            // for (auto lepton: leptons)       {cout << "\tLep "   << lepton.id() << ", " << lepton.pt() << ", " << lepton.eta() << ", " << lepton.miniIso() << ", " << lepton.is_loose() << ", " << lepton.is_tight() << ", " << lepton.genPartFlav() << ", " << lepton.isFake() << ", " << lepton.isFlip() << ", " << lepton.mcid() << ", " << lepton.id() << ", " << lepton.idlevel() << std::endl;}
+            // for (auto lepton: leptons)       {
+            //     cout << "\tLep "   << lepton.id() << ", " << lepton.pt() << ", " << lepton.eta() << ", " << lepton.miniIso() << ", " << lepton.is_loose() << ", " << lepton.is_tight() << ", " << lepton.genPartFlav() << ", " << lepton.isFake() << ", " << lepton.isFlip() << ", " << lepton.mcid() << ", " << lepton.id() << ", " << lepton.idlevel() << std::endl;
+            //     // dumpLeptonProperties(lepton);
+            // }
             // for (auto lepton: loose_leptons) {cout << "\tLoose " << lepton.id() << ", " << lepton.pt() << ", " << lepton.eta() << ", " << lepton.miniIso() << ", " << lepton.is_loose() << ", " << lepton.is_tight() << ", " << lepton.genPartFlav() << ", " << lepton.isFake() << ", " << lepton.isFlip() << ", " << lepton.mcid() << ", " << lepton.id() << std::endl;}
             // for (auto lepton: tight_leptons) {cout << "\tTight " << lepton.id() << ", " << lepton.pt() << ", " << lepton.eta() << ", " << lepton.miniIso() << ", " << lepton.is_loose() << ", " << lepton.is_tight() << ", " << lepton.genPartFlav() << ", " << lepton.isFake() << ", " << lepton.isFlip() << ", " << lepton.mcid() << ", " << lepton.id() << std::endl;}
             // if(nleps_tight!=2){continue;}
@@ -880,7 +1104,7 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
             
             if(!quiet) {std::cout << "best_hyp_type: " << best_hyp_type << std::endl;}
             Leptons best_hyp = best_hyp_info.second;
-            if(best_hyp_type==5 && makesResonance(leptons, best_hyp[0], best_hyp[1], 91, 15).first>0){best_hyp_type=1;}
+            if(best_hyp_type==5 && makesResonance(leptons, best_hyp[0], best_hyp[1], 91.2, 15).first>0){best_hyp_type=1;}
             if (!quiet) std::cout << "best hyp type: " << best_hyp_type << std::endl;
 
             sort(best_hyp.begin(),best_hyp.end(),lepsort); // sort hyp leptons by pt (may already be done in getBestHyp)
@@ -889,11 +1113,13 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
             Lepton third_lep;
             if (best_hyp.size()>2) third_lep = best_hyp[2];
 
-            if (!quiet) {
+            if (debugPrints) {
                 std::cout << "best hyp type: " << best_hyp_type << "; lepton ids: " << leading_lep.id()
                                                                 << ", " << trailing_lep.id()
                                                                 << "; lepton idxs: " << leading_lep.idx()
-                                                                << ", " << trailing_lep.idx() << std::endl;
+                                                                << ", " << trailing_lep.idx()
+                                                                << "; lepton pts: " << leading_lep.pt()
+                                                                << ", " << trailing_lep.pt() << std::endl;
             }
             if (debugPrints){std::cout << "got best hyp for event " << nt.event() << " : " << best_hyp_type << endl;}
             if (debugPrints){std::cout << "elapsed time since start: " << duration_cast<seconds>(high_resolution_clock::now() - start).count() << endl;}
@@ -1096,6 +1322,7 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
             //central
             // std:pair<Jets, Jets> good_jets_and_bjets = getJets(best_hyp,40.,25.,0);
             std:pair<Jets, Jets> good_jets_and_bjets = getJets(loose_leptons,40.,25.,0);
+            // std:pair<Jets, Jets> good_jets_and_bjets = getJets(leptons,40.,25.,0);
             // std:pair<Jets, Jets> good_jets_and_bjets = getJets(best_hyp,25.,25.,0);
             // //jes down
             // std:pair<Jets, Jets> good_jets_and_bjets = getJets(best_hyp,30.,25.,-1);
@@ -1104,21 +1331,134 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
             // std:pair<Jets, Jets> good_jets_and_bjets = getJets(best_hyp);
             Jets good_jets = good_jets_and_bjets.first;
             Jets good_bjets = good_jets_and_bjets.second;
-            int njets = good_jets.size();
-            int nbjets = good_bjets.size();
+            int njets = 0;
+            int nbjets = 0;
+            njets = good_jets.size();
+            nbjets = good_bjets.size();
+            // for(auto jet: good_bjets){
+            //     if(jet.pt() < 40.){njets++;}
+            // }
             sort(good_jets.begin(),good_jets.end(),jetptsort);
             sort(good_bjets.begin(),good_bjets.end(),jetptsort);
             float ht = 0.;
             for (auto jet : good_jets){
+                // cout << ht << "\t" << jet.pt() << "\t" << jet.idx();
                 ht = ht + jet.pt();
+                // cout << "\t" << ht << endl;
             }
 
-            // for (auto jet : good_jets) {cout << "\tJ " << jet.pt() << ", " << jet.eta() << "," << jet.isBtag() << std::endl;}
-            // if((tight_leptons.size()==2&&tight_leptons[0].id()*tight_leptons[1].id()>0)){cout << "**** dilep SS" << endl;}
-            // else if(tight_leptons.size()>2){cout << "**** ml SS" << endl;}
-            // else{cout << "!SS" << endl;}
+            // cout << good_jets.size() << endl;
+            // cout << njets << endl;
+            // for (int k = 0; k<good_jets.size(); k++){
+            //     cout << good_jets[k].pt() << endl;
+            // }
+            // for (auto jet : good_jets) {cout << "\tJ " << jet.pt() << ", " << jet.eta() << ", " << jet.isBtag() << ", " << jet.bdisc() << std::endl;}
+            // for (auto jet : good_bjets) {
+            //     if(jet.pt()<40.){cout << "\tJ " << jet.pt() << ", " << jet.eta() << ", " << jet.isBtag() << ", " << jet.bdisc() << std::endl;}
+            // }
 
-            if (print_debug_file) {
+            //HT CUT
+            //debug
+            // if (ht < 300.){continue;}
+
+            // if(njets<1){continue;}
+
+            //BJET CUT
+            // if(nbjets<1){continue;}
+
+            //SS cut
+            //debug
+            // if((tight_leptons.size()==2&&tight_leptons[0].charge()*tight_leptons[1].charge()<0)){continue;}
+            // else if(tight_leptons.size()<2){continue;}
+
+
+            if (debugPrints){std::cout << "loaded jets for event " << nt.event() << endl;}
+            if (debugPrints){std::cout << "elapsed time since start: " << duration_cast<seconds>(high_resolution_clock::now() - start).count() << endl;}
+            if (debugPrints){std::cout << "elapsed time since b SF start: " << duration_cast<seconds>(high_resolution_clock::now() - startBOpening).count() << endl;}
+
+
+
+            if (nt.year()==2016){
+                if(!(
+                     nt.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL()||
+                     nt.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ()||
+                     nt.HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ()||
+                     nt.HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL()||
+
+                     nt.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL()||
+                     nt.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ()||
+                     nt.HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ()//||
+                     // nt.HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ()||
+                     // nt.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ()
+                     )) {continue;}
+            }else if (nt.year()==2017){
+                if(!(/*nt.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8()||
+                     nt.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8()||*/
+                     nt.HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ()||
+                     /*nt.HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL()||*/
+                     nt.HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL()||
+                     nt.HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ()||
+                     nt.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ())) {continue;}
+            }else if (nt.year()==2018){
+                if(!(nt.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8()||
+                     nt.HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL()||
+                     nt.HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ()||
+                     nt.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ())) {continue;}
+            }
+            if ((category == 1 && chainTitle=="fakes_mc")||
+                (category == 2 && chainTitle=="flips_mc")||
+                (category == 3 && chainTitle=="rares")||
+                (category == 4 && chainTitle!="fakes_mc" && chainTitle!="flips_mc" && chainTitle!="rares" && !(isSignal||isData))||
+                (isSignal||isData)){
+                // hists.fill1d("cutflow","br",chainTitleCh,5,weight);
+            }
+            if (debugPrints){std::cout << "passed triggers for event " << nt.event() << endl;}
+            if (debugPrints){std::cout << "elapsed time since start: " << duration_cast<seconds>(high_resolution_clock::now() - start).count() << endl;}
+            if (debugPrints){std::cout << "elapsed time since b SF start: " << duration_cast<seconds>(high_resolution_clock::now() - startBOpening).count() << endl;}
+
+            if (nt.year()==2016){
+                if(!(nt.Flag_globalSuperTightHalo2016Filter()&&
+                     nt.Flag_HBHENoiseFilter()&&
+                     nt.Flag_HBHENoiseIsoFilter()&&
+                     nt.Flag_EcalDeadCellTriggerPrimitiveFilter()&&
+                     nt.Flag_BadPFMuonFilter()&&
+                     nt.Flag_goodVertices())) {continue;}
+            }else if (nt.year()==2017){
+                if(!(nt.Flag_globalSuperTightHalo2016Filter()&&
+                     nt.Flag_HBHENoiseFilter()&&
+                     nt.Flag_HBHENoiseIsoFilter()&&
+                     nt.Flag_EcalDeadCellTriggerPrimitiveFilter()&&
+                     nt.Flag_BadPFMuonFilter()&&
+                     nt.Flag_goodVertices()&&
+                     nt.Flag_ecalBadCalibFilter())) {continue;}
+            }else if (nt.year()==2018){
+                if(!(nt.Flag_globalSuperTightHalo2016Filter()&&
+                     nt.Flag_HBHENoiseFilter()&&
+                     nt.Flag_HBHENoiseIsoFilter()&&
+                     nt.Flag_EcalDeadCellTriggerPrimitiveFilter()&&
+                     nt.Flag_BadPFMuonFilter()&&
+                     nt.Flag_goodVertices()&&
+                     nt.Flag_ecalBadCalibFilter())) {continue;}
+                     // nt.Flag_ecalBadCalibFilterV2())) {continue;}
+            }
+
+            if ((category == 1 && chainTitle=="fakes_mc")||
+                (category == 2 && chainTitle=="flips_mc")||
+                (category == 3 && chainTitle=="rares")||
+                (category == 4 && chainTitle!="fakes_mc" && chainTitle!="flips_mc" && chainTitle!="rares" && !(isSignal||isData))||
+                (isSignal||isData)){
+                // hists.fill1d("cutflow","br",chainTitleCh,6,weight);
+            }
+            if (debugPrints){std::cout << "passed filters for event " << nt.event() << endl;}
+            if (debugPrints){std::cout << "elapsed time since start: " << duration_cast<seconds>(high_resolution_clock::now() - start).count() << endl;}
+            if (debugPrints){std::cout << "elapsed time since b SF start: " << duration_cast<seconds>(high_resolution_clock::now() - startBOpening).count() << endl;}
+
+
+
+            // cout << "region: " << getRegion(best_hyp_type,njets,nbjets,leptons.size(),tight_leptons.size(),leptons,tight_leptons,ttCandidate) << endl;
+
+
+            if (print_debug_file && getRegion(best_hyp_type,njets,nbjets,leptons.size(),tight_leptons.size(),leptons,tight_leptons,ttCandidate)!=20) {
                 // debug_file << nt.run() << "," << nt.luminosityBlock() << "," << nt.event() << ",";
                 // debug_file << " ," << loose_leptons.size() << "," << tight_leptons.size();
                 // debug_file << std::endl;
@@ -1128,33 +1468,20 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
                 debug_file << met << "," << metphi << "," << nleps_veto << "," << loose_leptons.size() << "," << tight_leptons.size() << ",";
                 // debug_file << met << "," << loose_leptons.size() << "," << tight_leptons.size() << ",";
                 // if(best_hyp_type==4||best_hyp_type==2){debug_file << "SS,";}
-                if((tight_leptons.size()==2&&tight_leptons[0].id()*tight_leptons[1].id()>0)){debug_file << "SS,";}
+                if((tight_leptons.size()==2&&tight_leptons[0].charge()*tight_leptons[1].charge()>0)){debug_file << "SS,";}
                 else if(tight_leptons.size()>2){debug_file << "SS,";}
                 else{debug_file << "!SS,";}
                 debug_file << ht << "," << njets << "," << nbjets << ",";
-                if(getRegion(best_hyp_type,njets,nbjets,best_hyp.size(),tight_leptons.size(),best_hyp)==0){debug_file << "W";}
-                else if(getRegion(best_hyp_type,njets,nbjets,best_hyp.size(),tight_leptons.size(),best_hyp)==16){debug_file << "Z";}
-                else if(getRegion(best_hyp_type,njets,nbjets,best_hyp.size(),tight_leptons.size(),best_hyp)==20){debug_file << "N/A";}
-                else{debug_file << getRegion(best_hyp_type,njets,nbjets,best_hyp.size(),tight_leptons.size(),best_hyp);}
+                if(getRegion(best_hyp_type,njets,nbjets,leptons.size(),tight_leptons.size(),leptons,tight_leptons,ttCandidate)==0){debug_file << "W";}
+                else if(getRegion(best_hyp_type,njets,nbjets,leptons.size(),tight_leptons.size(),leptons,tight_leptons,ttCandidate)==16){debug_file << "Z";}
+                else if(getRegion(best_hyp_type,njets,nbjets,leptons.size(),tight_leptons.size(),leptons,tight_leptons,ttCandidate)==20){debug_file << "N/A";}
+                else{debug_file << getRegion(best_hyp_type,njets,nbjets,leptons.size(),tight_leptons.size(),leptons,tight_leptons,ttCandidate);}
                 debug_file << std::endl;
-                // for (auto lepton: leptons) {debug_file << "\tL " << lepton.id() << "," << lepton.pt() << ", " << lepton.eta() << "," << lepton.is_loose() << ", " << lepton.is_tight() << std::endl;}
+                // for (auto lepton: leptons) {debug_file << "\tL " << lepton.id() << "," << lepton.pt() << ", " << lepton.eta() << "," << (lepton.idlevel()==SS::IDveto||lepton.idlevel()==SS::IDfakable||lepton.idlevel()==SS::IDtight) << ", " << lepton.is_loose() << ", " << lepton.is_tight() << ", " << lepton.ptrel() << ", " << lepton.ptratio() << std::endl;}
                 // for (auto jet : good_jets) {debug_file << "\tJ " << jet.pt() << ", " << jet.eta() << "," << jet.isBtag() << std::endl;}
     
                 continue;
             }
-
-
-            //HT CUT
-            //debug
-            // if (ht < 300.){continue;}
-
-            //BJET CUT
-            // if(nbjets<1){continue;}
-
-            if (debugPrints){std::cout << "loaded jets for event " << nt.event() << endl;}
-            if (debugPrints){std::cout << "elapsed time since start: " << duration_cast<seconds>(high_resolution_clock::now() - start).count() << endl;}
-            if (debugPrints){std::cout << "elapsed time since b SF start: " << duration_cast<seconds>(high_resolution_clock::now() - startBOpening).count() << endl;}
-
 
 
 
@@ -1246,7 +1573,7 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
                 (category == 4 && chainTitle!="fakes_mc" && chainTitle!="flips_mc" && chainTitle!="rares" && !(isSignal||isData))||
                 // (category == 3 && chainTitle!="fakes_mc" && chainTitle!="flips_mc" && chainTitle!="rares" && !(isSignal||isData))||
                 (isSignal||isData)){
-                    hists.fill1d("cutflow","br",chainTitleCh,3,weight);
+                    // hists.fill1d("cutflow","br",chainTitleCh,3,weight);
             }
 
             //else {hists.fill1d("cutflow","br",chainTitleCh,2,weight);}
@@ -1270,7 +1597,7 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
                 (category == 4 && chainTitle!="fakes_mc" && chainTitle!="flips_mc" && chainTitle!="rares" && !(isSignal||isData))||
                 // (category == 3 && chainTitle!="fakes_mc" && chainTitle!="flips_mc" && chainTitle!="rares" && !(isSignal||isData))||
                 (isSignal||isData)){
-                hists.fill1d("cutflow","br",chainTitleCh,4,weight);
+                // hists.fill1d("cutflow","br",chainTitleCh,4,weight);
             }
 
             if (!quiet) {
@@ -1279,78 +1606,78 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
 
             if (doFakes && !isData && doTruthFake && !is_fake) continue;
             if (doFlips && !isData && doTruthFlip && !is_flip) continue;
-            if (nt.year()==2016){
-                if(!(
-                     nt.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL()||
-                     nt.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ()||
-                     nt.HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ()||
-                     nt.HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL()||
+            // if (nt.year()==2016){
+            //     if(!(
+            //          nt.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL()||
+            //          nt.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ()||
+            //          nt.HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ()||
+            //          nt.HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL()||
 
-                     nt.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL()||
-                     nt.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ()||
-                     nt.HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ()//||
-                     // nt.HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ()||
-                     // nt.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ()
-                     )) {continue;}
-            }else if (nt.year()==2017){
-                if(!(nt.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL()||
-                     nt.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8()||
-                     nt.HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL()||
-                     nt.HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ()||
-                     nt.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ())) {continue;}
-            }else if (nt.year()==2018){
-                if(!(nt.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8()||
-                     nt.HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL()||
-                     nt.HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ()||
-                     nt.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ())) {continue;}
-            }
-            if ((category == 1 && chainTitle=="fakes_mc")||
-                (category == 2 && chainTitle=="flips_mc")||
-                (category == 3 && chainTitle=="rares")||
-                (category == 4 && chainTitle!="fakes_mc" && chainTitle!="flips_mc" && chainTitle!="rares" && !(isSignal||isData))||
-                (isSignal||isData)){
-                hists.fill1d("cutflow","br",chainTitleCh,5,weight);
-            }
-            if (debugPrints){std::cout << "passed triggers for event " << nt.event() << endl;}
-            if (debugPrints){std::cout << "elapsed time since start: " << duration_cast<seconds>(high_resolution_clock::now() - start).count() << endl;}
-            if (debugPrints){std::cout << "elapsed time since b SF start: " << duration_cast<seconds>(high_resolution_clock::now() - startBOpening).count() << endl;}
+            //          nt.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL()||
+            //          nt.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ()||
+            //          nt.HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ()//||
+            //          // nt.HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ()||
+            //          // nt.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ()
+            //          )) {continue;}
+            // }else if (nt.year()==2017){
+            //     if(!(nt.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL()||
+            //          nt.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8()||
+            //          nt.HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL()||
+            //          nt.HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ()||
+            //          nt.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ())) {continue;}
+            // }else if (nt.year()==2018){
+            //     if(!(nt.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8()||
+            //          nt.HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL()||
+            //          nt.HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ()||
+            //          nt.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ())) {continue;}
+            // }
+            // if ((category == 1 && chainTitle=="fakes_mc")||
+            //     (category == 2 && chainTitle=="flips_mc")||
+            //     (category == 3 && chainTitle=="rares")||
+            //     (category == 4 && chainTitle!="fakes_mc" && chainTitle!="flips_mc" && chainTitle!="rares" && !(isSignal||isData))||
+            //     (isSignal||isData)){
+            //     hists.fill1d("cutflow","br",chainTitleCh,5,weight);
+            // }
+            // if (debugPrints){std::cout << "passed triggers for event " << nt.event() << endl;}
+            // if (debugPrints){std::cout << "elapsed time since start: " << duration_cast<seconds>(high_resolution_clock::now() - start).count() << endl;}
+            // if (debugPrints){std::cout << "elapsed time since b SF start: " << duration_cast<seconds>(high_resolution_clock::now() - startBOpening).count() << endl;}
 
-            if (nt.year()==2016){
-                if(!(nt.Flag_globalSuperTightHalo2016Filter()&&
-                     nt.Flag_HBHENoiseFilter()&&
-                     nt.Flag_HBHENoiseIsoFilter()&&
-                     nt.Flag_EcalDeadCellTriggerPrimitiveFilter()&&
-                     nt.Flag_BadPFMuonFilter()&&
-                     nt.Flag_goodVertices())) {continue;}
-            }else if (nt.year()==2017){
-                if(!(nt.Flag_globalSuperTightHalo2016Filter()&&
-                     nt.Flag_HBHENoiseFilter()&&
-                     nt.Flag_HBHENoiseIsoFilter()&&
-                     nt.Flag_EcalDeadCellTriggerPrimitiveFilter()&&
-                     nt.Flag_BadPFMuonFilter()&&
-                     nt.Flag_goodVertices()&&
-                     nt.Flag_ecalBadCalibFilter())) {continue;}
-            }else if (nt.year()==2018){
-                if(!(nt.Flag_globalSuperTightHalo2016Filter()&&
-                     nt.Flag_HBHENoiseFilter()&&
-                     nt.Flag_HBHENoiseIsoFilter()&&
-                     nt.Flag_EcalDeadCellTriggerPrimitiveFilter()&&
-                     nt.Flag_BadPFMuonFilter()&&
-                     nt.Flag_goodVertices()&&
-                     nt.Flag_ecalBadCalibFilter())) {continue;}
-                     // nt.Flag_ecalBadCalibFilterV2())) {continue;}
-            }
+            // if (nt.year()==2016){
+            //     if(!(nt.Flag_globalSuperTightHalo2016Filter()&&
+            //          nt.Flag_HBHENoiseFilter()&&
+            //          nt.Flag_HBHENoiseIsoFilter()&&
+            //          nt.Flag_EcalDeadCellTriggerPrimitiveFilter()&&
+            //          nt.Flag_BadPFMuonFilter()&&
+            //          nt.Flag_goodVertices())) {continue;}
+            // }else if (nt.year()==2017){
+            //     if(!(nt.Flag_globalSuperTightHalo2016Filter()&&
+            //          nt.Flag_HBHENoiseFilter()&&
+            //          nt.Flag_HBHENoiseIsoFilter()&&
+            //          nt.Flag_EcalDeadCellTriggerPrimitiveFilter()&&
+            //          nt.Flag_BadPFMuonFilter()&&
+            //          nt.Flag_goodVertices()&&
+            //          nt.Flag_ecalBadCalibFilter())) {continue;}
+            // }else if (nt.year()==2018){
+            //     if(!(nt.Flag_globalSuperTightHalo2016Filter()&&
+            //          nt.Flag_HBHENoiseFilter()&&
+            //          nt.Flag_HBHENoiseIsoFilter()&&
+            //          nt.Flag_EcalDeadCellTriggerPrimitiveFilter()&&
+            //          nt.Flag_BadPFMuonFilter()&&
+            //          nt.Flag_goodVertices()&&
+            //          nt.Flag_ecalBadCalibFilter())) {continue;}
+            //          // nt.Flag_ecalBadCalibFilterV2())) {continue;}
+            // }
 
-            if ((category == 1 && chainTitle=="fakes_mc")||
-                (category == 2 && chainTitle=="flips_mc")||
-                (category == 3 && chainTitle=="rares")||
-                (category == 4 && chainTitle!="fakes_mc" && chainTitle!="flips_mc" && chainTitle!="rares" && !(isSignal||isData))||
-                (isSignal||isData)){
-                hists.fill1d("cutflow","br",chainTitleCh,6,weight);
-            }
-            if (debugPrints){std::cout << "passed filters for event " << nt.event() << endl;}
-            if (debugPrints){std::cout << "elapsed time since start: " << duration_cast<seconds>(high_resolution_clock::now() - start).count() << endl;}
-            if (debugPrints){std::cout << "elapsed time since b SF start: " << duration_cast<seconds>(high_resolution_clock::now() - startBOpening).count() << endl;}
+            // if ((category == 1 && chainTitle=="fakes_mc")||
+            //     (category == 2 && chainTitle=="flips_mc")||
+            //     (category == 3 && chainTitle=="rares")||
+            //     (category == 4 && chainTitle!="fakes_mc" && chainTitle!="flips_mc" && chainTitle!="rares" && !(isSignal||isData))||
+            //     (isSignal||isData)){
+            //     hists.fill1d("cutflow","br",chainTitleCh,6,weight);
+            // }
+            // if (debugPrints){std::cout << "passed filters for event " << nt.event() << endl;}
+            // if (debugPrints){std::cout << "elapsed time since start: " << duration_cast<seconds>(high_resolution_clock::now() - start).count() << endl;}
+            // if (debugPrints){std::cout << "elapsed time since b SF start: " << duration_cast<seconds>(high_resolution_clock::now() - startBOpening).count() << endl;}
 
 
 
@@ -2004,6 +2331,8 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
             /*if ((chainTitle == "top"||chainTitle =="dy") && (best_hyp_type==4) ){
                 hists.fill(chainTitleCh,best_hyp_type,best_hyp,good_jets,good_bjets,met,isVR_SR_fake,isVR_CR_fake,isVR_SR_flip,isVR_CR_flip,isEE,isEM,isME,isMM,isEFake,isMFake,isEE_flip,isEM_flip,weight,crWeight,doVariations,variationalWeights);
             }*/
+
+            // cout << nt.event() << "\t" << category << "\t" << isSignal << "\t" << isData << endl;
 
             if (category == 1 && !(isSignal||isData)){
                 hists.fill("fakes_mc",best_hyp_type,best_hyp,good_jets,good_bjets,met,metphi,isVR_SR_fake,isVR_CR_fake,isVR_SR_flip,isVR_CR_flip,isEE,isEM,isME,isMM,isEFake,isMFake,isEE_flip,isEM_flip,hct_pred_value,hut_pred_value,weight,crWeight,doVariations,variationalWeights);
