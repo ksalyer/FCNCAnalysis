@@ -195,7 +195,7 @@ std::pair<float,float> correctMET(int year, TString fname, bool isData, int npv,
     int numPVs = min(npv, 100);
     if (year == 2016) return y2016::getCorrectMET(fname.Data(), isData, numPVs, met, phi);
     else if (year == 2017) return y2017::getCorrectMET(fname.Data(), isData, numPVs, met, phi);
-    // else if (year == 2018) return y2018::getCorrectMET(fname, isData, numPVs, met, phi);
+    else if (year == 2018) return y2018::getCorrectMET(fname.Data(), isData, numPVs, met, phi);
     else {throw std::runtime_error("ControlTree::INIT: Error - invalid year");}
 }
 

@@ -372,22 +372,26 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
     STOP_REQUESTED=false;
 */
 
-    int year = -1;
-    TString extra("");
-    if (options.Contains("Data2016")) {
-        year = 2016;
-        if (options.Contains("94x")) extra = "_94x";
+    string year("");
+    if (options.Contains("Data2016APV")) {
+        year = "2016_APV";
+    } else if (options.Contains("Data2016NonAPV")) {
+        year = "2016_NonAPV";
     } else if (options.Contains("Data2017")) {
-        year = 2017;
+        year = "2017";
     } else if (options.Contains("Data2018")) {
-        year = 2018;
+        year = "2018";
     } else {
         cout << "Need to specify year!\n";
         assert(year > 0);
     }
 
-    int year_for_output = year;
-    float lumi = getLumi(year);
+    float lumi = 0.;
+    if(year.find("2016") != std::string::npos){
+        lumi = getLumi(2016);
+    }else{
+        lumi = getLumi(stoi(year));
+    }
     //cout << lumi << endl;
 
     float min_pt_fake = minPtFake18 ? 18. : -1;
@@ -605,7 +609,11 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
         {2016, "goldenJson_2016rereco_36p46ifb.txt"},
         {2017, "Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1_snt.txt"},
         {2018, "goldenJson_2018_final_59p76ifb_snt.txt"} };
-    set_goodrun_file( (goodrun_path+goodrun_file[year]).c_str() );
+    if(year.find("2016") != std::string::npos){
+        set_goodrun_file( (goodrun_path+goodrun_file[2016]).c_str() );
+    }else{
+        set_goodrun_file( (goodrun_path+goodrun_file[stoi(year)]).c_str() );
+    }
 
     //open trig eff SF file here so it's only opened once
     TFile* f_trigEff = new TFile("/home/users/ksalyer/FCNCAnalysis/misc/year_run2/triggeffcymapsRA5_Run2_ALL.root");
@@ -801,7 +809,7 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
 
 
 
-    auto outFileName = outputdir+"/"+chainTitle+"_"+TString(std::to_string(year).c_str())+"_hists.root";
+    auto outFileName = outputdir+"/"+chainTitle+"_"+TString(year)+"_hists.root";
     std::cout << "Will write histograms to " << outFileName.Data() << std::endl;
 
     HistContainer hists;
@@ -829,7 +837,7 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
     // //BDT constructor
     // BDT hct_booster("./helpers/BDT/BDT_HCT.xml", "./helpers/BDT/BDT_HCT_bins.csv");
     // BDT hut_booster("./helpers/BDT/BDT_HUT.xml", "./helpers/BDT/BDT_HUT_bins.csv");
-    std::string tmp_yr_str = std::to_string(year);
+    // std::string tmp_yr_str = std::to_string(year);
     // BDTBabyMaker bdt_fakes_baby;
     // BDTBabyMaker bdt_flips_baby;
     // BDTBabyMaker bdt_MC_baby;
@@ -882,8 +890,10 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
         TTree *tree = (TTree*)file->Get("Events");
         nt.Init(tree);
 
-        TH2D *hCounters = (TH2D*)file->Get("Counters");
-        sum_wgts+= hCounters->GetBinContent(0,0);
+        if(!isData){
+            TH2D *hCounters = (TH2D*)file->Get("Counters");
+            sum_wgts+= hCounters->GetBinContent(0,0);
+        }
         if (debugPrints){std::cout << "working on file " << filename << endl;}
         if (debugPrints){std::cout << "elapsed time since start: " << duration_cast<seconds>(high_resolution_clock::now() - start).count() << endl;}
         if (debugPrints){std::cout << "elapsed time since b SF start: " << duration_cast<seconds>(high_resolution_clock::now() - startBOpening).count() << endl;}
@@ -966,7 +976,7 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
             float uncorr_metphi = nt.MET_phi();
 
             // met = correctMET(year,filename,isData,nt.PV_npvsGood(),uncorr_met,metphi);
-            std::pair<float,float> correctedMET = correctMET(year,filename,isData,nt.PV_npvs(),uncorr_met,uncorr_metphi);
+            std::pair<float,float> correctedMET = correctMET(stoi(year.substr(0,4)),filename,isData,nt.PV_npvs(),uncorr_met,uncorr_metphi);
             met = correctedMET.first;
             metphi = correctedMET.second;
             // cout << met << endl;
@@ -1321,7 +1331,8 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
             //getJets parameters: Leptons &leps,float min_jet_pt=40., float min_bjet_pt=25.
             //central
             // std:pair<Jets, Jets> good_jets_and_bjets = getJets(best_hyp,40.,25.,0);
-            std:pair<Jets, Jets> good_jets_and_bjets = getJets(loose_leptons,40.,25.,0);
+            //std:pair<Jets, Jets> good_jets_and_bjets = getJets(loose_leptons,40.,25.,0);
+            std:pair<Jets, Jets> good_jets_and_bjets = getJets(loose_leptons,25.,25.,0);
             // std:pair<Jets, Jets> good_jets_and_bjets = getJets(leptons,40.,25.,0);
             // std:pair<Jets, Jets> good_jets_and_bjets = getJets(best_hyp,25.,25.,0);
             // //jes down
@@ -1340,6 +1351,10 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
             // }
             sort(good_jets.begin(),good_jets.end(),jetptsort);
             sort(good_bjets.begin(),good_bjets.end(),jetptsort);
+
+            //debug
+            if(!(njets>=2&&nbjets>=1)){continue;}
+
             float ht = 0.;
             for (auto jet : good_jets){
                 // cout << ht << "\t" << jet.pt() << "\t" << jet.idx();
@@ -1381,27 +1396,25 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
             if (nt.year()==2016){
                 if(!(
                      nt.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL()||
-                     nt.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ()||
-                     nt.HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ()||
-                     nt.HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL()||
+                     // nt.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ()||
+                     // nt.HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ()||
+                     nt.HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL()/*||
 
                      nt.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL()||
                      nt.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ()||
-                     nt.HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ()//||
-                     // nt.HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ()||
-                     // nt.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ()
+                     nt.HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ()*/
                      )) {continue;}
             }else if (nt.year()==2017){
                 if(!(/*nt.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8()||
                      nt.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8()||*/
                      nt.HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ()||
                      /*nt.HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL()||*/
-                     nt.HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL()||
+                     // nt.HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL()||
                      nt.HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ()||
                      nt.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ())) {continue;}
             }else if (nt.year()==2018){
-                if(!(nt.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8()||
-                     nt.HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL()||
+                if(!(/*nt.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8()||
+                     nt.HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL()||*/
                      nt.HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ()||
                      nt.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ())) {continue;}
             }
@@ -1753,7 +1766,7 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
                 float fakeWeight = 1;
                 for (auto lep : best_hyp){
                     if (lep.idlevel()==SS::IDLevel::IDtight) continue;
-                    float fakeRateValue = fakeRate(year, lep.id(), lep.conecorrpt(), lep.eta(), isData);
+                    float fakeRateValue = fakeRate(stoi(year.substr(0,4)), lep.id(), lep.conecorrpt(), lep.eta(), isData);
                     fakeWeight = fakeWeight * (fakeRateValue/(1-fakeRateValue));
                 }
                 crWeight = weight * fakeWeight;

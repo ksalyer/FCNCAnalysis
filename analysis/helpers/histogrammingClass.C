@@ -354,10 +354,13 @@ void HistContainer::addHist4d(std::string quantity, std::string sample, int nbin
 }
 
 void HistContainer::loadHists(std::string sample) {
-    addHist1d("njets",sample,5,-0.5,4.5);
-    addHist1d("nbjets",sample,3,-0.5,2.5);
+    addHist1d("njets",sample,8,-0.5,7.5);
+    addHist1d("nbjets",sample,6,-0.5,5.5);
     addHist1d("nleps",sample,5,-0.5,4.5);
     addHist1d("neles",sample,5,-0.5,4.5);
+    addHist1d("pt_ll",sample,100,0,200);
+    addHist1d("min_mjb",sample,100,0,200);
+    addHist1d("min_mbb",sample,100,0,200);
     // // addHist1d("nmus",sample,5,-0.5,4.5);
     // // // addHist1d("nvtxs",sample,100,0,100);
     // // // addHist1d("elpt_emu",sample,100,0,200);
@@ -752,6 +755,27 @@ void HistContainer::fill(std::string sample, int best_hyp_type, Leptons &leps, J
         fill1d("neles",name,sample,neles,fillWeight);
         fill1d("nmus",name,sample,nmus,fillWeight);
         fill1d("nvtxs",name,sample,nt.PV_npvsGood(),fillWeight);
+        fill1d("pt_ll",name,sample,(leps[0].p4()+leps[1].p4()).pt(),fillWeight);
+        if(nbjets==1){
+            float min_mass_jb = 1000.;
+            for (auto jet: jets ){
+                if((bjets[0].p4()+jet.p4()).M()<min_mass_jb){
+                    min_mass_jb = (bjets[0].p4()+jet.p4()).M();
+                }
+            }
+            fill1d("min_mjb",name,sample,min_mass_jb,fillWeight);
+        }else{
+            float min_mass_bb = 1000.;
+            for (auto bjet1: bjets ){
+                for (auto bjet2: bjets){
+                    if (bjet1.idx()==bjet2.idx()) continue;
+                    if ((bjet1.p4()+bjet2.p4()).M()<min_mass_bb){
+                        min_mass_bb = (bjet1.p4()+bjet2.p4()).M();
+                    }
+                }
+            }
+            fill1d("min_mbb",name,sample,min_mass_bb,fillWeight);
+        }
         if(hct_pred!=-999){
             fill1d("bdtScore_hct",name,sample,hct_pred,fillWeight);
             fill1d("bdtScore_evenBins_hct",name,sample,hct_pred,fillWeight);
