@@ -7,6 +7,8 @@ plt.style.use(hep.style.CMS)
 
 from yahist import Hist1D, Hist2D
 
+print("imported libraries")
+
 # f_in = uproot3.open('/home/users/ksalyer/FranksFCNC/ana/analysis/outputs/v6BabyPlots/fakes_mc_2018_hists.root')
 
 # path = '/home/users/ksalyer/FranksFCNC/ana/analysis/outputs/oct27_bdtScore/'
@@ -15,9 +17,11 @@ from yahist import Hist1D, Hist2D
 # path = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/jan18_ctagBDT_normedCTagging/'
 # path = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr16_ctag_backgroundestimates/'
 # path = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr19_ctag_mlonZ/'
-path = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/may3_ctag_data_mc/'
+# path = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/may3_ctag_data_mc/'
+path = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/nov14_kinematics/'
 # path = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/mar2_ctag_all/'
 # path_fakes   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr27_fakeEst/"
+# path_flips   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr16_ctag_backgroundestimates/"
 # path = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/mar3_ctag_mlonz/'
 # path = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/mar3_ctag_fakeVal/'
 # path = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/mar3_ctag_rarebackgrounds/'
@@ -64,55 +68,61 @@ variables = [   ["bdtScore_hct", 1, r'$HCT\ BDT\ score$'],
                 # ["tjcscore", 1, r'$sublead jet c score$'],
                 # ["thirdjcscore", 1, r'$subsublead jet c score$'],
                 
-                #jets
+                # #jets
                 ["njets", 1, r'$N_{jets}$'],
                 ["nbjets", 1, r'$N_{b-jets}$'],
                 ["fwjpt", 1, r'$Most Forward Jet p_{T}$'],
                 
                 ["ljpt", 5, r'$p_T\ (lead.\ jet)\ (GeV)$'],
                 ["ljbscore", 1, r'$lead.\ jet\ b-score$'],
+                ["ljcscore", 1, r'$lead.\ jet\ c-score$'],
                 
                 ["tjpt", 5, r'$p_T\ (sublead.\ jet)\ (GeV)$'],
                 ["tjbscore", 1, r'$sublead.\ jet\ b-score$'],
+                ["tjcscore", 1, r'$sublead.\ jet\ c-score$'],
                 
                 ["thirdjpt", 5, r'$p_T\ (subsublead.\ jet)\ (GeV)$'],
                 ["thirdjbscore", 1, r'$subsublead.\ jet\ b-score$'],
+                ["thirdjcscore", 1, r'$subsublead.\ jet\ c-score$'],
 
                 ["lbpt", 5, r'$p_T\ (lead.\ b-tag)\ (GeV)$'],
                 ["lbscore", 5, r'$lead.\ b-tag\ b-score$'],
 
-                # Leptons
-                ["neles", 1, r'$N_{electrons}$'],
-                ["mll", 1, r'$m_{lead.\ lep,\ sublead.\ lep}$'],
+                # # Leptons
+                # ["neles", 1, r'$N_{electrons}$'],
+                # ["mll", 1, r'$m_{lead.\ lep,\ sublead.\ lep}$'],
 
-                ["llpt", 5, r'$p_T\ (lead.\ lep.)\ (GeV)$'],
-                # ["lleta", 1, r'$\eta\ (lead.\ lep.)$'],
-                ["lldxy", 4, r'$dxy\ (lead.\ lep.)$'],
-                ["lldz", 4, r'$dz\ (lead.\ lep.)$'],
+                # ["llpt", 5, r'$p_T\ (lead.\ lep.)\ (GeV)$'],
+                # # ["lleta", 1, r'$\eta\ (lead.\ lep.)$'],
+                # ["lldxy", 4, r'$dxy\ (lead.\ lep.)$'],
+                # ["lldz", 4, r'$dz\ (lead.\ lep.)$'],
 
-                ["ltpt", 5, r'$p_T\ (sublead.\ lep.)\ (GeV)$'],
-                # ["lteta", 4, r'$\eta\ (sublead.\ lep.)$'],
-                ["ltdxy", 4, r'$dxy\ (sublead.\ lep.)$'],
-                ["ltdz", 4, r'$dz\ (sublead.\ lep.)$'],
+                # ["ltpt", 5, r'$p_T\ (sublead.\ lep.)\ (GeV)$'],
+                # # ["lteta", 4, r'$\eta\ (sublead.\ lep.)$'],
+                # ["ltdxy", 4, r'$dxy\ (sublead.\ lep.)$'],
+                # ["ltdz", 4, r'$dz\ (sublead.\ lep.)$'],
 
-                ["thirdlpt", 5, r'$p_T\ (subsublead.\ lep.)\ (GeV)$'],
-                # ["thirdleta", 4, r'$\eta\ (subsublead.\ lep.)$'],
-                ["thirdldxy", 4, r'$dxy\ (subsublead.\ lep.)$'],
-                ["thirdldz", 4, r'$dz\ (subsublead.\ lep.)$'],
+                # ["thirdlpt", 5, r'$p_T\ (subsublead.\ lep.)\ (GeV)$'],
+                # # ["thirdleta", 4, r'$\eta\ (subsublead.\ lep.)$'],
+                # ["thirdldxy", 4, r'$dxy\ (subsublead.\ lep.)$'],
+                # ["thirdldz", 4, r'$dz\ (subsublead.\ lep.)$'],
 
-                #Event kinematics
-                ['met', 1, r'$MET\ (GeV)$'],
-                ['ht', 1, r'$HT\ (GeV)$'],
-                ['mt_ll_met', 1, r'$m_{T}\ (lead.\ lep,\ MET)\ (GeV)$'],
-                ['mt_tl_met', 1, r'$m_{T}\ (sublead.\ lep,\ MET)\ (GeV)$'],
-                ['mt_thirdl_met', 1, r'$m_{T}\ (subsublead.\ lep,\ MET)\ (GeV)$'],
+                # #Event kinematics
+                # ['met', 1, r'$MET\ (GeV)$'],
+                # ['ht', 1, r'$HT\ (GeV)$'],
+                # ['mt_ll_met', 1, r'$m_{T}\ (lead.\ lep,\ MET)\ (GeV)$'],
+                # ['mt_tl_met', 1, r'$m_{T}\ (sublead.\ lep,\ MET)\ (GeV)$'],
+                # ['mt_thirdl_met', 1, r'$m_{T}\ (subsublead.\ lep,\ MET)\ (GeV)$'],
             ]
 
 # years = ["2016","2017","2018"]
 years = ["2016","2017","2018","run2"]
 # years = ["2016"]
 blind = False
+tuh_comb_systErrors = [615.1665225299698,229.3378743634561,153.31590751454064,126.47454331366515,100.17508163074972,79.31856523263973,67.05120343632984,60.816837025990196,49.39348645304188,46.25768369645387,42.89094924729396,37.2297690783601,32.89658317458452,30.219155596438103,29.681932828956924,21.638294897172862,18.516797909000495,21.5654660490506,13.503299002646026,9.133055915397582]
+tch_comb_systErrors = [739.0621035530985,268.5313370780789,160.65522682872142,125.52094395482109,99.14397338941974,75.67594705360425,66.09131976443076,68.37490871728964,59.15939710900227,50.70247241999761,41.69109205390391,38.09224179360711,40.12931895985449,35.77924880520944,25.797026606756546,26.99706729048354,21.217829833856236,19.708382395139896,17.068916125023403,12.995443217544002]
 
+print("got all initialization settings")
 
 def get_yahist(hist, rebin=1, overflow=True, newEdges=[]):
     counts = hist.allvalues
@@ -162,6 +172,20 @@ def add_uncertainty(hist, ax, ratio=False, offset1 = 0.0, offset2 = 0.0):
         up = hist.counts+error
     ax.fill_between(x=hist.edges, y1=np.r_[down, down[-1]], y2=np.r_[up, up[-1]], **opts)
 
+def change_uncertainty(hist, ax, newErrors, ratio=False):
+    opts = {'step': 'post', 'label': 'Uncertainty', 'hatch': '///',
+                    'facecolor': 'none', 'edgecolor': (0, 0, 0, .5), 'linewidth': 0, 'zorder':10.}
+    # error = np.sqrt(hist.errors**2+(offset1*hist.counts)**2+(offset2*hist.counts)**2)
+    
+    if ratio:
+        down = np.nan_to_num(np.ones(len(hist.counts)) - newErrors/hist.counts)
+        up = np.nan_to_num(np.ones(len(hist.counts)) + newErrors/hist.counts)
+    else:
+        down = hist.counts-newErrors
+        up = hist.counts+newErrors
+    ax.fill_between(x=hist.edges, y1=np.r_[down, down[-1]], y2=np.r_[up, up[-1]], **opts)
+
+print("defined functions")
 
 for y in years:
     for r in regions:
@@ -190,6 +214,8 @@ for y in years:
                     # 'mlsf': uproot3.open(path_fakes+'data_'+y+'_hists.root')['h_mlsfest_'+v+'_data'],
                     # 'df': uproot3.open(path_fakes+'data_'+y+'_hists.root')['h_dfest_'+v+'_data'],
                     # 'mldf': uproot3.open(path_fakes+'data_'+y+'_hists.root')['h_mldfest_'+v+'_data'],
+                    # 'sfpp':  uproot3.open(path+'rares_'+y+'_hists.root')['h_sfppest_'+v+'_rares'],
+                    # 'mlsfppp':  uproot3.open(path+'rares_'+y+'_hists.root')['h_mlsfpppest_'+v+'_rares'],
                     # 'flips': uproot3.open(path+'data_'+y+'_hists.root')['h_osest_'+v+'_data'],
                     'rares': uproot3.open(path+'rares_'+y+'_hists.root')['h_'+r+'_'+v+'_rares'],
                     'data': uproot3.open(path+'data_'+y+'_hists.root')['h_'+r+'_'+v+'_data'],
@@ -240,7 +266,10 @@ for y in years:
             # my_histos['data_est'] *= flipDataSF
             # my_histos['dy'] *= flipDataSF
             # if r == 'br':
-            #     my_histos['fakes'] = my_histos['sf']+my_histos['mlsf']-my_histos['df']-my_histos['df']-my_histos['mldf']-my_histos['mldf']
+            #     my_histos['fakes'] = my_histos['sf']+my_histos['mlsf']-my_histos['df']-my_histos['df']-my_histos['mldf']-my_histos['mldf']-my_histos['sfpp']-my_histos['mlsfppp']
+            #     print('fakes', my_histos['fakes'].counts)
+            #     print('flips', my_histos['flips'].counts)
+            #     print('rares', my_histos['rares'].counts)
 
 
             if r == 'os':
@@ -483,6 +512,7 @@ for y in years:
 
 
             rax.set_ylim(0,1.99)
+            # rax.set_ylim(0.7,1.3)
             #rax.set_xlabel(r'$p_T\ (lead.\ lep.)\ (GeV)$')
             rax.set_xlabel(vname)
             # if not (blind and (r == 'ss' or r == 'ml' or r == 'br')): rax.set_ylabel(r'Data/Sim.')
@@ -497,13 +527,23 @@ for y in years:
             # ax.set_yscale('linear')
             # ax.set_ylim(0.1, 10000)
 
-            add_uncertainty(total_mc, rax, ratio=True)#, offset1=0.3)
-            add_uncertainty(total_mc, ax)#, offset1=0.3)
+            # add_uncertainty(total_mc, rax, ratio=True)#, offset1=0.3)
+            # add_uncertainty(total_mc, ax)#, offset1=0.3)
+            if y == "run2" and "hut" in v:
+                change_uncertainty(total_mc, rax, tuh_comb_systErrors, ratio=True)#, offset1=0.3)
+                change_uncertainty(total_mc, ax, tuh_comb_systErrors)#, offset1=0.3)
+            elif y == "run2" and "hct" in v:
+                change_uncertainty(total_mc, rax, tch_comb_systErrors, ratio=True)#, offset1=0.3)
+                change_uncertainty(total_mc, ax, tch_comb_systErrors)#, offset1=0.3)
+            else:
+                add_uncertainty(total_mc, rax, ratio=True)#, offset1=0.3)
+                add_uncertainty(total_mc, ax)#, offset1=0.3)
+
 
             ax.legend(ncol=2)
 
             #plt.show()
 
-            fig.savefig('/home/users/ksalyer/public_html/FCNC_plots/'+histName+'.png')
-            fig.savefig('/home/users/ksalyer/public_html/FCNC_plots/'+histName+'.pdf')
+            fig.savefig('/home/users/ksalyer/public_html/FCNC_plots/nov14_kinematics/'+histName+'.png')
+            fig.savefig('/home/users/ksalyer/public_html/FCNC_plots/nov14_kinematics/'+histName+'.pdf')
             #plt.close()

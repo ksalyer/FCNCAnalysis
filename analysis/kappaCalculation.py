@@ -10,10 +10,12 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("--limits", help = "path to json with limits", type=str, default="./kappaCalculationOutputs/cutBasedLimits.json")
 parser.add_argument("--tag", help = "tag", type=str, default = "test")
-parser.add_argument("--blinding", help = "blind boolean, blind =1", type=bool, default = 1)
+parser.add_argument("--blinding", help = "blind boolean, blind =1", type=str, default = "True")
 args = parser.parse_args()
 
-isBlind = args.blinding
+isBlind = 1
+if args.blinding.lower() == "false": isBlind = 0
+print("isblind: ", isBlind)
 
 ROOT.gStyle.SetPaintTextFormat("4.3f")
 

@@ -46,7 +46,8 @@ def calculate_total_unc_asymmetric(yield_tt, yield_st, verbose=False):
 
     print "The fractional uncertainty in yield due to tt (st) is %.3f/%.3f (%.3f/%.3f)" % (unc_up_tt, unc_down_tt, unc_up_st, unc_down_st)
 
-    return unc_up, unc_down
+    # return unc_up, unc_down
+    return unc_up_tt, unc_down_tt, unc_up_st, unc_down_st
 
 def getObjFromFile(fname, hname):
     f = r.TFile(fname)
@@ -80,11 +81,17 @@ for y in years:
         st_hist = getObjFromFile(st_file, "h_br_bdtScore_{0}{1}_signal_{2}".format(altSig,y,c))
         it = 0
         for b in range(1,tt_hist.GetNbinsX()+1):
-            up,down = calculate_total_unc_asymmetric(tt_hist.GetBinContent(b),st_hist.GetBinContent(b))
-            print(up,down)
+            # up,down = calculate_total_unc_asymmetric(tt_hist.GetBinContent(b),st_hist.GetBinContent(b))
+            # print(up,down)
 
-            uncertainties[y][c][srbins[it]] = {"up":1+up,"down":1-down}
+            tt_up,tt_down,st_up,st_down = calculate_total_unc_asymmetric(tt_hist.GetBinContent(b),st_hist.GetBinContent(b))
+
+            # uncertainties[y][c][srbins[it]] = {"up":1+up,"down":1-down}
+            
+            uncertainties[y][c][srbins[it]] = {}
+            uncertainties[y][c][srbins[it]]["tt"] = {"up":tt_up,"down":tt_down}
+            uncertainties[y][c][srbins[it]]["st"] = {"up":st_up,"down":st_down}
             it+=1
 
-with open("./datacards/bdt_fcnc_individual_uncs.json", "w") as f_out:
+with open("./datacards/bdt_fcnc_individual_uncs_separated.json", "w") as f_out:
     json.dump(uncertainties, f_out, sort_keys=True, indent=4)

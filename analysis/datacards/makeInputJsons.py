@@ -7,6 +7,12 @@ import pandas as pd
 import os
 import json
 
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument("--tag", help = "tag", type=str, default = "test")
+parser.add_argument("--combination", help = "combination boolean, combination =0", type=bool, default = 0)
+args = parser.parse_args()
+
 inputCCHistos = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/nov16_ccYields/"
 # inputCCHistos = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/dec13_lep30_cc/"
 # inputBDTHistos = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/nov18_bdtYields/"
@@ -40,6 +46,7 @@ with open('./ccPDFScale.json') as ccScale_json: ccScale = json.load(ccScale_json
 with open('./bdtPDFScale.json') as bdtScale_json: bdtScale = json.load(bdtScale_json)
 with open('./cc_fcnc_individual_uncs.json') as ccTh_json: ccThDict = json.load(ccTh_json)
 with open('./bdt_fcnc_individual_uncs.json') as bdtTh_json: bdtThDict = json.load(bdtTh_json)
+# with open('./bdt_fcnc_individual_uncs_separated.json') as bdtTh_json: bdtThDict = json.load(bdtTh_json)
 with open('./cc_rare_individual_uncs.json') as ccThRare_json: ccThRareDict = json.load(ccThRare_json)
 with open('./bdt_rare_individual_uncs.json') as bdtThRare_json: bdtThRareDict = json.load(bdtThRare_json)
 
@@ -76,7 +83,7 @@ ddProcs = ["fakes_mc","flips_mc"]
 
 # systSources = ["LepSF","PU","Trigger","cferr1","cferr2","hf","hfstats1","hfstats2","lf","lfstats1","lfstats2"]
 cc_systSources = ["LepSF","PU","Trigger"]
-bdt_systSources = ["EleSF","MuSF","EleSFsys","MuSFsys","PU","Trigger"]
+bdt_systSources = ["EleSF","MuSF","EleSFsys","MuSFsys","PU","Trigger","lumi_uncorr","lumi_corr_161718","lumi_corr_1718"]
 # btagsystSources = ["cferr1","cferr2","hf","hfstats1","hfstats2","lf","lfstats1","lfstats2"]
 bdt_ctagsystSources = [ "ctag_stat",
                     # "ctag_EleIDSF",
@@ -180,36 +187,62 @@ for y in years:
             for t in bdt_systSources:
                 # print(t)
                 bdtMCsyst[str(y)][s][p][t] = {}
-                if "MuSF" in t: bdtSystFileName = inputBDTLeptonSyst + p + "_" + str(y) + "_hists.root"
-                elif "EleSF" in t: bdtSystFileName = inputBDTLeptonSyst + p + "_" + str(y) + "_hists.root"
-                else: bdtSystFileName = inputBDTSyst + p + "_" + str(y) + "_hists.root"
-                # print(bdtSystFileName)
-                # print("h_"+t+"_up_bdtScore_syst_"+ altSig + "_" +p)
-                if "SFsys" in t:
-                    for r in bdtSRs:
-                        bdtMCsyst[str(y)][s][p][t][r] = {}
-                        bdtMCsyst[str(y)][s][p][t][r]["up"] = 1.02
-                        bdtMCsyst[str(y)][s][p][t][r]["down"] = 0.98
-                        iterator += 1
+                if "lumi" in t:
+                    if "uncorr" in t:
+                        unc = 0
+                        if y==2016: unc = 0.01
+                        if y==2017: unc = 0.02
+                        if y==2018: unc = 0.015
+                        for r in bdtSRs:
+                            bdtMCsyst[str(y)][s][p][t][r] = {}
+                            bdtMCsyst[str(y)][s][p][t][r]["up"] = 1+unc
+                            bdtMCsyst[str(y)][s][p][t][r]["down"] = 1-unc
+                            iterator += 1
+                    else:
+                        unc = 0
+                        if "16" in t:
+                            if y==2016: unc = 0.006
+                            if y==2017: unc = 0.009
+                            if y==2018: unc = 0.02
+                        else:
+                            if y==2017: unc = 0.006
+                            if y==2018: unc = 0.002
+                        for r in bdtSRs:
+                            bdtMCsyst[str(y)][s][p][t][r] = {}
+                            bdtMCsyst[str(y)][s][p][t][r]["up"] = 1+unc
+                            bdtMCsyst[str(y)][s][p][t][r]["down"] = 1-unc
+                            iterator += 1
                 else:
-                    upHist = getObjFromFile(bdtSystFileName, "h_"+t+"_up_bdtScore_syst_"+ altSig + "_" +p)
-                    downHist = getObjFromFile(bdtSystFileName, "h_"+t+"_down_bdtScore_syst_"+ altSig + "_" +p)
+                    if "MuSF" in t: bdtSystFileName = inputBDTLeptonSyst + p + "_" + str(y) + "_hists.root"
+                    elif "EleSF" in t: bdtSystFileName = inputBDTLeptonSyst + p + "_" + str(y) + "_hists.root"
+                    else: bdtSystFileName = inputBDTSyst + p + "_" + str(y) + "_hists.root"
                     # print(bdtSystFileName)
                     # print("h_"+t+"_up_bdtScore_syst_"+ altSig + "_" +p)
-                    # print("h_"+t+"_down_bdtScore_syst_"+ altSig + "_" +p)
+                    if "SFsys" in t:
+                        for r in bdtSRs:
+                            bdtMCsyst[str(y)][s][p][t][r] = {}
+                            bdtMCsyst[str(y)][s][p][t][r]["up"] = 1.02
+                            bdtMCsyst[str(y)][s][p][t][r]["down"] = 0.98
+                            iterator += 1
+                    else:
+                        upHist = getObjFromFile(bdtSystFileName, "h_"+t+"_up_bdtScore_syst_"+ altSig + "_" +p)
+                        downHist = getObjFromFile(bdtSystFileName, "h_"+t+"_down_bdtScore_syst_"+ altSig + "_" +p)
+                        # print(bdtSystFileName)
+                        # print("h_"+t+"_up_bdtScore_syst_"+ altSig + "_" +p)
+                        # print("h_"+t+"_down_bdtScore_syst_"+ altSig + "_" +p)
 
-                    upHist.Divide(centralHist)
-                    downHist.Divide(centralHist)
-                    iterator = 1
-                    for r in bdtSRs:
-                        bdtMCsyst[str(y)][s][p][t][r] = {}
-                        # if "MuSF" in t or "EleSF" in t:
-                        #     bdtMCsyst[str(y)][s][p][t][r]["up"] = upHist.GetBinContent(iterator)+0.05
-                        #     bdtMCsyst[str(y)][s][p][t][r]["down"] = downHist.GetBinContent(iterator)-0.05
-                        # else:
-                        bdtMCsyst[str(y)][s][p][t][r]["up"] = upHist.GetBinContent(iterator)
-                        bdtMCsyst[str(y)][s][p][t][r]["down"] = downHist.GetBinContent(iterator)
-                        iterator += 1
+                        upHist.Divide(centralHist)
+                        downHist.Divide(centralHist)
+                        iterator = 1
+                        for r in bdtSRs:
+                            bdtMCsyst[str(y)][s][p][t][r] = {}
+                            # if "MuSF" in t or "EleSF" in t:
+                            #     bdtMCsyst[str(y)][s][p][t][r]["up"] = upHist.GetBinContent(iterator)+0.05
+                            #     bdtMCsyst[str(y)][s][p][t][r]["down"] = downHist.GetBinContent(iterator)-0.05
+                            # else:
+                            bdtMCsyst[str(y)][s][p][t][r]["up"] = upHist.GetBinContent(iterator)
+                            bdtMCsyst[str(y)][s][p][t][r]["down"] = downHist.GetBinContent(iterator)
+                            iterator += 1
             ##CTagging
             for t in bdt_ctagsystSources:
                 # print(t)
@@ -285,19 +318,45 @@ for y in years:
                     bdtMCsyst[str(y)][s][p][p[:3]+"ScShp"][r]["down"] = bdtScale[s][p]["bin_"+str(iterator-1)]["scale"]
                     bdtMCsyst[str(y)][s][p][p[:3]+"ScShp"][r]["up"] = 2-bdtScale[s][p]["bin_"+str(iterator-1)]["scale"]
                 iterator += 1
-            bdtMCsyst[str(y)][s][p][p[:3]+"Th"] = {}
-            for r in bdtSRs:
-                if ("rare" in p):
-                    fill_up = bdtThRareDict[str(y)][s][r]["up"]
-                    fill_down = bdtThRareDict[str(y)][s][r]["down"]
-                else:
-                    fill_up = bdtThDict[str(y)][s][r]["up"]
-                    fill_down = bdtThDict[str(y)][s][r]["down"]
-                bdtMCsyst[str(y)][s][p][p[:3]+"Th"][r] = {}
-                bdtMCsyst[str(y)][s][p][p[:3]+"Th"][r]["up"] = fill_up
-                bdtMCsyst[str(y)][s][p][p[:3]+"Th"][r]["down"] = fill_down
 
-with open("./bdtMCsyst.json", "w") as f_out: json.dump(bdtMCsyst, f_out, indent=4)
+            if args.combination:
+                if "rare" in p:
+                    bdtMCsyst[str(y)][s][p][p[:3]+"Th"] = {}
+                else:
+                    bdtMCsyst[str(y)][s][p][p[:3]+"Th_tt"] = {}
+                    bdtMCsyst[str(y)][s][p][p[:3]+"Th_st"] = {}
+                for r in bdtSRs:
+                    if ("rare" in p):
+                        fill_up = bdtThRareDict[str(y)][s][r]["up"]
+                        fill_down = bdtThRareDict[str(y)][s][r]["down"]
+                        bdtMCsyst[str(y)][s][p][p[:3]+"Th"][r] = {}
+                        bdtMCsyst[str(y)][s][p][p[:3]+"Th"][r]["up"] = fill_up
+                        bdtMCsyst[str(y)][s][p][p[:3]+"Th"][r]["down"] = fill_down
+                    else:
+                        fill_up_tt = bdtThDict[str(y)][s][r]["tt"]["up"]
+                        fill_down_tt = bdtThDict[str(y)][s][r]["tt"]["down"]
+                        fill_up_st = bdtThDict[str(y)][s][r]["st"]["up"]
+                        fill_down_st = bdtThDict[str(y)][s][r]["st"]["down"]
+                        bdtMCsyst[str(y)][s][p][p[:3]+"Th_tt"][r] = {}
+                        bdtMCsyst[str(y)][s][p][p[:3]+"Th_tt"][r]["up"] = fill_up_tt
+                        bdtMCsyst[str(y)][s][p][p[:3]+"Th_tt"][r]["down"] = fill_down_tt
+                        bdtMCsyst[str(y)][s][p][p[:3]+"Th_st"][r] = {}
+                        bdtMCsyst[str(y)][s][p][p[:3]+"Th_st"][r]["up"] = fill_up_st
+                        bdtMCsyst[str(y)][s][p][p[:3]+"Th_st"][r]["down"] = fill_down_st
+            else:
+                bdtMCsyst[str(y)][s][p][p[:3]+"Th"] = {}
+                for r in bdtSRs:
+                    if ("rare" in p):
+                        fill_up = bdtThRareDict[str(y)][s][r]["up"]
+                        fill_down = bdtThRareDict[str(y)][s][r]["down"]
+                    else:
+                        fill_up = bdtThDict[str(y)][s][r]["up"]
+                        fill_down = bdtThDict[str(y)][s][r]["down"]
+                    bdtMCsyst[str(y)][s][p][p[:3]+"Th"][r] = {}
+                    bdtMCsyst[str(y)][s][p][p[:3]+"Th"][r]["up"] = fill_up
+                    bdtMCsyst[str(y)][s][p][p[:3]+"Th"][r]["down"] = fill_down
+
+with open("./bdtMCsyst"+args.tag+".json", "w") as f_out: json.dump(bdtMCsyst, f_out, indent=4)
 print("finished BDT MC syst")
 
 

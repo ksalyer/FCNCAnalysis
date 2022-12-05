@@ -7,6 +7,21 @@ import pandas as pd
 import os
 import json
 
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument("--tag", help = "tag", type=str, default = "test")
+parser.add_argument("--blind", help = "blind boolean, blind =1", type=str, default = "1")
+parser.add_argument("--combination", help = "combination boolean, combination =0", type=str, default = "0")
+args = parser.parse_args()
+
+blindBool = 1
+if args.blind!="1": blindBool = 0
+
+combinationBool = 0
+if args.combination!="0": combinationBool=1
+
+print("blind? : ", blindBool)
+print("combination? : ", combinationBool)
 
 ## HARDCODED PATHS TO INPUT HISTOS ##
 inFileCC    = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/nov16_ccYields/"
@@ -281,7 +296,11 @@ with open('./ccSRbins.json') as ccbins_json: ccSRDict = json.load(ccbins_json)
 with open('./ccCRStats.json') as ccCR_json: ccCRDict = json.load(ccCR_json)
 with open('./bdtCRStats.json') as bdtCR_json: bdtCRDict = json.load(bdtCR_json)
 with open('./ccMCsyst.json') as ccSyst_json: ccSystDict = json.load(ccSyst_json)
-with open('./bdtMCsyst.json') as bdtSyst_json: bdtSystDict = json.load(bdtSyst_json)
+bdtSystDict = {}
+if combinationBool:
+    with open('./bdtMCsystcombination.json') as bdtSyst_json: bdtSystDict = json.load(bdtSyst_json)
+else:
+    with open('./bdtMCsyst.json') as bdtSyst_json: bdtSystDict = json.load(bdtSyst_json)
 
 ##lists to loop
 numCCSRs = 21
@@ -300,24 +319,51 @@ corrSyst = ["rarTh","sigTh","rarScShp","sigScShp","pdfShp","PU","lf","hf","cferr
 # bdtSystCorr = ["rarTh","sigTh","rarScShp","sigScShp","pdfShp","PU","lf","hf","cferr1","cferr2"]
 # bdtSystUncorr = ["jes","Trigger","LepSF","lfstats1","lfstats2","hfstats1","hfstats2"]
 
-bdtSystCorr = [ "rarTh","sigTh",
-                "rarScShp","sigScShp",
-                # "pdfShp_sig","pdfShp_bkg",
-                "pdfShp",
-                "PU",
-                # "ctag_LHEScaleWeightmuF",
-                # "ctag_LHEScaleWeightmuR",
-                "ctag_PSWeightFSR",
-                "ctag_PSWeightISR",
-                # "ctag_PUWeight",
-                "ctag_XSecDYJets",
-                "ctag_XSecST",
-                "ctag_XSecWJets",
-                "ctag_XSecttbar",
-                "ctag_bFrag",
-                "MuSFsys",
-                "EleSFsys",
-                ]
+if combinationBool==1:
+    bdtSystCorr = [ "rarTh",
+                    "sigTh_tt",
+                    "sigTh_st",
+                    "scShp",
+                    # "pdfShp_sig","pdfShp_bkg",
+                    "pdfShp",
+                    "PU",
+                    # "ctag_LHEScaleWeightmuF",
+                    # "ctag_LHEScaleWeightmuR",
+                    "ctag_PSWeightFSR",
+                    "ctag_PSWeightISR",
+                    # "ctag_PUWeight",
+                    "ctag_XSecDYJets",
+                    "ctag_XSecST",
+                    "ctag_XSecWJets",
+                    "ctag_XSecttbar",
+                    "ctag_bFrag",
+                    "MuSFsys",
+                    "EleSFsys",
+                    "lumi_corr_161718",
+                    "lumi_corr_1718"
+                    ]
+else:
+    bdtSystCorr = [ "rarTh","sigTh",
+                    "rarScShp","sigScShp",
+                    # "pdfShp_sig","pdfShp_bkg",
+                    "pdfShp",
+                    "PU",
+                    # "ctag_LHEScaleWeightmuF",
+                    # "ctag_LHEScaleWeightmuR",
+                    "ctag_PSWeightFSR",
+                    "ctag_PSWeightISR",
+                    # "ctag_PUWeight",
+                    "ctag_XSecDYJets",
+                    "ctag_XSecST",
+                    "ctag_XSecWJets",
+                    "ctag_XSecttbar",
+                    "ctag_bFrag",
+                    "MuSFsys",
+                    "EleSFsys",
+                    "lumi_corr_161718",
+                    "lumi_corr_1718"
+                    ]
+
 bdtSystUncorr = [   "jes",
                     "Trigger",
                     # "LepSF",
@@ -331,6 +377,7 @@ bdtSystUncorr = [   "jes",
                     "ctag_jer",
                     # "ctag_jesTotal",
                     #"ctag_ValuesSystOnly"
+                    "lumi_uncorr"
                     ]
                     
 # bdtSystCorr = [ "rarTh","sigTh","rarScShp","sigScShp","pdfShp","PU",
@@ -509,6 +556,7 @@ for y in years:
                 else: pname = p
                 if ("signal" in pname) or ("rare" in pname):
                     for c in bdtSystCorr:
+                        if y==2016 and c == "lumi_corr_1718":continue
                         if (("ScShp" in c) and p[:3] not in c): continue
                         if (("Th" in c) and p[:3] not in c): continue
                         rowTitle = c
@@ -555,9 +603,14 @@ for y in years:
                         #     #     while len(fill)<20: fill += " "
                         #     #     bdt_df[colTitle][rowTitle] = fill
                         # else:
-                        fill = str(round(bdtSystDict[str(y)][s][pname][c][colTitle[:-4]]["down"],6))
-                        fill += "/"
-                        fill += str(round(bdtSystDict[str(y)][s][pname][c][colTitle[:-4]]["up"],6))
+                        if combinationBool and "scShp" in c:
+                            fill = str(round(bdtSystDict[str(y)][s][pname][p[:3]+"S"+c[1:]][colTitle[:-4]]["down"],6))
+                            fill += "/"
+                            fill += str(round(bdtSystDict[str(y)][s][pname][p[:3]+"S"+c[1:]][colTitle[:-4]]["up"],6))
+                        else:
+                            fill = str(round(bdtSystDict[str(y)][s][pname][c][colTitle[:-4]]["down"],6))
+                            fill += "/"
+                            fill += str(round(bdtSystDict[str(y)][s][pname][c][colTitle[:-4]]["up"],6))
                         if (("bFrag" in c) and (y==2018)): fill = "-"
                         while len(fill)<20: fill += " "
                         bdt_df[colTitle][rowTitle] = fill
@@ -739,13 +792,15 @@ for y in years:
                 while len(fill)<20: fill += " "
                 bdt_df[colTitle][rowTitle] = fill
 
-        # # UNBLINDING
-        # bdtFileName = inFileBDT + "data_" + str(y) + "_hists.root"
-        # bdtHist = getObjFromFile(bdtFileName, "h_br_bdtScore_"+altSig+"_data")
-        # for i in range(1, numBDTSRs+1):
-        #     yld = bdtHist.GetBinContent(i)
-        #     bdtObs["bin_"+str(i-1)] = yld
+        # UNBLINDING
+        if blindBool == 0:
+            print("making unblinded cards!")
+            bdtFileName = inFileBDT + "data_" + str(y) + "_hists.root"
+            bdtHist = getObjFromFile(bdtFileName, "h_br_bdtScore_"+altSig+"_data")
+            for i in range(1, numBDTSRs+1):
+                yld = bdtHist.GetBinContent(i)
+                bdtObs["bin_"+str(i-1)] = yld
 
         ## write to output file
-        writeToTxt(cc_df, "/home/users/ksalyer/FCNCAnalysis/analysis/datacards/CC/datacard_"+s+"_"+str(y)+".txt", ccSRs, procs, ccObs, ccYld, sigTitle)
-        writeToTxt(bdt_df, "/home/users/ksalyer/FCNCAnalysis/analysis/datacards/BDT/datacard_"+s+"_"+str(y)+".txt", bdtSRs, procs, bdtObs, bdtYld, sigTitle)
+        writeToTxt(cc_df, "/home/users/ksalyer/FCNCAnalysis/analysis/datacards/CC/"+args.tag+"_datacard_"+s+"_"+str(y)+".txt", ccSRs, procs, ccObs, ccYld, sigTitle)
+        writeToTxt(bdt_df, "/home/users/ksalyer/FCNCAnalysis/analysis/datacards/BDT/"+args.tag+"_datacard_"+s+"_"+str(y)+".txt", bdtSRs, procs, bdtObs, bdtYld, sigTitle)
