@@ -31,6 +31,7 @@ inFileCC    = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/nov16_ccYields/
 inFileBDT   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/mar2_ctag_all/"
 inFileBDT_fakes   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr27_fakeEst/"
 inFileBDT_signal   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/may6_ctag_signal/"
+# inFileBDT_signal   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/jan24_halfSig/"
 # inFileCC    = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/nov16_ccYields/"
 # inFileBDT   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/dec16_ctagBDTYields/"
 # inFileBDT   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/dec13_tthYieldsBDT/"
@@ -409,8 +410,13 @@ bdtSystUncorr = [   "jes",
 # bdtSystCorr = ["rarTh","sigTh","rarScShp","sigScShp","pdfShp","PU"]
 # bdtSystUncorr = ["jes","Trigger","LepSF","hfstats1","hfstats2"]
 
+
+yldscale = 1;
 ## main loop
 for y in years:
+    if y == 2016: yldscale = 36.31/35.922
+    elif y == 2018: yldscale = 59.74/59.71
+    else: yldscale = 1
     for s in signals:
         if "tch" in s: 
             altSig = "hct"
@@ -443,11 +449,12 @@ for y in years:
 
         bdtRows = []
         # bdtRows += getSRStatRows(procs, numBDTSRs)
+        # bdtRows += getSystRows(y, corrSyst, uncorrSyst)
         bdtRows += getSRStatRows(mcProcs, numBDTSRs)
         bdtRows += getBDTCRStatRows(y, ddProcs, bdtSRs, bdtCRDict, s)
-        # bdtRows += getSystRows(y, corrSyst, uncorrSyst)
-        bdtRows += getSystRows(y, bdtSystCorr, bdtSystUncorr, numBDTSRs)
-        bdtRows += getNormRows(y, ddProcs)
+        # bdtRows += getSystRows(y, bdtSystCorr, bdtSystUncorr, numBDTSRs)
+        # bdtRows += getNormRows(y, ddProcs)
+        bdtRows += getNormRows(y, procs)
 
         bdt_df = pd.DataFrame(columns = bdtDFCols, index = bdtRows)
         bdtObs = {x:0 for x in bdtSRs}
@@ -468,12 +475,14 @@ for y in years:
                 # bdtFileName = inFileBDT + p + "_" + s + "_" + str(y) + "_hists.root"
                 bdtFileName = inFileBDT_signal + p + "_" + s + "_" + str(y) + "_hists.root"
                 bdtHist = getObjFromFile(bdtFileName, "h_br_bdtScore_"+altSig+"_"+ p + "_" + s)
+                bdtHist.Scale(yldscale)
             else:
                 ccFileName = inFileCC + p + "_" + str(y) + "_hists.root"
                 ccHist = getObjFromFile(ccFileName, "h_br_sr_"+p)
 
                 bdtFileName = inFileBDT + p + "_" + str(y) + "_hists.root"
                 bdtHist = getObjFromFile(bdtFileName, "h_br_bdtScore_"+altSig+"_"+ p)
+                bdtHist.Scale(yldscale)
 
             # print(bdtFileName)
 
@@ -542,15 +551,17 @@ for y in years:
                 fill = str(fill)
                 while len(fill) <20: fill += " "
                 bdt_df[colTitle][rowTitle] = fill
-                # rowTitle = p[:3] + "_norm" + str(y)[-2:]
-                # while len(rowTitle)<17: rowTitle+=" "
-                # rowTitle += "lnN"
-                # if "signal" in p: fill = "0.8/1.2"
-                # else: fill = "0.7/1.3"
-                # # elif "rares" in p: fill = "0.7/1.3"
-                # # else: fill = "-"
-                # while len(fill)<20: fill += " "
-                # bdt_df[colTitle][rowTitle] = fill
+
+                
+                rowTitle = p[:3] + "_norm" + str(y)[-2:]
+                while len(rowTitle)<17: rowTitle+=" "
+                rowTitle += "lnN"
+                if "signal" in p: fill = "0.8/1.2"
+                else: fill = "0.7/1.3"
+                # elif "rares" in p: fill = "0.7/1.3"
+                # else: fill = "-"
+                while len(fill)<20: fill += " "
+                bdt_df[colTitle][rowTitle] = fill
 
                 if "signal" in p: pname = p + "_" + s
                 else: pname = p
