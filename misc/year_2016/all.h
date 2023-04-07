@@ -15,7 +15,8 @@ namespace newbins {
 #include "fastsim_lepton_sf.h"
 #include "bTagSF.h"
 #include "cTagSF.h"
-float getLumi() { return 35.922; }
+// float getLumi() { return 35.922; }
+float getLumi() { return 36.31; }
 }
 
 #endif

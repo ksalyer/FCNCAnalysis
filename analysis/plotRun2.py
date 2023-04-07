@@ -94,9 +94,9 @@ for y in years:
 
         fig, (ax, rax) = plt.subplots(2,1,figsize=(10,10), gridspec_kw={"height_ratios": (3, 1), "hspace": 0.05}, sharex=True)
 
-        if y == "2016": luminosity = 35.9
+        if y == "2016": luminosity = 36.3
         if y == "2017": luminosity = 41.5
-        if y == "2018": luminosity = 59.71
+        if y == "2018": luminosity = 59.7
 
         hep.cms.label(
             "Preliminary",

@@ -45,8 +45,8 @@ doCC = 0
 
 if doBDT:
     srbins = bdtbins
-    inputdir = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/jan24_ctag_raresByProcess/"
-    # inputdir = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/dec3_raresByProcess/"
+    # inputdir = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/jan24_ctag_raresByProcess/"
+    inputdir = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/feb22_jetpt30_raresbyproc/"
 if doCC:
     srbins = ccbins
     inputdir = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/dec3_CC_raresByProcess/"
@@ -67,6 +67,11 @@ def calculate_total_unc_asymmetric(yield_wz, yield_ttw, yield_qqww, yield_ttz, y
     raw_unc_down_other = other_unc[1] * yield_other
 
     yield_all = yield_wz + yield_ttw + yield_qqww + yield_ttz + yield_other
+
+    if verbose: 
+        print(yield_wz,yield_ttw,yield_qqww,yield_ttz,yield_other,yield_all)
+        print("raw_unc_up: " + str(raw_unc_up_wz+raw_unc_up_ttw+raw_unc_up_qqww+raw_unc_up_ttz+raw_unc_up_other))
+        print("raw_unc_down: " + str(raw_unc_down_wz+raw_unc_down_ttw+raw_unc_down_qqww+raw_unc_down_ttz+raw_unc_down_other))
 
     unc_up_wz = (raw_unc_up_wz + (yield_all-yield_wz)) / (yield_all)
     unc_down_wz = (raw_unc_down_wz + (yield_all-yield_wz)) / (yield_all)
@@ -92,7 +97,8 @@ def calculate_total_unc_asymmetric(yield_wz, yield_ttw, yield_qqww, yield_ttz, y
                 (abs(1-unc_down_other)**2)
                 )**(0.5)
 
-    # print "The fractional uncertainty in yield due to tt (st) is %.3f/%.3f (%.3f/%.3f)" % (unc_up_tt, unc_down_tt, unc_up_st, unc_down_st)
+    if verbose:
+        print ("The fractional uncertainty in yield due to wz/ttw/qqww/ttz/other (down) is %.3f/%.3f/%.3f/%.3f/%.3f (%.3f/%.3f/%.3f/%.3f/%.3f)" % (unc_up_wz,unc_up_ttw,unc_up_qqww,unc_up_ttz,unc_up_other,unc_down_wz,unc_down_ttw,unc_down_qqww,unc_down_ttz,unc_down_other))
 
     return unc_up, unc_down
 
@@ -123,11 +129,11 @@ if doBDT:
             ttz_file = inputdir + ("ttz_{0}_hists.root".format(y))
             other_file = inputdir + ("nonleadingrares_{0}_hists.root".format(y))
 
-            wz_hist = getObjFromFile(wz_file, "h_br_bdtScore_{0}{1}_wz".format(altSig,y))
-            qqww_hist = getObjFromFile(qqww_file, "h_br_bdtScore_{0}{1}_qqww".format(altSig,y))
-            ttw_hist = getObjFromFile(ttw_file, "h_br_bdtScore_{0}{1}_ttw".format(altSig,y))
-            ttz_hist = getObjFromFile(ttz_file, "h_br_bdtScore_{0}{1}_ttz".format(altSig,y))
-            other_hist = getObjFromFile(other_file, "h_br_bdtScore_{0}{1}_nonleadingrares".format(altSig,y))
+            wz_hist = getObjFromFile(wz_file, "h_br_bdtScore_{0}_wz".format(altSig))
+            qqww_hist = getObjFromFile(qqww_file, "h_br_bdtScore_{0}_qqww".format(altSig))
+            ttw_hist = getObjFromFile(ttw_file, "h_br_bdtScore_{0}_ttw".format(altSig))
+            ttz_hist = getObjFromFile(ttz_file, "h_br_bdtScore_{0}_ttz".format(altSig))
+            other_hist = getObjFromFile(other_file, "h_br_bdtScore_{0}_nonleadingrares".format(altSig))
 
             it = 0
             for b in range(1,wz_hist.GetNbinsX()+1):
@@ -136,7 +142,8 @@ if doBDT:
                     ttw_hist.GetBinContent(b),
                     qqww_hist.GetBinContent(b),
                     ttz_hist.GetBinContent(b),
-                    other_hist.GetBinContent(b))
+                    other_hist.GetBinContent(b),
+                    verbose=False)
                 print(up,down)
 
                 uncertainties[y][c][srbins[it]] = {"up":1+up,"down":1-down}

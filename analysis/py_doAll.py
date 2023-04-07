@@ -411,6 +411,17 @@ if __name__ == "__main__":
                 basedirs[2016]+get_sample_path("wzz", 2016,args.tag) + ".root",
                 basedirs[2016]+get_sample_path("zzz", 2016,args.tag) + ".root",
                 ],options=options[2016]),
+            "diboson": make_obj([
+                basedirs[2016]+get_sample_path("qqww", 2016,args.tag) + ".root",
+                basedirs[2016]+get_sample_path("wz", 2016,args.tag) + ".root",
+                basedirs[2016]+get_sample_path("zz", 2016,args.tag) + ".root",
+                ],options=options[2016]),
+            "triboson": make_obj([
+                basedirs[2016]+get_sample_path("www", 2016,args.tag) + ".root",
+                basedirs[2016]+get_sample_path("wwz", 2016,args.tag) + ".root",
+                basedirs[2016]+get_sample_path("wzz", 2016,args.tag) + ".root",
+                basedirs[2016]+get_sample_path("zzz", 2016,args.tag) + ".root",
+                ],options=options[2016]),
             "ttxx": make_obj([
                 basedirs[2016]+get_sample_path("tttj", 2016,args.tag) + ".root",
                 basedirs[2016]+get_sample_path("tttw", 2016,args.tag) + ".root",
@@ -707,6 +718,17 @@ if __name__ == "__main__":
                 basedirs[2017]+get_sample_path("wzz", 2017,args.tag) + ".root",
                 basedirs[2017]+get_sample_path("zzz", 2017,args.tag) + ".root",
                 ],options=options[2017]),
+            "diboson": make_obj([
+                basedirs[2017]+get_sample_path("qqww", 2017,args.tag) + ".root",
+                basedirs[2017]+get_sample_path("wz", 2017,args.tag) + ".root",
+                basedirs[2017]+get_sample_path("zz", 2017,args.tag) + ".root",
+                ],options=options[2017]),
+            "triboson": make_obj([
+                basedirs[2017]+get_sample_path("www", 2017,args.tag) + ".root",
+                basedirs[2017]+get_sample_path("wwz", 2017,args.tag) + ".root",
+                basedirs[2017]+get_sample_path("wzz", 2017,args.tag) + ".root",
+                basedirs[2017]+get_sample_path("zzz", 2017,args.tag) + ".root",
+                ],options=options[2017]),
             },
         2018: {
             # "fakes": make_obj([
@@ -909,7 +931,7 @@ if __name__ == "__main__":
                 basedirs[2018] + get_sample_path("ttz_m1-10", 2018,args.tag) + ".root",
                 basedirs[2018] + get_sample_path("ttz_m10", 2018,args.tag) + ".root",
                 ], options=options[2018]),
-            "ttz_m1_10": make_obj(basedirs[2018] + get_sample_path("ttz_m1-10", 2018,args.tag) + ".root", options=options[2018]),
+            "ttz_m1-10": make_obj(basedirs[2018] + get_sample_path("ttz_m1-10", 2018,args.tag) + ".root", options=options[2018]),
             "ttz_m10": make_obj(basedirs[2018] + get_sample_path("ttz_m10", 2018,args.tag) + ".root", options=options[2018]),
             "xg": make_obj([
                 basedirs[2018] + get_sample_path("tg", 2018,args.tag) + ".root",
@@ -1129,6 +1151,17 @@ if __name__ == "__main__":
                 # basedirs[2018]+get_sample_path("qqww", 2018,args.tag) + ".root",
                 # basedirs[2018]+get_sample_path("wz", 2018,args.tag) + ".root",
                 basedirs[2018]+get_sample_path("zz", 2018,args.tag) + ".root",
+                basedirs[2018]+get_sample_path("www", 2018,args.tag) + ".root",
+                basedirs[2018]+get_sample_path("wwz", 2018,args.tag) + ".root",
+                basedirs[2018]+get_sample_path("wzz", 2018,args.tag) + ".root",
+                basedirs[2018]+get_sample_path("zzz", 2018,args.tag) + ".root",
+                ],options=options[2018]),
+            "diboson": make_obj([
+                basedirs[2018]+get_sample_path("qqww", 2018,args.tag) + ".root",
+                basedirs[2018]+get_sample_path("wz", 2018,args.tag) + ".root",
+                basedirs[2018]+get_sample_path("zz", 2018,args.tag) + ".root",
+                ],options=options[2018]),
+            "triboson": make_obj([
                 basedirs[2018]+get_sample_path("www", 2018,args.tag) + ".root",
                 basedirs[2018]+get_sample_path("wwz", 2018,args.tag) + ".root",
                 basedirs[2018]+get_sample_path("wzz", 2018,args.tag) + ".root",

@@ -188,7 +188,7 @@ int integral(TH2F* inputHisto){
 
 int rateMultiplication(std::string inputDir)
 {
-    std::string outputFileName = inputDir+"/fakesProp_hut_hists.root";
+    std::string outputFileName = inputDir+"/fakesProp_hct_hists.root";
     TFile* outputFile = new TFile(outputFileName.c_str(),"recreate"); 
 
     std::vector<std::string> years = {"2016", "2017", "2018"};
@@ -205,16 +205,16 @@ int rateMultiplication(std::string inputDir)
 
         TFile* inputFile = new TFile(fileName.Data());
 
-        TH2F* sf_e_in_temp = (TH2F*) inputFile->Get("h_sf_fake2dcr_hut_efake_data");
-        TH2F* sf_m_in_temp = (TH2F*) inputFile->Get("h_sf_fake2dcr_hut_mfake_data");
-        TH2F* mlsf_e_in_temp = (TH2F*) inputFile->Get("h_mlsf_fake2dcr_hut_efake_data");
-        TH2F* mlsf_m_in_temp = (TH2F*) inputFile->Get("h_mlsf_fake2dcr_hut_mfake_data");
-        TH2F* df_ee_in_temp = (TH2F*) inputFile->Get("h_df_fake2dcr_hut_eefake_data");
-        TH2F* df_em_in_temp = (TH2F*) inputFile->Get("h_df_fake2dcr_hut_emfake_data");
-        TH2F* df_mm_in_temp = (TH2F*) inputFile->Get("h_df_fake2dcr_hut_mmfake_data");
-        TH2F* mldf_ee_in_temp = (TH2F*) inputFile->Get("h_mldf_fake2dcr_hut_eefake_data");
-        TH2F* mldf_em_in_temp = (TH2F*) inputFile->Get("h_mldf_fake2dcr_hut_emfake_data");
-        TH2F* mldf_mm_in_temp = (TH2F*) inputFile->Get("h_mldf_fake2dcr_hut_mmfake_data");
+        TH2F* sf_e_in_temp = (TH2F*) inputFile->Get("h_sf_fake2dcr_hct_efake_data");
+        TH2F* sf_m_in_temp = (TH2F*) inputFile->Get("h_sf_fake2dcr_hct_mfake_data");
+        TH2F* mlsf_e_in_temp = (TH2F*) inputFile->Get("h_mlsf_fake2dcr_hct_efake_data");
+        TH2F* mlsf_m_in_temp = (TH2F*) inputFile->Get("h_mlsf_fake2dcr_hct_mfake_data");
+        TH2F* df_ee_in_temp = (TH2F*) inputFile->Get("h_df_fake2dcr_hct_eefake_data");
+        TH2F* df_em_in_temp = (TH2F*) inputFile->Get("h_df_fake2dcr_hct_emfake_data");
+        TH2F* df_mm_in_temp = (TH2F*) inputFile->Get("h_df_fake2dcr_hct_mmfake_data");
+        TH2F* mldf_ee_in_temp = (TH2F*) inputFile->Get("h_mldf_fake2dcr_hct_eefake_data");
+        TH2F* mldf_em_in_temp = (TH2F*) inputFile->Get("h_mldf_fake2dcr_hct_emfake_data");
+        TH2F* mldf_mm_in_temp = (TH2F*) inputFile->Get("h_mldf_fake2dcr_hct_mmfake_data");
 
         TH2F* sf_e_in = (TH2F*) sf_e_in_temp->Clone(TString::Format("h_sf_e_in_%s",years[y].c_str()).Data());
         TH2F* sf_m_in = (TH2F*) sf_m_in_temp->Clone(TString::Format("h_sf_m_in_%s",years[y].c_str()).Data());

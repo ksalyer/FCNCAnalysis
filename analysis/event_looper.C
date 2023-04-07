@@ -399,6 +399,8 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
         chainTitle=="ttvv"||
         chainTitle=="ttx"||
         chainTitle=="multiboson"||
+        chainTitle=="diboson"||
+        chainTitle=="triboson"||
         chainTitle=="smallRares"||
         chainTitle=="tthh"||
         chainTitle=="ttw"||
@@ -427,6 +429,8 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
         chainTitle=="tg"||
         chainTitle=="ttw"||
         chainTitle=="ttz"||
+        chainTitle=="ttz_m1-10"||
+        chainTitle=="ttz_m10"||
         chainTitle=="zg"||
         chainTitle=="wg"||
         chainTitle=="tw_dilep"||
@@ -712,6 +716,7 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
     BDTBabyMaker bdt_fakes_baby;
     BDTBabyMaker bdt_flips_baby;
     BDTBabyMaker bdt_MC_baby;
+    // std::string BDT_base_dir = "./helpers/BDT/fcncBabies_bjet30Babies/";
     std::string BDT_base_dir = "./helpers/BDT/fcncBabies_ctagBabies/";
     // std::string BDT_base_dir = "./helpers/BDT/fcncBabies_ttHBabies/";
     // std::string BDT_base_dir = "/hadoop/cms/store/user/ksalyer/fcncBabies";
@@ -733,8 +738,11 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
     // TMVA::Experimental::RBDT hut_bdt("HUT_BDT","/home/users/ksalyer/FCNCAnalysis/analysis/helpers/BDT/models_jet25/HUT/model.root");
     TMVA::Experimental::RBDT hct_bdt("HCT_BDT","/home/users/ksalyer/FCNCAnalysis/analysis/helpers/BDT/models_ctag/HCT/model.root");
     TMVA::Experimental::RBDT hut_bdt("HUT_BDT","/home/users/ksalyer/FCNCAnalysis/analysis/helpers/BDT/models_ctag/HUT/model.root");
+    // TMVA::Experimental::RBDT hct_bdt("HCT_BDT","/home/users/ksalyer/FCNCAnalysis/analysis/helpers/BDT/models_bjet30/HCT/model.root");
+    // TMVA::Experimental::RBDT hut_bdt("HUT_BDT","/home/users/ksalyer/FCNCAnalysis/analysis/helpers/BDT/models_bjet30/HUT/model.root");
     // TMVA::Experimental::RBDT hct_bdt("HCT_BDT","/home/users/ksalyer/FCNCAnalysis/analysis/helpers/BDT/models_ttHBabies/HCT/model.root");
     // TMVA::Experimental::RBDT hut_bdt("HUT_BDT","/home/users/ksalyer/FCNCAnalysis/analysis/helpers/BDT/models_ttHBabies/HUT/model.root");
+    // TMVA::Experimental::RBDT hut_bdt("HUT_BDT","/home/users/ksalyer/FCNCAnalysis/analysis/helpers/BDT/models_smalltuhv2/HUT/model.root");
 
 
     auto start = high_resolution_clock::now();
@@ -783,9 +791,11 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
                 duplicate_removal::DorkyEventIdentifier id( nt.run(), nt.event(), nt.luminosityBlock() );
                 if ( duplicate_removal::is_duplicate(id) ) continue;
             }
-
             //get event weight based on sample!
             // cout << nt.event() << endl;
+            // if(nt.event()!=210005||nt.event()!=210036||nt.event()!=210089||nt.event()!=210113||nt.event()!=210238) continue;
+            // cout << nt.event() << endl;
+            // if(nt.event()!=321503444||nt.event()!=625607119||nt.event()!=369855901||nt.event()!=125712280||nt.event()!=152416194||nt.event()!=278120088||nt.event()!=2392596257) continue;
             // if(nt.event()!=1228297||nt.event()!=1319572) continue;
             double weight = 1.;
             // cout << weight << endl;
@@ -845,7 +855,7 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
             // if (nt.MET_T1_pt_jesTotalUp() < 50.){continue;}
             //jes down
             // if (nt.MET_T1_pt_jesTotalDown() < 50.){continue;}
-            hists.fill1d("cutflow","br",chainTitleCh,2,weight);
+            // hists.fill1d("cutflow","br",chainTitleCh,2,weight);
             if (debugPrints){std::cout << "passed MET cut for event " << nt.event() << ": " << met << endl;}
             if (debugPrints){std::cout << "elapsed time since start: " << duration_cast<seconds>(high_resolution_clock::now() - start).count() << endl;}
             if (debugPrints){std::cout << "elapsed time since b SF start: " << duration_cast<seconds>(high_resolution_clock::now() - startBOpening).count() << endl;}
@@ -905,7 +915,10 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
             }
 
             if (best_hyp_type < 0) continue;
-            // hists.fill1d("cutflow","br",chainTitleCh,5,weight);}
+            // if (best_hyp_type != 7) continue;
+            // Leptons best_hyp = best_hyp_info.second;
+            // if (!(best_hyp[0].absid()==11&&best_hyp[1].absid()==11)) continue;
+            // hists.fill1d("cutflow","br",chainTitleCh,2,weight);
             
             if(!quiet) {std::cout << "best_hyp_type: " << best_hyp_type << std::endl;}
             Leptons best_hyp = best_hyp_info.second;
@@ -916,6 +929,10 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
             Lepton trailing_lep = best_hyp[1];
             Lepton third_lep;
             if (best_hyp.size()>2) third_lep = best_hyp[2];
+
+
+            // //@ kaitlin remove this cut you dummy
+            // if (best_hyp[0].pt()>30) continue;
 
             if (!quiet) {
                 std::cout << "best hyp type: " << best_hyp_type << "; lepton ids: " << leading_lep.id()
@@ -1125,12 +1142,15 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
             if(jesUp==1){
                 //jes UP
                 good_jets_and_bjets = getJets(best_hyp,30.,25.,1);
+                // good_jets_and_bjets = getJets(best_hyp,30.,30.,1);
             }else if(jesDown==1){
                 //jes DOWN
                 good_jets_and_bjets = getJets(best_hyp,30.,25.,-1);
+                // good_jets_and_bjets = getJets(best_hyp,30.,30.,-1);
             }else{
                 //jes CENTRAL
                 good_jets_and_bjets = getJets(best_hyp,30.,25.,0);
+                // good_jets_and_bjets = getJets(best_hyp,30.,30.,0);
             }
             Jets good_jets = good_jets_and_bjets.first;
             Jets good_bjets = good_jets_and_bjets.second;
@@ -1251,7 +1271,7 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
                 (category == 4 && chainTitle!="fakes_mc" && chainTitle!="flips_mc" && chainTitle!="rares" && !(isSignal||isData))||
                 // (category == 3 && chainTitle!="fakes_mc" && chainTitle!="flips_mc" && chainTitle!="rares" && !(isSignal||isData))||
                 (isSignal||isData)){
-                    hists.fill1d("cutflow","br",chainTitleCh,3,weight);
+                    // hists.fill1d("cutflow","br",chainTitleCh,3,weight);
             }
 
             //else {hists.fill1d("cutflow","br",chainTitleCh,2,weight);}
@@ -1275,7 +1295,7 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
                 (category == 4 && chainTitle!="fakes_mc" && chainTitle!="flips_mc" && chainTitle!="rares" && !(isSignal||isData))||
                 // (category == 3 && chainTitle!="fakes_mc" && chainTitle!="flips_mc" && chainTitle!="rares" && !(isSignal||isData))||
                 (isSignal||isData)){
-                hists.fill1d("cutflow","br",chainTitleCh,4,weight);
+                hists.fill1d("cutflow","br",chainTitleCh,3,weight);
             }
 
             if (!quiet) {
@@ -1314,7 +1334,7 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
                 (category == 3 && chainTitle=="rares")||
                 (category == 4 && chainTitle!="fakes_mc" && chainTitle!="flips_mc" && chainTitle!="rares" && !(isSignal||isData))||
                 (isSignal||isData)){
-                hists.fill1d("cutflow","br",chainTitleCh,5,weight);
+                hists.fill1d("cutflow","br",chainTitleCh,4,weight);
             }
             if (debugPrints){std::cout << "passed triggers for event " << nt.event() << endl;}
             if (debugPrints){std::cout << "elapsed time since start: " << duration_cast<seconds>(high_resolution_clock::now() - start).count() << endl;}
@@ -1350,7 +1370,7 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
                 (category == 3 && chainTitle=="rares")||
                 (category == 4 && chainTitle!="fakes_mc" && chainTitle!="flips_mc" && chainTitle!="rares" && !(isSignal||isData))||
                 (isSignal||isData)){
-                hists.fill1d("cutflow","br",chainTitleCh,6,weight);
+                hists.fill1d("cutflow","br",chainTitleCh,5,weight);
             }
             if (debugPrints){std::cout << "passed filters for event " << nt.event() << endl;}
             if (debugPrints){std::cout << "elapsed time since start: " << duration_cast<seconds>(high_resolution_clock::now() - start).count() << endl;}
@@ -1393,6 +1413,8 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
                     ((chainTitle=="zz") && (nt.event()%2!=0))||
                     ((chainTitle=="tzq") && (nt.event()%2!=0))||
                     ((chainTitle=="multiboson") && (nt.event()%2!=0))||
+                    ((chainTitle=="diboson") && (nt.event()%2!=0))||
+                    ((chainTitle=="triboson") && (nt.event()%2!=0))||
                     ((chainTitle=="ttx") && (nt.event()%2!=0))||
                     ((chainTitle=="ttvv") && (nt.event()%2!=0))||
                     ((chainTitle=="xg") && (nt.event()%2!=0))||
@@ -1412,13 +1434,18 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
                     ((chainTitle=="zz") && (nt.event()%2==0))||
                     ((chainTitle=="tzq") && (nt.event()%2==0))||
                     ((chainTitle=="multiboson") && (nt.event()%2==0))||
+                    ((chainTitle=="diboson") && (nt.event()%2==0))||
+                    ((chainTitle=="triboson") && (nt.event()%2==0))||
                     ((chainTitle=="ttx") && (nt.event()%2==0))||
                     ((chainTitle=="ttvv") && (nt.event()%2==0))||
                     ((chainTitle=="xg") && (nt.event()%2==0))||
                     ((chainTitle=="smallRares") && (nt.event()%2==0))||
                     ((chainTitle=="tthh") && (nt.event()%2==0))||
                     (category == 4 && chainTitle!="fakes_mc" && chainTitle!="flips_mc" && chainTitle!="rares" && !(isSignal||isData) && (nt.event()%2==0))
-                    ) {weight = weight*2;}
+                    ) {
+                    weight = weight*0;
+                    continue;
+                }
             }
 
 
@@ -1931,7 +1958,9 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
             //first, skip MC events used for training/testing:
             float hct_pred_value = -999;
             float hut_pred_value = -999;
+            // cout << nt.event() << endl;
             if (evaluateBDT){
+                // cout << "evaluating BDT" <<endl;
                 if( ((category==1) && (chainTitle=="fakes_mc")) ||
                     ((category==1) && (chainTitle=="top")) ||
                     ((category==1) && (chainTitle=="wjets")) ||
@@ -1948,6 +1977,8 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
                     ((category==3) && (chainTitle=="zz") && (nt.event()%2!=0)) ||
                     ((category==3) && (chainTitle=="tzq") && (nt.event()%2!=0)) ||
                     ((category==3) && (chainTitle=="multiboson") && (nt.event()%2!=0)) ||
+                    ((category==3) && (chainTitle=="diboson") && (nt.event()%2!=0)) ||
+                    ((category==3) && (chainTitle=="triboson") && (nt.event()%2!=0)) ||
                     ((category==3) && (chainTitle=="ttx") && (nt.event()%2!=0)) ||
                     ((category==3) && (chainTitle=="ttvv") && (nt.event()%2!=0)) ||
                     ((category==3) && (chainTitle=="xg") && (nt.event()%2!=0)) ||
@@ -1963,6 +1994,7 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
                     ((chainTitle=="signal_tuh") && (nt.event()%2!=0)) ||
                     ((chainTitle=="data"))
                     ){
+                    // cout << "passed category/title check" << endl;
                     //to ensure I get the values in the correct order,
                     //let's fill a map and then loop through the vector of input names from the BDT
                     vector<string> trainingFeatures = {"Most_Forward_pt","HT","LeadLep_eta",
@@ -2069,6 +2101,8 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
                     if(print_comparison_file){print_comparison(comparison_file,hct_pred[0],hut_pred[0],inputFeatures);}
 
                     if(hct_pred_value<0){cout << hct_pred_value << endl;}
+                    if(hct_pred_value==-999 && hut_pred_value==-999){continue;}
+
                 }
             }
             if(bdtBinCut){
@@ -2161,6 +2195,7 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
             }else if (category == 4 && chainTitle!="fakes_mc" && chainTitle!="flips_mc" && chainTitle!="rares" && !(isSignal||isData)){
                 hists.fill(chainTitleCh,best_hyp_type,best_hyp,good_jets,good_bjets,met,metphi,isVR_SR_fake,isVR_CR_fake,isVR_SR_flip,isVR_CR_flip,isEE,isEM,isME,isMM,isEFake,isMFake,isEE_flip,isEM_flip,hct_pred_value,hut_pred_value,weight,crWeight,doVariations,variationalWeights);
             }else if (isSignal||isData){
+                if(debugPrints==1){cout << "in signal/data fill loop: " << hct_pred_value << " " << hut_pred_value << endl;}
                 hists.fill(chainTitleCh,best_hyp_type,best_hyp,good_jets,good_bjets,met,metphi,isVR_SR_fake,isVR_CR_fake,isVR_SR_flip,isVR_CR_flip,isEE,isEM,isME,isMM,isEFake,isMFake,isEE_flip,isEM_flip,hct_pred_value,hut_pred_value,weight,crWeight,doVariations,variationalWeights);
             }
             //cout << "**********" << endl;

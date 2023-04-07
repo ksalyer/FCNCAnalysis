@@ -145,7 +145,7 @@ for plot_type in options.keys():
     ROOT.gPad.RedrawAxis()
     c1.Update()
 
-    legend = ROOT.TLegend(0.67, 0.67, 0.9, 0.87)
+    legend = ROOT.TLegend(0.6, 0.6, 0.9, 0.87)
     if not isBlind:
         legend.AddEntry(g_obs, "Observed", "l")
     legend.AddEntry(g_exp, "Median Expected", "l")
@@ -166,9 +166,9 @@ for plot_type in options.keys():
     latex.DrawLatex(0.12, 0.935, "#bf{CMS}")
 
     latex.SetTextSize(0.6*c1.GetTopMargin())
-    latex.DrawLatex(0.215, 0.935, "#it{Preliminary}")
+    # latex.DrawLatex(0.215, 0.935, "#it{Preliminary}")
 
-    latex.DrawLatex(0.67, 0.935, "137 fb^{-1} (13 TeV)")
+    latex.DrawLatex(0.67, 0.935, "138 fb^{-1} (13 TeV)")
 
     c1.SaveAs("./kappaCalculationOutputs/limits2d_%s_%s.pdf" % (args.tag, plot_type)) 
      

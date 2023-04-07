@@ -7,20 +7,21 @@ plt.style.use(hep.style.CMS)
 
 from yahist import Hist1D, Hist2D
 
-f_in = uproot3.open('/home/users/ksalyer/FranksFCNC/ana/analysis/outputs/v6BabyPlots/fakes_mc_2018_hists.root')
+# f_in = uproot3.open('/home/users/ksalyer/FranksFCNC/ana/analysis/outputs/v6BabyPlots/fakes_mc_2018_hists.root')
 
-path = '/home/users/ksalyer/FranksFCNC/ana/analysis/outputs/oct13_os/'
+# path = '/home/users/ksalyer/FranksFCNC/ana/analysis/outputs/oct13_os/'
+path = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/nov16_ccYields/'
 # sigpath = '/home/users/ksalyer/FranksFCNC/ana/analysis/outputs/aug09_lead25_MET50_jet30_newTriggers_tt2or1l/'
 
 regions =   [#"mr",
-             "os",
+             # "os",
              # "sf",
              # "df",
              # "mlsf",
              # "mldf",
              # "ss",
              # "ml",
-             # "br",
+             "br",
              #"vrsr_ss",
              #"vrsr_ml",
              #"vrcr_sf",
@@ -37,8 +38,8 @@ variables = [   #["njets", 1, r'$N_{jets}$'],
                 # ["nmus", 1, r'$N_{muons}$'],
                 # ["ljpt", 5, r'$p_T\ (lead.\ jet)\ (GeV)$'],
                 # ["tjpt", 5, r'$p_T\ (sublead.\ jet)\ (GeV)$'],
-                ["ljbscore", 1, r'$lead.\ jet\ b-score$'],
-                ["tjbscore", 1, r'$sublead.\ jet\ b-score$'],
+                # ["ljbscore", 1, r'$lead.\ jet\ b-score$'],
+                # ["tjbscore", 1, r'$sublead.\ jet\ b-score$'],
                 # ["llpt", 5, r'$p_T\ (lead.\ lep.)\ (GeV)$'],
                 # ["ltpt", 5, r'$p_T\ (sublead.\ lep.)\ (GeV)$'],
                 # ["mll", 4, r'$m_{ll}\ (GeV)$'],
@@ -54,7 +55,7 @@ variables = [   #["njets", 1, r'$N_{jets}$'],
                 # # ["ltminiiso", 1, r'$miniIso\ (sublead.\ lep.)\ (GeV)$'],
                 # ['met', 1, r'$MET\ (GeV)$'],
                 # ['flavorChannel', 1, r'$Flavor\ Channel$'],
-                # ['sr', 1, r'$SR\ bin$'],
+                ['sr', 1, r'$SR\ bin$'],
                 # ['flipSFcr_inclMET', 1, r'$sr bin$'],
                 # ['flipSFcr_l50MET', 1, r'$sr bin$'],
                 # #['vrsr', 1, r'$VRSR$'],
@@ -123,7 +124,7 @@ for y in years:
             vname = var[2]
             histName = 'h_'+r+'_'+v+'_'+y
             print (histName)
-            if blind and (r == 'ss' or r == 'ml' or r == 'mr'):
+            if blind and (r == 'ss' or r == 'ml' or r == 'mr' or r == 'br'):
                 hists = {
                     # 'top': uproot3.open(path+'top_'+y+'_hists.root')['h_'+r+'_'+v+'_top'],
                     # 'dy': uproot3.open(path+'dy_'+y+'_hists.root')['h_'+r+'_'+v+'_dy'],
@@ -250,7 +251,7 @@ for y in years:
 
             total_mc = get_total(my_histos, keys)
 
-            if not (blind and (r == 'ss' or r == 'ml' or r == 'mr')): 
+            if not (blind and (r == 'ss' or r == 'ml' or r == 'mr' or r =='br')): 
                 ratio = my_histos['data'].divide(total_mc, )
             #     # ratio_est = my_histos['data_est'].divide(total_mc, )
             #     # ratio_data = my_histos['data'].divide(my_histos['data_est'], )
@@ -264,9 +265,10 @@ for y in years:
             fig, (ax, rax) = plt.subplots(2,1,figsize=(10,10), gridspec_kw={"height_ratios": (3, 1), "hspace": 0.05}, sharex=True)
             # fig, ax = plt.subplots(1,1,figsize=(10,10))
 
-            if y == "2016": luminosity = 35.9
+            if y == "2016": luminosity = 36.3
             if y == "2017": luminosity = 41.5
-            if y == "2018": luminosity = 59.71
+            if y == "2018": luminosity = 59.7
+
             hep.cms.label(
                 "Preliminary",
                 data=True,
@@ -287,7 +289,7 @@ for y in years:
                 color=[ my_histos[x].color for x in keys ],
                 ax=ax)
 
-            if not (blind and (r == 'ss' or r == 'ml' or r == 'mr')):
+            if not (blind and (r == 'ss' or r == 'ml' or r == 'mr' or r == 'br')):
                 hep.histplot(
                     my_histos['data'].counts,
                     my_histos['data'].edges,
@@ -319,7 +321,7 @@ for y in years:
                 color=['#525B76','#6A4C93'],
                 ax=ax)
 
-            if not (blind and (r == 'ss' or r == 'ml' or r == 'mr')):
+            if not (blind and (r == 'ss' or r == 'ml' or r == 'mr' or r == 'br')):
                 hep.histplot(
                     ratio.counts,
                     ratio.edges,
@@ -356,7 +358,7 @@ for y in years:
             rax.set_ylim(0,1.99)
             # #rax.set_xlabel(r'$p_T\ (lead.\ lep.)\ (GeV)$')
             rax.set_xlabel(vname)
-            if not (blind and (r == 'ss' or r == 'ml' or r == 'mr')): rax.set_ylabel(r'Data/Sim.')
+            if not (blind and (r == 'ss' or r == 'ml' or r == 'mr' or r == 'br')): rax.set_ylabel(r'Data/Sim.')
             # # if not (blind and (r == 'ss' or r == 'ml' or r == 'mr') or r == 'os'): rax.set_ylabel(r'Obs./Pred.')
             # else: rax.set_ylabel(r'Sig./Back.')
             ax.set_ylabel(r'Events')
@@ -373,6 +375,6 @@ for y in years:
 
             #plt.show()
 
-            fig.savefig('/home/users/ksalyer/public_html/dump/FCNC_plots/'+histName+'.png')
-            fig.savefig('/home/users/ksalyer/public_html/dump/FCNC_plots/'+histName+'.pdf')
+            fig.savefig('/home/users/ksalyer/public_html/FCNC_plots_jan31/'+histName+'.png')
+            fig.savefig('/home/users/ksalyer/public_html/FCNC_plots_jan31/'+histName+'.pdf')
             #plt.close()

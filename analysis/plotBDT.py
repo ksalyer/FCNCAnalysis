@@ -6,6 +6,7 @@ import mplhep as hep
 plt.style.use(hep.style.CMS)
 
 from yahist import Hist1D, Hist2D
+import pandas as pd
 
 print("imported libraries")
 
@@ -18,10 +19,11 @@ print("imported libraries")
 # path = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr16_ctag_backgroundestimates/'
 # path = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr19_ctag_mlonZ/'
 # path = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/may3_ctag_data_mc/'
-path = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/nov14_kinematics/'
+# path = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/nov14_kinematics/'
 # path = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/mar2_ctag_all/'
 # path_fakes   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr27_fakeEst/"
 # path_flips   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr16_ctag_backgroundestimates/"
+# path_signal   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/may6_ctag_signal/"
 # path = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/mar3_ctag_mlonz/'
 # path = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/mar3_ctag_fakeVal/'
 # path = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/mar3_ctag_rarebackgrounds/'
@@ -29,6 +31,18 @@ path = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/nov14_kinematics/'
 # path = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/jan03_ctagSFs/'
 # path = '/home/users/ksalyer/FranksFCNC/ana/analysis/outputs/oct28_BDTInputs/'
 # sigpath = '/home/users/ksalyer/FranksFCNC/ana/analysis/outputs/aug09_lead25_MET50_jet30_newTriggers_tt2or1l/'
+# path = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/jan31_kinematics/'
+# path = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/feb2_bdt_datamc/'
+# path = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/feb2_bdt_fakeval/'
+# path = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/feb13_jetptcheck/'
+# path = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/feb16_jetpt30_runAll/'
+# path = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/feb22_jetpt30_SRylds/'
+# path = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/feb28_jetpt25_ogBDT_SR/'
+# path = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/feb28_minDrPlots/'
+# path = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/mar16_thirdlpt_ogBDT_jet25/'
+# path_fakes = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/mar20_llpt_ogBDT_jet25/'
+# path = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/mar21_nele_ogBDT_jet25/'
+path = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr4_bdtcutfix/'
 
 regions =   [ #"mr",
              # "os",
@@ -50,8 +64,9 @@ regions =   [ #"mr",
              #"vrcr_flip",
              #"vrsr_flip"
             ]
-variables = [   ["bdtScore_hct", 1, r'$HCT\ BDT\ score$'],
-                ["bdtScore_hut", 1, r'$HUT\ BDT\ score$'],
+variables = [   
+                # ["bdtScore_hct", 1, r'$HCT\ BDT\ score$'],
+                # ["bdtScore_hut", 1, r'$HUT\ BDT\ score$'],
                 # ["bdtScoreOnZ_hct", 1, r'$HCT\ BDT\ score$'],
                 # ["bdtScoreOnZ_hut", 1, r'$HUT\ BDT\ score$'],
                 # ["fakeVal_bdtScore_hct", 1, r'$HCT\ BDT\ score$'],
@@ -69,41 +84,46 @@ variables = [   ["bdtScore_hct", 1, r'$HCT\ BDT\ score$'],
                 # ["thirdjcscore", 1, r'$subsublead jet c score$'],
                 
                 # #jets
-                ["njets", 1, r'$N_{jets}$'],
-                ["nbjets", 1, r'$N_{b-jets}$'],
-                ["fwjpt", 1, r'$Most Forward Jet p_{T}$'],
+                # ["njets", 1, r'$N_{jets}$'],
+                # ["nbjets", 1, r'$N_{b-jets}$'],
+                # ["fwjpt", 1, r'$Most Forward Jet p_{T}$'],
+                # ["fwjmindr", 10, r'$mindR(Most Forward Jet, 3 Lead Jets)$'],
                 
-                ["ljpt", 5, r'$p_T\ (lead.\ jet)\ (GeV)$'],
-                ["ljbscore", 1, r'$lead.\ jet\ b-score$'],
-                ["ljcscore", 1, r'$lead.\ jet\ c-score$'],
+                # ["ljpt", 5, r'$p_T\ (lead.\ jet)\ (GeV)$'],
+                # ["ljbscore", 1, r'$lead.\ jet\ b-score$'],
+                # ["ljcscore", 1, r'$lead.\ jet\ c-score$'],
                 
-                ["tjpt", 5, r'$p_T\ (sublead.\ jet)\ (GeV)$'],
-                ["tjbscore", 1, r'$sublead.\ jet\ b-score$'],
-                ["tjcscore", 1, r'$sublead.\ jet\ c-score$'],
+                # ["tjpt", 5, r'$p_T\ (sublead.\ jet)\ (GeV)$'],
+                # ["tjbscore", 1, r'$sublead.\ jet\ b-score$'],
+                # ["tjcscore", 1, r'$sublead.\ jet\ c-score$'],
                 
-                ["thirdjpt", 5, r'$p_T\ (subsublead.\ jet)\ (GeV)$'],
-                ["thirdjbscore", 1, r'$subsublead.\ jet\ b-score$'],
-                ["thirdjcscore", 1, r'$subsublead.\ jet\ c-score$'],
+                # ["thirdjpt", 1, r'$p_T\ (subsublead.\ jet)\ (GeV)$'],
+                # ["thirdjbscore", 1, r'$subsublead.\ jet\ b-score$'],
+                # ["thirdjcscore", 1, r'$subsublead.\ jet\ c-score$'],
 
-                ["lbpt", 5, r'$p_T\ (lead.\ b-tag)\ (GeV)$'],
-                ["lbscore", 5, r'$lead.\ b-tag\ b-score$'],
+                # ["lbpt", 1, r'$p_T\ (lead.\ b-tag)\ (GeV)$'],
+                # ["lbscore", 5, r'$lead.\ b-tag\ b-score$'],
+                # ["lbmindr", 10, r'$mindR(Lead b-tag, 3 Lead Jets)$'],
 
                 # # Leptons
-                # ["neles", 1, r'$N_{electrons}$'],
+                ["neles", 1, r'$N_{electrons}$'],
                 # ["mll", 1, r'$m_{lead.\ lep,\ sublead.\ lep}$'],
 
-                # ["llpt", 5, r'$p_T\ (lead.\ lep.)\ (GeV)$'],
-                # # ["lleta", 1, r'$\eta\ (lead.\ lep.)$'],
+                # ["LeadLep_pt", 1, r'$p_T\ (lead.\ lep.)\ (GeV)$'],
+                # ["llpt", 1, r'$p_T\ (lead.\ lep.)\ (GeV)$'],
+                # ["lept", 1, r'$p_T\ (lead.\ lep. (electron))\ (GeV)$'],
+                # ["lmpt", 1, r'$p_T\ (lead.\ lep. (muon))\ (GeV)$'],
+                # ["lleta", 1, r'$\eta\ (lead.\ lep.)$'],
                 # ["lldxy", 4, r'$dxy\ (lead.\ lep.)$'],
                 # ["lldz", 4, r'$dz\ (lead.\ lep.)$'],
 
                 # ["ltpt", 5, r'$p_T\ (sublead.\ lep.)\ (GeV)$'],
-                # # ["lteta", 4, r'$\eta\ (sublead.\ lep.)$'],
+                # ["lteta", 4, r'$\eta\ (sublead.\ lep.)$'],
                 # ["ltdxy", 4, r'$dxy\ (sublead.\ lep.)$'],
                 # ["ltdz", 4, r'$dz\ (sublead.\ lep.)$'],
 
                 # ["thirdlpt", 5, r'$p_T\ (subsublead.\ lep.)\ (GeV)$'],
-                # # ["thirdleta", 4, r'$\eta\ (subsublead.\ lep.)$'],
+                # ["thirdleta", 4, r'$\eta\ (subsublead.\ lep.)$'],
                 # ["thirdldxy", 4, r'$dxy\ (subsublead.\ lep.)$'],
                 # ["thirdldz", 4, r'$dz\ (subsublead.\ lep.)$'],
 
@@ -115,9 +135,9 @@ variables = [   ["bdtScore_hct", 1, r'$HCT\ BDT\ score$'],
                 # ['mt_thirdl_met', 1, r'$m_{T}\ (subsublead.\ lep,\ MET)\ (GeV)$'],
             ]
 
-# years = ["2016","2017","2018"]
-years = ["2016","2017","2018","run2"]
-# years = ["2016"]
+years = ["2016","2017","2018"]
+# years = ["2016","2017","2018","run2"]
+# years = ["run2"]
 blind = False
 tuh_comb_systErrors = [615.1665225299698,229.3378743634561,153.31590751454064,126.47454331366515,100.17508163074972,79.31856523263973,67.05120343632984,60.816837025990196,49.39348645304188,46.25768369645387,42.89094924729396,37.2297690783601,32.89658317458452,30.219155596438103,29.681932828956924,21.638294897172862,18.516797909000495,21.5654660490506,13.503299002646026,9.133055915397582]
 tch_comb_systErrors = [739.0621035530985,268.5313370780789,160.65522682872142,125.52094395482109,99.14397338941974,75.67594705360425,66.09131976443076,68.37490871728964,59.15939710900227,50.70247241999761,41.69109205390391,38.09224179360711,40.12931895985449,35.77924880520944,25.797026606756546,26.99706729048354,21.217829833856236,19.708382395139896,17.068916125023403,12.995443217544002]
@@ -206,28 +226,61 @@ for y in years:
                     'tch': uproot3.open(path+'signal_tch_'+y+'_hists.root')['h_'+r+'_'+v+'_signal_tch'],
                     'tuh': uproot3.open(path+'signal_tuh_'+y+'_hists.root')['h_'+r+'_'+v+'_signal_tuh'],
                 }
-            elif r =='br':
+            elif r == 'sf':
                 hists = {
                     'fakes': uproot3.open(path+'fakes_mc_'+y+'_hists.root')['h_'+r+'_'+v+'_fakes_mc'],
                     'flips': uproot3.open(path+'flips_mc_'+y+'_hists.root')['h_'+r+'_'+v+'_flips_mc'],
-                    # 'sf': uproot3.open(path_fakes+'data_'+y+'_hists.root')['h_sfest_'+v+'_data'],
-                    # 'mlsf': uproot3.open(path_fakes+'data_'+y+'_hists.root')['h_mlsfest_'+v+'_data'],
-                    # 'df': uproot3.open(path_fakes+'data_'+y+'_hists.root')['h_dfest_'+v+'_data'],
-                    # 'mldf': uproot3.open(path_fakes+'data_'+y+'_hists.root')['h_mldfest_'+v+'_data'],
-                    # 'sfpp':  uproot3.open(path+'rares_'+y+'_hists.root')['h_sfppest_'+v+'_rares'],
-                    # 'mlsfppp':  uproot3.open(path+'rares_'+y+'_hists.root')['h_mlsfpppest_'+v+'_rares'],
-                    # 'flips': uproot3.open(path+'data_'+y+'_hists.root')['h_osest_'+v+'_data'],
+                    'rares': uproot3.open(path+'rares_'+y+'_hists.root')['h_'+r+'_'+v+'_rares'],
+                    'data': uproot3.open(path+'data_'+y+'_hists.root')['h_'+r+'_'+v+'_data'],
+                    'tch': uproot3.open(path+'signal_tch_'+y+'_hists.root')['h_'+r+'_'+v+'_signal_tch'],
+                    'tuh': uproot3.open(path+'signal_tuh_'+y+'_hists.root')['h_'+r+'_'+v+'_signal_tuh'],
+                }
+            elif r =='br':
+                hists = {
+                    # # 'fakes': uproot3.open(path_fakes+'fakes_mc_'+y+'_hists.root')['h_'+r+'_'+v+'_fakes_mc'],
+                    'fakes': uproot3.open(path+'fakes_mc_'+y+'_hists.root')['h_'+r+'_'+v+'_fakes_mc'],
+                    'flips': uproot3.open(path+'flips_mc_'+y+'_hists.root')['h_'+r+'_'+v+'_flips_mc'],
+                    # # 'sf': uproot3.open(path_fakes+'data_'+y+'_hists.root')['h_sfest_'+v+'_data'],
+                    # # 'mlsf': uproot3.open(path_fakes+'data_'+y+'_hists.root')['h_mlsfest_'+v+'_data'],
+                    # # 'df': uproot3.open(path_fakes+'data_'+y+'_hists.root')['h_dfest_'+v+'_data'],
+                    # # 'mldf': uproot3.open(path_fakes+'data_'+y+'_hists.root')['h_mldfest_'+v+'_data'],
+                    # # 'sfpp':  uproot3.open(path_fakes+'rares_'+y+'_hists.root')['h_sfppest_'+v+'_rares'],
+                    # # 'mlsfppp':  uproot3.open(path_fakes+'rares_'+y+'_hists.root')['h_mlsfpppest_'+v+'_rares'],
+                    # # 'flips': uproot3.open(path_flips+'data_'+y+'_hists.root')['h_osest_'+v+'_data'],
+                    # # 'rares': uproot3.open(path+'rares_'+y+'_hists.root')['h_'+r+'_'+v+'_rares'],
+                    # # 'data': uproot3.open(path+'data_'+y+'_hists.root')['h_'+r+'_'+v+'_data'],
+                    # # 'tch': uproot3.open(path_signal+'signal_tch_'+y+'_hists.root')['h_'+r+'_'+v+'_signal_tch'],
+                    # # 'tuh': uproot3.open(path_signal+'signal_tuh_'+y+'_hists.root')['h_'+r+'_'+v+'_signal_tuh'],
+                    # # 'sf': uproot3.open(path+'data_'+y+'_hists.root')['h_sfest_'+v+'_data'],
+                    # # 'mlsf': uproot3.open(path+'data_'+y+'_hists.root')['h_mlsfest_'+v+'_data'],
+                    # # 'df': uproot3.open(path+'data_'+y+'_hists.root')['h_dfest_'+v+'_data'],
+                    # # 'mldf': uproot3.open(path+'data_'+y+'_hists.root')['h_mldfest_'+v+'_data'],
+                    # # 'sfpp':  uproot3.open(path+'rares_'+y+'_hists.root')['h_sfppest_'+v+'_rares'],
+                    # # 'mlsfppp':  uproot3.open(path+'rares_'+y+'_hists.root')['h_mlsfpppest_'+v+'_rares'],
+                    # # 'flips': uproot3.open(path+'data_'+y+'_hists.root')['h_osest_'+v+'_data'],
                     'rares': uproot3.open(path+'rares_'+y+'_hists.root')['h_'+r+'_'+v+'_rares'],
                     'data': uproot3.open(path+'data_'+y+'_hists.root')['h_'+r+'_'+v+'_data'],
                     'tch': uproot3.open(path+'signal_tch_'+y+'_hists.root')['h_'+r+'_'+v+'_signal_tch'],
                     'tuh': uproot3.open(path+'signal_tuh_'+y+'_hists.root')['h_'+r+'_'+v+'_signal_tuh'],
 
+                    # 'fakes': uproot3.open(path+'fakes_mc_'+y+'_hists.root')['h_'+r+'_'+v+'_fakes_mc'],
+                    # 'flips': uproot3.open(path+'flips_mc_'+y+'_hists.root')['h_'+r+'_'+v+'_flips_mc'],
+                    # 'rares': uproot3.open(path+'rares_'+y+'_hists.root')['h_'+r+'_'+v+'_rares'],
+                    # 'data': uproot3.open(path+'data_'+y+'_hists.root')['h_'+r+'_'+v+'_data'],
+                    # 'tch': uproot3.open(path+'signal_tch_'+y+'_hists.root')['h_'+r+'_'+v+'_signal_tch'],
+                    # 'tuh': uproot3.open(path+'signal_tuh_'+y+'_hists.root')['h_'+r+'_'+v+'_signal_tuh'],
                     # 'multiboson': uproot3.open(path+'multiboson_'+y+'_hists.root')['h_'+r+'_'+v+'_multiboson'],
                     # 'ttw': uproot3.open(path+'ttw_'+y+'_hists.root')['h_'+r+'_'+v+'_ttw'],
                     # 'ttx': uproot3.open(path+'ttx_'+y+'_hists.root')['h_'+r+'_'+v+'_ttx'],
                     # 'ttvv': uproot3.open(path+'ttvv_'+y+'_hists.root')['h_'+r+'_'+v+'_ttvv'],
                     # 'xg': uproot3.open(path+'xg_'+y+'_hists.root')['h_'+r+'_'+v+'_xg'],
-                    # 'smallRares': uproot3.open(path+'smallRares_'+y+'_hists.root')['h_'+r+'_'+v+'_smallRares']
+                    # 'smallRares': uproot3.open(path+'smallRares_'+y+'_hists.root')['h_'+r+'_'+v+'_smallRares'],
+                    # 'tg': uproot3.open(path+'tg_'+y+'_hists.root')['h_'+r+'_'+v+'_tg'],
+                    # 'ttg_dilep': uproot3.open(path+'ttg_dilep_'+y+'_hists.root')['h_'+r+'_'+v+'_ttg_dilep'],
+                    # 'wg': uproot3.open(path+'wg_'+y+'_hists.root')['h_'+r+'_'+v+'_wg'],
+                    # 'wwg': uproot3.open(path+'wwg_'+y+'_hists.root')['h_'+r+'_'+v+'_wwg'],
+                    # 'wzg': uproot3.open(path+'wzg_'+y+'_hists.root')['h_'+r+'_'+v+'_wzg'],
+                    # 'zg': uproot3.open(path+'zg_'+y+'_hists.root')['h_'+r+'_'+v+'_zg'],
                 }
             elif r == 'vrcr_fake':
                 hists = {
@@ -236,20 +289,29 @@ for y in years:
                 }
             else:
                 hists = {
-                    'fakes': uproot3.open(path+'fakes_mc_'+y+'_hists.root')['h_'+r+'_'+v+'_fakes_mc'],
-                    # 'flips': uproot3.open(path+'flips_mc_'+y+'_hists.root')['h_'+r+'_'+v+'_flips_mc'],
-                    # 'fakes': uproot3.open(path+'data_'+y+'_hists.root')['h_mlsfest_'+v+'_data'],
-                    # 'flips': uproot3.open(path+'data_'+y+'_hists.root')['h_osest_'+v+'_data'],
-                    # 'rares': uproot3.open(path+'rares_'+y+'_hists.root')['h_'+r+'_'+v+'_rares'],
-                    'rares': uproot3.open(path+'nonleadingrares_'+y+'_hists.root')['h_'+r+'_'+v+'_nonleadingrares'],
-                    'ttw': uproot3.open(path+'ttw_'+y+'_hists.root')['h_'+r+'_'+v+'_ttw'],
-                    'ttz': uproot3.open(path+'ttz_'+y+'_hists.root')['h_'+r+'_'+v+'_ttz'],
-                    'tzq': uproot3.open(path+'tzq_'+y+'_hists.root')['h_'+r+'_'+v+'_tzq'],
-                    'wz': uproot3.open(path+'wz_'+y+'_hists.root')['h_'+r+'_'+v+'_wz'],
-                    'zz': uproot3.open(path+'zz_'+y+'_hists.root')['h_'+r+'_'+v+'_zz'],
-                    'data': uproot3.open(path+'data_'+y+'_hists.root')['h_'+r+'_'+v+'_data'],
-                    'tch': uproot3.open(path+'signal_tch_'+y+'_hists.root')['h_'+r+'_'+v+'_signal_tch'],
-                    'tuh': uproot3.open(path+'signal_tuh_'+y+'_hists.root')['h_'+r+'_'+v+'_signal_tuh'],
+                    # # 'fakes': uproot3.open(path+'fakes_mc_'+y+'_hists.root')['h_'+r+'_'+v+'_fakes_mc'],
+                    # # 'flips': uproot3.open(path+'flips_mc_'+y+'_hists.root')['h_'+r+'_'+v+'_flips_mc'],
+                    # # 'fakes': uproot3.open(path+'data_'+y+'_hists.root')['h_mlsfest_'+v+'_data'],
+                    # # 'flips': uproot3.open(path+'data_'+y+'_hists.root')['h_osest_'+v+'_data'],
+                    # # 'rares': uproot3.open(path+'rares_'+y+'_hists.root')['h_'+r+'_'+v+'_rares'],
+                    # # 'rares': uproot3.open(path+'nonleadingrares_'+y+'_hists.root')['h_'+r+'_'+v+'_nonleadingrares'],
+                    # # 'ttw': uproot3.open(path+'ttw_'+y+'_hists.root')['h_'+r+'_'+v+'_ttw'],
+                    # # 'ttz': uproot3.open(path+'ttz_'+y+'_hists.root')['h_'+r+'_'+v+'_ttz'],
+                    # # 'tzq': uproot3.open(path+'tzq_'+y+'_hists.root')['h_'+r+'_'+v+'_tzq'],
+                    # # 'wz': uproot3.open(path+'wz_'+y+'_hists.root')['h_'+r+'_'+v+'_wz'],
+                    # # 'zz': uproot3.open(path+'zz_'+y+'_hists.root')['h_'+r+'_'+v+'_zz'],
+                    # 'data': uproot3.open(path+'data_'+y+'_hists.root')['h_'+r+'_'+v+'_data'],
+                    # 'dataest': uproot3.open(path+'data_'+y+'_hists.root')['h_'+r+'_'+v+'_data'],
+                    # # 'tch': uproot3.open(path+'signal_tch_'+y+'_hists.root')['h_'+r+'_'+v+'_signal_tch'],
+                    # # 'tuh': uproot3.open(path+'signal_tuh_'+y+'_hists.root')['h_'+r+'_'+v+'_signal_tuh'],
+                    # 'dy': uproot3.open(path+'dy_'+y+'_hists.root')['h_'+r+'_'+v+'_dy'],
+                    # 'top': uproot3.open(path+'top_'+y+'_hists.root')['h_'+r+'_'+v+'_top'],
+                    'tg': uproot3.open(path+'tg_'+y+'_hists.root')['h_'+r+'_'+v+'_tg'],
+                    'ttg_dilep': uproot3.open(path+'ttg_dilep_'+y+'_hists.root')['h_'+r+'_'+v+'_ttg_dilep'],
+                    'wg': uproot3.open(path+'wg_'+y+'_hists.root')['h_'+r+'_'+v+'_wg'],
+                    'wwg': uproot3.open(path+'wwg_'+y+'_hists.root')['h_'+r+'_'+v+'_wwg'],
+                    'wzg': uproot3.open(path+'wzg_'+y+'_hists.root')['h_'+r+'_'+v+'_wzg'],
+                    'zg': uproot3.open(path+'zg_'+y+'_hists.root')['h_'+r+'_'+v+'_zg'],
                 }
 
             if 'njets' in v:
@@ -267,9 +329,48 @@ for y in years:
             # my_histos['dy'] *= flipDataSF
             # if r == 'br':
             #     my_histos['fakes'] = my_histos['sf']+my_histos['mlsf']-my_histos['df']-my_histos['df']-my_histos['mldf']-my_histos['mldf']-my_histos['sfpp']-my_histos['mlsfppp']
-            #     print('fakes', my_histos['fakes'].counts)
-            #     print('flips', my_histos['flips'].counts)
-            #     print('rares', my_histos['rares'].counts)
+            #     # print('tch', my_histos['tch'].counts/100)
+            #     # print('tuh', my_histos['tuh'].counts/100)
+            #     # # print('sf', my_histos['sf'].counts)
+            #     # # print('mlsf', my_histos['mlsf'].counts)
+            #     # # print('df', my_histos['df'].counts)
+            #     # # print('mldf', my_histos['mldf'].counts)
+            #     # # print('sfpp', my_histos['sfpp'].counts)
+            #     # # print('mlsfppp', my_histos['mlsfppp'].counts)
+            #     # biter = 0
+            #     # for b in range(len(my_histos['fakes'].counts)):
+            #     #     print("\t" + str(biter)+"\t & "+str(round(my_histos['tuh'].counts[b]/100,1))+" \pm "+str(round(my_histos['tuh'].errors[b]/100,1))+"\t & "
+            #     #             +str(round(my_histos['fakes'].counts[b],1))+" \pm "+str(round(my_histos['fakes'].errors[b],1))+"\t & "
+            #     #             +str(round(my_histos['flips'].counts[b],1))+" \pm "+str(round(my_histos['flips'].errors[b],1))+"\t & "
+            #     #             +str(round(my_histos['rares'].counts[b],1))+" \pm "+str(round(my_histos['rares'].errors[b],1))+"\t & "
+            #     #             +str(round(my_histos['data'].counts[b],1))+" \pm "+str(round(my_histos['data'].errors[b],1))+" \\\\ \hline")
+            #     #     biter = biter+1
+            #     # print('fakes', my_histos['fakes'].counts, my_histos['fakes'].errors)
+            #     # print('flips', my_histos['flips'].counts, my_histos['flips'].errors)
+            #     # print('rares', my_histos['rares'].counts, my_histos['rares'].errors)
+            #     # print('data', my_histos['data'].counts, my_histos['data'].errors)
+            #     # print('data', sum(my_histos['data'].counts))
+
+            # datafortable = {
+            # 'tg': my_histos['tg'].counts,
+            # 'tgErr': my_histos['tg'].errors,
+            # 'ttg': my_histos['ttg_dilep'].counts,
+            # 'ttgErr': my_histos['ttg_dilep'].errors,
+            # 'wg': my_histos['wg'].counts,
+            # 'wgErr': my_histos['wg'].errors,
+            # 'wwg': my_histos['wwg'].counts,
+            # 'wwgErr': my_histos['wwg'].errors,
+            # 'wzg': my_histos['wzg'].counts,
+            # 'wzgErr': my_histos['wzg'].errors,
+            # 'zg': my_histos['zg'].counts,
+            # 'zgErr': my_histos['zg'].errors,
+            # }
+
+            # df = pd.DataFrame(datafortable)
+            # df = df.round(3)
+            # df.to_csv("./outputs/neles_debug_xg/"+histName+".txt",header=df.columns,sep='\t')
+            # # for i in range(len(my_histos['tg'].counts)):
+
 
 
             if r == 'os':
@@ -357,6 +458,7 @@ for y in years:
                 # my_histos['multiboson'].color = '#FF595E'
 
                 keys = ['flips', 'rares', 'fakes']
+                # keys = ['flips', 'fakes', 'rares']
                 # keys = [ 'ttw','tzq','ttz','fakes','rares', 'zz','wz']
                 # keys = ['smallRares','xg', 'ttvv','ttx', 'ttw','multiboson']
                 # keys = ['wboson','dy','top']
@@ -369,6 +471,12 @@ for y in years:
                 signals = ['tch', 'tuh']
 
             total_mc = get_total(my_histos, keys)
+            # print(total_mc.counts)
+            # print(sum(total_mc.counts))
+            # print(total_mc.counts[0])
+            # print(sum(total_mc.counts)-total_mc.counts[0])
+            # print(total_mc.counts[0]/sum(total_mc.counts))
+            # total_mc = get_total(my_histos, signals)
 
             # mcDataSF = (sum(my_histos['data'].counts))/(sum(total_mc.counts))
 
@@ -376,11 +484,18 @@ for y in years:
             #     my_histos[k] *= mcDataSF
             # total_mc = get_total(my_histos, keys)
 
+            # for ib in range(25):
+            #     print(ib,5*ib, 5*(ib+1),total_mc.counts[ib], my_histos['data'].counts[ib])
+
 
             if not (blind and (r == 'ss' """or r == 'ml'""" or r == 'br')): 
+                # ratio = my_histos['estimate'].divide(my_histos['signal'], )
+                # ratio = my_histos['estimate'].divide(total_mc, )
                 ratio = my_histos['data'].divide(total_mc, )
             #     # ratio_est = my_histos['data_est'].divide(total_mc, )
             #     # ratio_data = my_histos['data'].divide(my_histos['data_est'], )
+                ratio_tch = (my_histos['tch']/100).divide(total_mc, )
+                ratio_tuh = (my_histos['tuh']/100).divide(total_mc, )
             else:
                 ratio_tch = my_histos['tch'].divide(total_mc, )
                 ratio_tuh = my_histos['tuh'].divide(total_mc, )
@@ -392,10 +507,10 @@ for y in years:
             fig, (ax, rax) = plt.subplots(2,1,figsize=(10,10), gridspec_kw={"height_ratios": (3, 1), "hspace": 0.05}, sharex=True)
             # fig, ax = plt.subplots(1,1,figsize=(10,10))
 
-            if y == "2016": luminosity = 35.9
+            if y == "2016": luminosity = 36.3
             if y == "2017": luminosity = 41.5
-            if y == "2018": luminosity = 59.71
-            if y == "run2": luminosity = 137
+            if y == "2018": luminosity = 59.7
+            if y == "run2": luminosity = 138
             hep.cms.label(
                 "Preliminary",
                 data=True,
@@ -413,8 +528,8 @@ for y in years:
                 w2=[ my_histos[x].errors for x in keys ],
                 histtype="fill",
                 stack=True,
-                # label=['%s (%.0f)'%(my_histos[x].label, sum(my_histos[x].counts)) for x in keys],
-                label=['%s'%(my_histos[x].label) for x in keys],
+                label=['%s (%.0f)'%(my_histos[x].label, sum(my_histos[x].counts)) for x in keys],
+                # label=['%s'%(my_histos[x].label) for x in keys],
                 color=[ my_histos[x].color for x in keys ],
                 ax=ax)
 
@@ -425,8 +540,8 @@ for y in years:
                     yerr=my_histos['data'].errors,
                     histtype="errorbar",
                     stack=False,
-                    # label='%s (%.0f)'%('Observation', sum(my_histos['data'].counts)),
-                    label='%s'%('Observation'),
+                    label='%s (%.0f)'%('Observation', sum(my_histos['data'].counts)),
+                    # label='%s'%('Observation'),
                     color='black',
                     ax=ax)
 
@@ -469,11 +584,13 @@ for y in years:
             #     histtype="errorbar",
             #     color='black',
             #     ax=rax)
-            # # print(my_histos['estimate'].counts)
-            # # print(my_histos['estimate'].errors)
-            # # print(total_mc.errors)
-            # # print(my_histos['signal'].errors)
-            # # print(my_histos['estimate'].errors/my_histos['signal'].counts)
+            # print(ratio.counts)
+            # print(my_histos['estimate'].counts)
+            # print(my_histos['signal'].counts)
+            # print(my_histos['estimate'].errors/my_histos['signal'].counts)
+            # print(my_histos['estimate'].errors)
+            # print(total_mc.errors)
+            # print(my_histos['signal'].errors)
 
             if not (blind and (r == 'ss' """or r == 'ml'""" or r == 'br')):
                 # print("making data plot")
@@ -502,13 +619,13 @@ for y in years:
             #     #     color='black',
             #     #     ax=rax)
             # else:
-            #     hep.histplot(
-            #         [ratio_tch.counts/100, ratio_tuh.counts/100],
-            #         ratio_tch.edges,
-            #         w2=[ratio_tch.errors/100, ratio_tuh.errors/100],
-            #         histtype="errorbar",
-            #         color=['#525B76','#6A4C93'],
-            #         ax=rax)
+            # hep.histplot(
+            #     [ratio_tch.counts, ratio_tuh.counts],
+            #     ratio_tch.edges,
+            #     w2=[ratio_tch.errors, ratio_tuh.errors],
+            #     histtype="step",
+            #     color=['#525B76','#BC412B'],
+            #     ax=rax)
 
 
             rax.set_ylim(0,1.99)
@@ -518,32 +635,33 @@ for y in years:
             # if not (blind and (r == 'ss' or r == 'ml' or r == 'br')): rax.set_ylabel(r'Data/Sim.')
             # if not (blind and (r == 'ss' """or r == 'ml'""" or r == 'br') or r == 'os'): rax.set_ylabel(r'Obs./Pred.')
             rax.set_ylabel(r'Obs./Pred.')
+            # rax.set_ylabel(r'Pred./SR Val.')
             # else: rax.set_ylabel(r'Sig./Back.')
             ax.set_ylabel(r'Events')
             ax.set_yscale('log')
-            # ax.set_ylim(1,1e10)
+            # ax.set_ylim(1,1e4)
             ax.set_ylim(0.1,1e9)
             # ax.set_xlabel(vname)
             # ax.set_yscale('linear')
             # ax.set_ylim(0.1, 10000)
 
-            # add_uncertainty(total_mc, rax, ratio=True)#, offset1=0.3)
-            # add_uncertainty(total_mc, ax)#, offset1=0.3)
-            if y == "run2" and "hut" in v:
-                change_uncertainty(total_mc, rax, tuh_comb_systErrors, ratio=True)#, offset1=0.3)
-                change_uncertainty(total_mc, ax, tuh_comb_systErrors)#, offset1=0.3)
-            elif y == "run2" and "hct" in v:
-                change_uncertainty(total_mc, rax, tch_comb_systErrors, ratio=True)#, offset1=0.3)
-                change_uncertainty(total_mc, ax, tch_comb_systErrors)#, offset1=0.3)
-            else:
-                add_uncertainty(total_mc, rax, ratio=True)#, offset1=0.3)
-                add_uncertainty(total_mc, ax)#, offset1=0.3)
+            add_uncertainty(total_mc, rax, ratio=True)#, offset1=0.3)
+            add_uncertainty(total_mc, ax)#, offset1=0.3)
+            # if y == "run2" and "hut" in v:
+            #     change_uncertainty(total_mc, rax, tuh_comb_systErrors, ratio=True)#, offset1=0.3)
+            #     change_uncertainty(total_mc, ax, tuh_comb_systErrors)#, offset1=0.3)
+            # elif y == "run2" and "hct" in v:
+            #     change_uncertainty(total_mc, rax, tch_comb_systErrors, ratio=True)#, offset1=0.3)
+            #     change_uncertainty(total_mc, ax, tch_comb_systErrors)#, offset1=0.3)
+            # else:
+            # add_uncertainty(total_mc, rax, ratio=True, offset1=0.3)
+            # add_uncertainty(total_mc, ax, offset1=0.3)
 
 
             ax.legend(ncol=2)
 
             #plt.show()
 
-            fig.savefig('/home/users/ksalyer/public_html/FCNC_plots/nov14_kinematics/'+histName+'.png')
-            fig.savefig('/home/users/ksalyer/public_html/FCNC_plots/nov14_kinematics/'+histName+'.pdf')
+            fig.savefig('/home/users/ksalyer/public_html/FCNC_plots_apr4_neles_debug_bdtcutfix/'+histName+'.png')
+            fig.savefig('/home/users/ksalyer/public_html/FCNC_plots_apr4_neles_debug_bdtcutfix/'+histName+'.pdf')
             #plt.close()

@@ -44,7 +44,7 @@ def calculate_total_unc_asymmetric(yield_tt, yield_st, verbose=False):
     unc_up = ( (abs(1-unc_up_tt)**2) + (abs(1-unc_up_st)**2) )**(0.5)
     unc_down = ( (abs(1-unc_down_tt)**2) + (abs(1-unc_down_st)**2) )**(0.5)
 
-    print "The fractional uncertainty in yield due to tt (st) is %.3f/%.3f (%.3f/%.3f)" % (unc_up_tt, unc_down_tt, unc_up_st, unc_down_st)
+    print ("The fractional uncertainty in yield due to tt (st) is %.3f/%.3f (%.3f/%.3f)" % (unc_up_tt, unc_down_tt, unc_up_st, unc_down_st))
 
     # return unc_up, unc_down
     return unc_up_tt, unc_down_tt, unc_up_st, unc_down_st
@@ -68,8 +68,11 @@ for y in years:
         if("tch" in c): altSig = "hct"
         else: altSig = "hut"
         
-        tt_file = "./outputs/jan25_ctag_signalByProcess/ttbar/signal_{0}_{1}_hists.root".format(c,y)
-        st_file = "./outputs/jan25_ctag_signalByProcess/st/signal_{0}_{1}_hists.root".format(c,y)
+        # tt_file = "./outputs/jan25_ctag_signalByProcess/ttbar/signal_{0}_{1}_hists.root".format(c,y)
+        # st_file = "./outputs/jan25_ctag_signalByProcess/st/signal_{0}_{1}_hists.root".format(c,y)
+
+        tt_file = "./outputs/feb22_jetpt30_signalbyproc/ttbar/signal_{0}_{1}_hists.root".format(c,y)
+        st_file = "./outputs/feb22_jetpt30_signalbyproc/st/signal_{0}_{1}_hists.root".format(c,y)
         
         # tt_file = "./outputs/nov30_bdtTTonly/signal_{0}_{1}_hists.root".format(c,y)
         # st_file = "./outputs/nov30_bdtSTonly/signal_{0}_{1}_hists.root".format(c,y)
@@ -77,8 +80,8 @@ for y in years:
         # tt_hist = getObjFromFile(tt_file, "h_br_sr_signal_{0}".format(c))
         # st_hist = getObjFromFile(st_file, "h_br_sr_signal_{0}".format(c))
 
-        tt_hist = getObjFromFile(tt_file, "h_br_bdtScore_{0}{1}_signal_{2}".format(altSig,y,c))
-        st_hist = getObjFromFile(st_file, "h_br_bdtScore_{0}{1}_signal_{2}".format(altSig,y,c))
+        tt_hist = getObjFromFile(tt_file, "h_br_bdtScore_{0}_signal_{1}".format(altSig,c))
+        st_hist = getObjFromFile(st_file, "h_br_bdtScore_{0}_signal_{1}".format(altSig,c))
         it = 0
         for b in range(1,tt_hist.GetNbinsX()+1):
             # up,down = calculate_total_unc_asymmetric(tt_hist.GetBinContent(b),st_hist.GetBinContent(b))

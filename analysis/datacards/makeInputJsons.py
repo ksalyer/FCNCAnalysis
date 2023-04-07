@@ -33,14 +33,25 @@ inputBDTJESUp = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr27_jes_sys
 inputBDTJESDown = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr27_jesDown_syst/"
 
 # inputBDTHistos = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/jan18_ctagBDT_normedCTagging/"
-inputBDTHistos = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/mar2_ctag_all/"
-inputBDTFakeEst = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr27_fakeEst/"
 # inputBDTSyst = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/jan19_ctag_syst/"
 # inputBDTCtagSyst = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/jan19_ctag_syst/"
+# inputBDTLeptonSyst = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/june23Syst_25/"
+
+# inputBDTHistos = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/mar27_smalltuhBDT/"
+# inputBDTFakeEst = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/mar27_smalltuhBDT/"
+inputBDTHistos = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/mar2_ctag_all/"
+inputBDTFakeEst = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr27_fakeEst/"
 inputBDTSyst = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr26_syst/"
 inputBDTCtagSyst = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr26_syst/"
-# inputBDTLeptonSyst = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/june23Syst_25/"
 inputBDTLeptonSyst = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr26_syst/"
+
+# inputBDTHistos = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/feb22_jetpt30_SRylds/"
+# inputBDTFakeEst = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/feb22_jetpt30_SRylds/"
+# inputBDTSyst = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/feb16_jetpt30_systematics/newbins/"
+# inputBDTCtagSyst = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/feb16_jetpt30_systematics/newbins/"
+# inputBDTLeptonSyst = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/feb16_jetpt30_systematics/newbins/"
+# inputBDTJESUp = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/feb16_jetpt30_jesup/newbins/"
+# inputBDTJESDown = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/feb16_jetpt30_jesdown/newbins/"
 
 with open('./ccPDFScale.json') as ccScale_json: ccScale = json.load(ccScale_json)
 with open('./bdtPDFScale.json') as bdtScale_json: bdtScale = json.load(bdtScale_json)
@@ -76,14 +87,16 @@ with open('./ccSRbins.json') as ccbins_json: ccSRDict = json.load(ccbins_json)
 
 years = [2016, 2017, 2018]
 # years = [2016]
-signals = ["tch", "tuh"]
+signals = ["tuh"]
+# signals = ["tch", "tuh"]
 procs = ["signal","rares","fakes_mc","flips_mc"]
 mcProcs = ["signal_tch", "signal_tuh", "rares"]
 ddProcs = ["fakes_mc","flips_mc"]
 
 # systSources = ["LepSF","PU","Trigger","cferr1","cferr2","hf","hfstats1","hfstats2","lf","lfstats1","lfstats2"]
-cc_systSources = ["LepSF","PU","Trigger"]
-bdt_systSources = ["EleSF","MuSF","EleSFsys","MuSFsys","PU","Trigger","lumi_uncorr","lumi_corr_161718","lumi_corr_1718"]
+cc_systSources = ["LepSF","PU","Trigger","cferr1","cferr2","hf","hfstats1","hfstats2","lf","lfstats1","lfstats2"]
+# cc_systSources = ["LepSF","PU","Trigger"]
+bdt_systSources = ["EleSF","MuSF","EleSFsys","MuSFsys","PU","Trigger","lumi_uncorr","lumi_corr_161718","lumi_corr_1718","pdfShp16","pdfShp1718"]
 # btagsystSources = ["cferr1","cferr2","hf","hfstats1","hfstats2","lf","lfstats1","lfstats2"]
 bdt_ctagsystSources = [ "ctag_stat",
                     # "ctag_EleIDSF",
@@ -197,7 +210,7 @@ for y in years:
                             bdtMCsyst[str(y)][s][p][t][r] = {}
                             bdtMCsyst[str(y)][s][p][t][r]["up"] = 1+unc
                             bdtMCsyst[str(y)][s][p][t][r]["down"] = 1-unc
-                            iterator += 1
+                            # iterator += 1
                     else:
                         unc = 0
                         if "16" in t:
@@ -211,7 +224,15 @@ for y in years:
                             bdtMCsyst[str(y)][s][p][t][r] = {}
                             bdtMCsyst[str(y)][s][p][t][r]["up"] = 1+unc
                             bdtMCsyst[str(y)][s][p][t][r]["down"] = 1-unc
-                            iterator += 1
+                            # iterator += 1
+                elif "pdfShp" in t:
+                    iterator = 1
+                    for r in bdtSRs:
+                        if (("signal" in p) and (s not in p)): continue 
+                        bdtMCsyst[str(y)][s][p][t][r] = {}
+                        bdtMCsyst[str(y)][s][p][t][r]["up"] = bdtScale[s][p]["bin_"+str(iterator-1)]["pdf_up"]
+                        bdtMCsyst[str(y)][s][p][t][r]["down"] = bdtScale[s][p]["bin_"+str(iterator-1)]["pdf_down"]
+                        iterator += 1
                 else:
                     if "MuSF" in t: bdtSystFileName = inputBDTLeptonSyst + p + "_" + str(y) + "_hists.root"
                     elif "EleSF" in t: bdtSystFileName = inputBDTLeptonSyst + p + "_" + str(y) + "_hists.root"
@@ -300,12 +321,12 @@ for y in years:
             ##PDF,SCALE
             bdtMCsyst[str(y)][s][p]["pdfShp"] = {}
             iterator = 1
-            for r in bdtSRs:
-                if (("signal" in p) and (s not in p)): continue 
-                bdtMCsyst[str(y)][s][p]["pdfShp"][r] = {}
-                bdtMCsyst[str(y)][s][p]["pdfShp"][r]["up"] = bdtScale[s][p]["bin_"+str(iterator-1)]["pdf_up"]
-                bdtMCsyst[str(y)][s][p]["pdfShp"][r]["down"] = bdtScale[s][p]["bin_"+str(iterator-1)]["pdf_down"]
-                iterator += 1
+            # for r in bdtSRs:
+            #     if (("signal" in p) and (s not in p)): continue 
+            #     bdtMCsyst[str(y)][s][p]["pdfShp"][r] = {}
+            #     bdtMCsyst[str(y)][s][p]["pdfShp"][r]["up"] = bdtScale[s][p]["bin_"+str(iterator-1)]["pdf_up"]
+            #     bdtMCsyst[str(y)][s][p]["pdfShp"][r]["down"] = bdtScale[s][p]["bin_"+str(iterator-1)]["pdf_down"]
+            #     iterator += 1
             bdtMCsyst[str(y)][s][p][p[:3]+"ScShp"] = {}
             iterator = 1
             for r in bdtSRs:
@@ -356,7 +377,7 @@ for y in years:
                     bdtMCsyst[str(y)][s][p][p[:3]+"Th"][r]["up"] = fill_up
                     bdtMCsyst[str(y)][s][p][p[:3]+"Th"][r]["down"] = fill_down
 
-with open("./bdtMCsyst"+args.tag+".json", "w") as f_out: json.dump(bdtMCsyst, f_out, indent=4)
+with open("./bdtMCsyst.json", "w") as f_out: json.dump(bdtMCsyst, f_out, indent=4)
 print("finished BDT MC syst")
 
 

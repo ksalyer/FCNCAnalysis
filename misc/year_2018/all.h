@@ -16,7 +16,8 @@ namespace allpt {
 #include "fastsim_lepton_sf.h"
 #include "bTagSF.h"
 #include "cTagSF.h"
-float getLumi() { return 59.71; } // v3.28
+// float getLumi() { return 59.71; } // v3.28
+float getLumi() { return 59.74; } // v3.28
 }
 
 #endif

@@ -12,6 +12,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--tag", help = "tag", type=str, default = "test")
 parser.add_argument("--blind", help = "blind boolean, blind =1", type=str, default = "1")
 parser.add_argument("--combination", help = "combination boolean, combination =0", type=str, default = "0")
+parser.add_argument("--flatsyst", help = "systematics boolean, flat =1", type=str, default = "0")
 args = parser.parse_args()
 
 blindBool = 1
@@ -20,21 +21,30 @@ if args.blind!="1": blindBool = 0
 combinationBool = 0
 if args.combination!="0": combinationBool=1
 
+flatSystBool = 0
+if args.flatsyst!="0": flatSystBool=1
+
 print("blind? : ", blindBool)
 print("combination? : ", combinationBool)
+print("flat systematics? : ", flatSystBool)
 
 ## HARDCODED PATHS TO INPUT HISTOS ##
 inFileCC    = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/nov16_ccYields/"
 # inFileBDT   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/nov18_bdtYields/"
 # inFileBDT   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/dec2_bdtYields/"
 # inFileBDT   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/jan18_ctagBDT_normedCTagging/"
-inFileBDT   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/mar2_ctag_all/"
-inFileBDT_fakes   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr27_fakeEst/"
-inFileBDT_signal   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/may6_ctag_signal/"
 # inFileBDT_signal   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/jan24_halfSig/"
 # inFileCC    = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/nov16_ccYields/"
 # inFileBDT   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/dec16_ctagBDTYields/"
 # inFileBDT   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/dec13_tthYieldsBDT/"
+
+# inFileBDT   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/mar27_smalltuhBDT/"
+# inFileBDT_fakes   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/mar27_smalltuhBDT/"
+# inFileBDT_signal   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/mar27_smalltuhBDT/"
+inFileBDT   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/mar2_ctag_all/"
+inFileBDT_fakes   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr27_fakeEst/"
+inFileBDT_signal   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/may6_ctag_signal/"
+# inFileBDT = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/feb22_jetpt30_SRylds/"
 
 ##define functions
 #function to get multiplicities for a given cc bin
@@ -214,6 +224,7 @@ def getObjFromFile(fname, hname):
 
 #function to write output text file
 def writeToTxt(df, filename, SRlist, processes, observations, yields, signalTitle):
+    # print(filename)
     outFile = open(filename, "w+")
 
     outFile.write("imax "+str(len(SRlist))+ " number of channels\n")
@@ -309,7 +320,8 @@ numBDTSRs = 20
 years = [2016,2017,2018]
 # years = [2016]
 signalNorm = 0.01
-signals = ["tch","tuh"]
+signals = ["tuh"]
+# signals = ["tch","tuh"]
 procs   = ["signal","rares","fakes_mc","flips_mc"]
 mcProcs = ["signal","rares"]
 ddProcs = ["fakes_mc","flips_mc"]
@@ -326,7 +338,8 @@ if combinationBool==1:
                     "sigTh_st",
                     "scShp",
                     # "pdfShp_sig","pdfShp_bkg",
-                    "pdfShp",
+                    "pdfShp16",
+                    "pdfShp1718",
                     "PU",
                     # "ctag_LHEScaleWeightmuF",
                     # "ctag_LHEScaleWeightmuR",
@@ -347,7 +360,8 @@ else:
     bdtSystCorr = [ "rarTh","sigTh",
                     "rarScShp","sigScShp",
                     # "pdfShp_sig","pdfShp_bkg",
-                    "pdfShp",
+                    "pdfShp16",
+                    "pdfShp1718",
                     "PU",
                     # "ctag_LHEScaleWeightmuF",
                     # "ctag_LHEScaleWeightmuR",
@@ -448,13 +462,15 @@ for y in years:
         bdtDFCols = [b+"_"+p[:3] for b in bdtSRs for p in procs]
 
         bdtRows = []
-        # bdtRows += getSRStatRows(procs, numBDTSRs)
-        # bdtRows += getSystRows(y, corrSyst, uncorrSyst)
-        bdtRows += getSRStatRows(mcProcs, numBDTSRs)
-        bdtRows += getBDTCRStatRows(y, ddProcs, bdtSRs, bdtCRDict, s)
-        # bdtRows += getSystRows(y, bdtSystCorr, bdtSystUncorr, numBDTSRs)
-        # bdtRows += getNormRows(y, ddProcs)
-        bdtRows += getNormRows(y, procs)
+        if flatSystBool:
+            bdtRows += getSRStatRows(procs, numBDTSRs)
+            # bdtRows += getSystRows(y, bdtSystCorr, bdtSystUncorr, numBDTSRs)
+            bdtRows += getNormRows(y, procs)
+        else:
+            bdtRows += getSRStatRows(mcProcs, numBDTSRs)
+            bdtRows += getBDTCRStatRows(y, ddProcs, bdtSRs, bdtCRDict, s)
+            bdtRows += getSystRows(y, bdtSystCorr, bdtSystUncorr, numBDTSRs)
+            bdtRows += getNormRows(y, ddProcs)
 
         bdt_df = pd.DataFrame(columns = bdtDFCols, index = bdtRows)
         bdtObs = {x:0 for x in bdtSRs}
@@ -466,19 +482,26 @@ for y in years:
 
 
         ## FILL MC ESTIMATES ##
+        loopProcs = []
+        if flatSystBool: loopProcs = procs
+        else: loopProcs = mcProcs
         # for p in procs:
-        for p in mcProcs:
+        # for p in mcProcs:
+        for p in loopProcs:
             if "signal" in p:
                 ccFileName = inFileCC + p + "_" + s + "_" + str(y) + "_hists.root"
                 ccHist = getObjFromFile(ccFileName, "h_br_sr_signal_"+s)
+                ccHist.Scale(yldscale)
 
                 # bdtFileName = inFileBDT + p + "_" + s + "_" + str(y) + "_hists.root"
                 bdtFileName = inFileBDT_signal + p + "_" + s + "_" + str(y) + "_hists.root"
                 bdtHist = getObjFromFile(bdtFileName, "h_br_bdtScore_"+altSig+"_"+ p + "_" + s)
+                # print(bdtFileName, "h_br_bdtScore_"+altSig+"_"+ p + "_" + s)
                 bdtHist.Scale(yldscale)
             else:
                 ccFileName = inFileCC + p + "_" + str(y) + "_hists.root"
                 ccHist = getObjFromFile(ccFileName, "h_br_sr_"+p)
+                ccHist.Scale(yldscale)
 
                 bdtFileName = inFileBDT + p + "_" + str(y) + "_hists.root"
                 bdtHist = getObjFromFile(bdtFileName, "h_br_bdtScore_"+altSig+"_"+ p)
@@ -503,36 +526,38 @@ for y in years:
                 while len(fill) <20: fill += " "
                 cc_df[colTitle][rowTitle] = fill
 
-                # if "signal" in p: pname = p + "_" + s
-                # else: pname = p
-                # for c in corrSyst:
-                #     if (("ScShp" in c) and p[:3] not in c): continue
-                #     if (("Th" in c) and p[:3] not in c): continue
-                #     rowTitle = c
-                #     while len(rowTitle)<17: rowTitle += " "
-                #     rowTitle += "lnN"
-                #     fill = str(round(ccSystDict[str(y)][pname][c][colTitle[:-4]]["down"],6))
-                #     fill += "/"
-                #     fill += str(round(ccSystDict[str(y)][pname][c][colTitle[:-4]]["up"],6))
-                #     while len(fill)<20: fill += " "
-                #     cc_df[colTitle][rowTitle] = fill
-                # for u in uncorrSyst:
-                #     rowTitle = u
-                #     rowTitle += "_" + str(y)[-2:]
-                #     while len(rowTitle)<17: rowTitle += " "
-                #     rowTitle += "lnN"
-                #     fill = str(round(ccSystDict[str(y)][pname][u][colTitle[:-4]]["down"],6))
-                #     fill += "/"
-                #     fill += str(round(ccSystDict[str(y)][pname][u][colTitle[:-4]]["up"],6))
-                #     while len(fill)<20: fill += " "
-                #     cc_df[colTitle][rowTitle] = fill
-                rowTitle = p[:3] + "_norm" + str(y)[-2:]
-                while len(rowTitle)<17: rowTitle+=" "
-                rowTitle += "lnN"
-                if "signal" in p: fill = "0.8/1.2"
-                else: fill = "0.7/1.3"
-                while len(fill)<20: fill += " "
-                cc_df[colTitle][rowTitle] = fill
+                if "signal" in p: pname = p + "_" + s
+                else: pname = p
+                if not flatSystBool:
+                    for c in corrSyst:
+                        if (("ScShp" in c) and p[:3] not in c): continue
+                        if (("Th" in c) and p[:3] not in c): continue
+                        rowTitle = c
+                        while len(rowTitle)<17: rowTitle += " "
+                        rowTitle += "lnN"
+                        fill = str(round(ccSystDict[str(y)][pname][c][colTitle[:-4]]["down"],6))
+                        fill += "/"
+                        fill += str(round(ccSystDict[str(y)][pname][c][colTitle[:-4]]["up"],6))
+                        while len(fill)<20: fill += " "
+                        cc_df[colTitle][rowTitle] = fill
+                    for u in uncorrSyst:
+                        rowTitle = u
+                        rowTitle += "_" + str(y)[-2:]
+                        while len(rowTitle)<17: rowTitle += " "
+                        rowTitle += "lnN"
+                        fill = str(round(ccSystDict[str(y)][pname][u][colTitle[:-4]]["down"],6))
+                        fill += "/"
+                        fill += str(round(ccSystDict[str(y)][pname][u][colTitle[:-4]]["up"],6))
+                        while len(fill)<20: fill += " "
+                        cc_df[colTitle][rowTitle] = fill
+                else: 
+                    rowTitle = p[:3] + "_norm" + str(y)[-2:]
+                    while len(rowTitle)<17: rowTitle+=" "
+                    rowTitle += "lnN"
+                    if "signal" in p: fill = "0.8/1.2"
+                    else: fill = "0.7/1.3"
+                    while len(fill)<20: fill += " "
+                    cc_df[colTitle][rowTitle] = fill
 
             ##LOOP TO FILL BDT##
             for i in range(1, numBDTSRs+1):
@@ -552,260 +577,274 @@ for y in years:
                 while len(fill) <20: fill += " "
                 bdt_df[colTitle][rowTitle] = fill
 
-                
-                rowTitle = p[:3] + "_norm" + str(y)[-2:]
-                while len(rowTitle)<17: rowTitle+=" "
-                rowTitle += "lnN"
-                if "signal" in p: fill = "0.8/1.2"
-                else: fill = "0.7/1.3"
-                # elif "rares" in p: fill = "0.7/1.3"
-                # else: fill = "-"
-                while len(fill)<20: fill += " "
-                bdt_df[colTitle][rowTitle] = fill
+                if flatSystBool:
+                    rowTitle = p[:3] + "_norm" + str(y)[-2:]
+                    while len(rowTitle)<17: rowTitle+=" "
+                    rowTitle += "lnN"
+                    if "signal" in p: fill = "0.8/1.2"
+                    else: fill = "0.7/1.3"
+                    # elif "rares" in p: fill = "0.7/1.3"
+                    # else: fill = "-"
+                    while len(fill)<20: fill += " "
+                    bdt_df[colTitle][rowTitle] = fill
 
-                if "signal" in p: pname = p + "_" + s
-                else: pname = p
-                if ("signal" in pname) or ("rare" in pname):
-                    for c in bdtSystCorr:
-                        if y==2016 and c == "lumi_corr_1718":continue
-                        if (("ScShp" in c) and p[:3] not in c): continue
-                        if (("Th" in c) and p[:3] not in c): continue
-                        rowTitle = c
-                        if "ctag_" in c:
-                            rowTitle = "CMS_btag_" #+ c[5:]
-                        if "XSec" in c: rowTitle += c[5:11]
-                        if "PSWeight" in c: rowTitle += c[5:8] + c[13:16]
-                        if "PUWeight" in c: rowTitle += c[5:8] + c[10:13]
-                        if "bFrag" in c: rowTitle += c[5:]
-                        if "LHEScaleWeight" in c: rowTitle += c[8:10] + c[13:14] + c[-3:]
-                        if "stat" in c: rowTitle += c[5:]
-                        if "EleIDSF" in c: rowTitle += c[5:7] + c[8:10]
-                        if "MuIDSF" in c: rowTitle += c[5:9]
-                        if "jer" in c: rowTitle += c[5:]
-                        if "jesTotal" in c: rowTitle += c[5:8]
-                        # if "LHEScaleWeight" in c: rowTitle = rowTitle[8:]
-                        # if "ValuesSystOnly" in c: rowTitle = rowTitle[6:]
-                        # if "Shp" in c: rowTitle+= "_" + str(i-1)
-                        while len(rowTitle)<17: rowTitle += " "
-                        rowTitle += "lnN"
-                        # if "pdfShp" in c:
-                        #     # print(c, pname)
-                        #     # if ("sig" in c) and ("sig" in pname):
-                        #     # sigma = bdtSystDict[str(y)][s][pname][c][colTitle[:-4]]["up"]
-                        #     # # print(sigma)
-                        #     # sigma = sigma - bdtSystDict[str(y)][s][pname][c][colTitle[:-4]]["down"]
-                        #     # sigma = sigma/2
-                        #     # fill = str(round(1-abs(sigma),6))
-                        #     fill = str(round(bdtSystDict[str(y)][s][pname][c[:-4]][colTitle[:-4]]["down"],6))
-                        #     fill += "/"
-                        #     fill += str(round(bdtSystDict[str(y)][s][pname][c[:-4]][colTitle[:-4]]["up"],6))
-                        #     # fill += str(round(1+abs(sigma),6))
-                        #     while len(fill)<20: fill += " "
-                        #     bdt_df[colTitle][rowTitle] = fill
-                        #     # elif ("bkg" in c) and ("sig" not in pname):
-                        #     #     sigma = round(bdtSystDict[str(y)][s][pname][c[:-4]][colTitle[:-4]]["up"],6)
-                        #     #     sigma = sigma - round(bdtSystDict[str(y)][s][pname][c[:-4]][colTitle[:-4]]["down"],6)
-                        #     #     sigma = sigma/2
-                        #     #     fill = str(1-abs(sigma))
-                        #     #     # fill = str(round(bdtSystDict[str(y)][s][pname][c[:-4]][colTitle[:-4]]["down"],6))
-                        #     #     fill += "/"
-                        #     #     # fill += str(round(bdtSystDict[str(y)][s][pname][c[:-4]][colTitle[:-4]]["up"],6))
-                        #     #     fill += str(1+abs(sigma))
-                        #     #     while len(fill)<20: fill += " "
-                        #     #     bdt_df[colTitle][rowTitle] = fill
-                        # else:
-                        if combinationBool and "scShp" in c:
-                            fill = str(round(bdtSystDict[str(y)][s][pname][p[:3]+"S"+c[1:]][colTitle[:-4]]["down"],6))
-                            fill += "/"
-                            fill += str(round(bdtSystDict[str(y)][s][pname][p[:3]+"S"+c[1:]][colTitle[:-4]]["up"],6))
-                        else:
-                            fill = str(round(bdtSystDict[str(y)][s][pname][c][colTitle[:-4]]["down"],6))
-                            fill += "/"
-                            fill += str(round(bdtSystDict[str(y)][s][pname][c][colTitle[:-4]]["up"],6))
-                        if (("bFrag" in c) and (y==2018)): fill = "-"
-                        while len(fill)<20: fill += " "
-                        bdt_df[colTitle][rowTitle] = fill
-                    for u in bdtSystUncorr:
-                        if (("ScShp" in u) and p[:3] not in u): continue
-                        if (("pdfShp" in u) and ("sig" in u) and ("sig" not in u)): continue
-                        if (("pdfShp" in u) and ("bkg" in u) and ("sig" in u)): continue
-                        rowTitle = u
-                        if "ctag_" in u:
-                            #rowTitle = u[5:]
-                            rowTitle = "CMS_btag_" #+ c[5:]
-                        if "XSec" in u: rowTitle += u[5:11]
-                        if "PSWeight" in u: rowTitle += u[5:8] + u[13:16]
-                        if "PUWeight" in u: rowTitle += u[5:8] + u[10:13]
-                        if "bFrag" in u: rowTitle += u[5:]
-                        if "LHEScaleWeight" in u: rowTitle += u[8:10] + u[13:14] + u[-3:]
-                        if "stat" in u: rowTitle += u[5:]
-                        if "EleIDSF" in u: rowTitle += u[5:7] + u[8:10]
-                        if "MuIDSF" in u: rowTitle += u[5:9]
-                        if "jer" in u: rowTitle += u[5:]
-                        if "jesTotal" in u: rowTitle += u[5:8]
-                        # if "LHEScaleWeight" in u: rowTitle = rowTitle[8:]
-                        # if "ValuesSystOnly" in u: rowTitle = rowTitle[6:]
-                        rowTitle += "_" + str(y)[-2:]
-                        if "Shp" in u: rowTitle+= "_" + str(i-1)
-                        # if "Shp" in u: 
-                        #     rowTitle += "_" + str(i-1)
-                        #     print(rowTitle)
-                        while len(rowTitle)<17: rowTitle += " "
-                        rowTitle += "lnN"
-                        # print(y, s, pname, u, colTitle)
-                        if "pdfShp" in u:
-                            if ("sig" in u) and ("sig" in pname):
-                                sigma = round(bdtSystDict[str(y)][s][pname][u[:-4]][colTitle[:-4]]["up"],6)
-                                sigma = sigma - round(bdtSystDict[str(y)][s][pname][u[:-4]][colTitle[:-4]]["down"],6)
-                                sigma = sigma/2
-                                fill = str(1-abs(sigma))
-                                # fill = str(round(bdtSystDict[str(y)][s][pname][u[:-4]][colTitle[:-4]]["down"],6))
+                else:
+                    if "signal" in p: pname = p + "_" + s
+                    else: pname = p
+                    if ("signal" in pname) or ("rare" in pname):
+                        for c in bdtSystCorr:
+                            if y==2016 and c == "lumi_corr_1718": continue
+                            if y==2016 and c == "pdfShp1718": continue
+                            if y!=2016 and c == "pdfShp16":continue
+                            if (("ScShp" in c) and p[:3] not in c): continue
+                            if (("Th" in c) and p[:3] not in c): continue
+                            rowTitle = c
+                            if "ctag_" in c:
+                                rowTitle = "CMS_btag_" #+ c[5:]
+                            if "XSec" in c: rowTitle += c[5:11]
+                            if "PSWeight" in c: rowTitle += c[5:8] + c[13:16]
+                            if "PUWeight" in c: rowTitle += c[5:8] + c[10:13]
+                            if "bFrag" in c: rowTitle += c[5:]
+                            if "LHEScaleWeight" in c: rowTitle += c[8:10] + c[13:14] + c[-3:]
+                            if "stat" in c: rowTitle += c[5:]
+                            if "EleIDSF" in c: rowTitle += c[5:7] + c[8:10]
+                            if "MuIDSF" in c: rowTitle += c[5:9]
+                            if "jer" in c: rowTitle += c[5:]
+                            if "jesTotal" in c: rowTitle += c[5:8]
+                            # if "LHEScaleWeight" in c: rowTitle = rowTitle[8:]
+                            # if "ValuesSystOnly" in c: rowTitle = rowTitle[6:]
+                            # if "Shp" in c: rowTitle+= "_" + str(i-1)
+                            while len(rowTitle)<17: rowTitle += " "
+                            rowTitle += "lnN"
+                            # if "pdfShp" in c:
+                            #     # print(c, pname)
+                            #     # if ("sig" in c) and ("sig" in pname):
+                            #     # sigma = bdtSystDict[str(y)][s][pname][c][colTitle[:-4]]["up"]
+                            #     # # print(sigma)
+                            #     # sigma = sigma - bdtSystDict[str(y)][s][pname][c][colTitle[:-4]]["down"]
+                            #     # sigma = sigma/2
+                            #     # fill = str(round(1-abs(sigma),6))
+                            #     fill = str(round(bdtSystDict[str(y)][s][pname][c[:-4]][colTitle[:-4]]["down"],6))
+                            #     fill += "/"
+                            #     fill += str(round(bdtSystDict[str(y)][s][pname][c[:-4]][colTitle[:-4]]["up"],6))
+                            #     # fill += str(round(1+abs(sigma),6))
+                            #     while len(fill)<20: fill += " "
+                            #     bdt_df[colTitle][rowTitle] = fill
+                            #     # elif ("bkg" in c) and ("sig" not in pname):
+                            #     #     sigma = round(bdtSystDict[str(y)][s][pname][c[:-4]][colTitle[:-4]]["up"],6)
+                            #     #     sigma = sigma - round(bdtSystDict[str(y)][s][pname][c[:-4]][colTitle[:-4]]["down"],6)
+                            #     #     sigma = sigma/2
+                            #     #     fill = str(1-abs(sigma))
+                            #     #     # fill = str(round(bdtSystDict[str(y)][s][pname][c[:-4]][colTitle[:-4]]["down"],6))
+                            #     #     fill += "/"
+                            #     #     # fill += str(round(bdtSystDict[str(y)][s][pname][c[:-4]][colTitle[:-4]]["up"],6))
+                            #     #     fill += str(1+abs(sigma))
+                            #     #     while len(fill)<20: fill += " "
+                            #     #     bdt_df[colTitle][rowTitle] = fill
+                            # else:
+                            if combinationBool and "scShp" in c:
+                                fill = str(round(bdtSystDict[str(y)][s][pname][p[:3]+"S"+c[1:]][colTitle[:-4]]["down"],6))
                                 fill += "/"
-                                # fill += str(round(bdtSystDict[str(y)][s][pname][u[:-4]][colTitle[:-4]]["up"],6))
-                                fill += str(1+abs(sigma))
-                                while len(fill)<20: fill += " "
-                                bdt_df[colTitle][rowTitle] = fill
-                                print(colTitle, rowTitle, fill)
-                            elif ("bkg" in u) and ("sig" not in pname):
-                                sigma = round(bdtSystDict[str(y)][s][pname][u[:-4]][colTitle[:-4]]["up"],6)
-                                sigma = sigma - round(bdtSystDict[str(y)][s][pname][u[:-4]][colTitle[:-4]]["down"],6)
-                                sigma = sigma/2
-                                fill = str(1-abs(sigma))
-                                # fill = str(round(bdtSystDict[str(y)][s][pname][u[:-4]][colTitle[:-4]]["down"],6))
+                                fill += str(round(bdtSystDict[str(y)][s][pname][p[:3]+"S"+c[1:]][colTitle[:-4]]["up"],6))
+                            else:
+                                fill = str(round(bdtSystDict[str(y)][s][pname][c][colTitle[:-4]]["down"],6))
                                 fill += "/"
-                                # fill += str(round(bdtSystDict[str(y)][s][pname][u[:-4]][colTitle[:-4]]["up"],6))
-                                fill += str(1+abs(sigma))
-                                while len(fill)<20: fill += " "
-                                bdt_df[colTitle][rowTitle] = fill
-                        else:
-                            fill = str(round(bdtSystDict[str(y)][s][pname][u][colTitle[:-4]]["down"],6))
-                            fill += "/"
-                            fill += str(round(bdtSystDict[str(y)][s][pname][u][colTitle[:-4]]["up"],6))
-                            if (("bFrag" in u) and (y==2018)): fill = "-"
+                                fill += str(round(bdtSystDict[str(y)][s][pname][c][colTitle[:-4]]["up"],6))
+                            if (("bFrag" in c) and (y==2018)): fill = "-"
                             while len(fill)<20: fill += " "
                             bdt_df[colTitle][rowTitle] = fill
-                        # while len(rowTitle)<17: rowTitle += " "
-                        # rowTitle += "lnN"
-                        # fill = str(round(bdtSystDict[str(y)][s][pname][u][colTitle[:-4]]["down"],6))
-                        # fill += "/"
-                        # fill += str(round(bdtSystDict[str(y)][s][pname][u][colTitle[:-4]]["up"],6))
-                        # if (("bFrag" in u) and (y==2018)): fill = "-"
-                        # while len(fill)<20: fill += " "
-                        # bdt_df[colTitle][rowTitle] = fill
+                        for u in bdtSystUncorr:
+                            if (("ScShp" in u) and p[:3] not in u): continue
+                            if (("pdfShp" in u) and ("sig" in u) and ("sig" not in u)): continue
+                            if (("pdfShp" in u) and ("bkg" in u) and ("sig" in u)): continue
+                            rowTitle = u
+                            if "ctag_" in u:
+                                #rowTitle = u[5:]
+                                rowTitle = "CMS_btag_" #+ c[5:]
+                            if "XSec" in u: rowTitle += u[5:11]
+                            if "PSWeight" in u: rowTitle += u[5:8] + u[13:16]
+                            if "PUWeight" in u: rowTitle += u[5:8] + u[10:13]
+                            if "bFrag" in u: rowTitle += u[5:]
+                            if "LHEScaleWeight" in u: rowTitle += u[8:10] + u[13:14] + u[-3:]
+                            if "stat" in u: rowTitle += u[5:]
+                            if "EleIDSF" in u: rowTitle += u[5:7] + u[8:10]
+                            if "MuIDSF" in u: rowTitle += u[5:9]
+                            if "jer" in u: rowTitle += u[5:]
+                            if "jesTotal" in u: rowTitle += u[5:8]
+                            # if "LHEScaleWeight" in u: rowTitle = rowTitle[8:]
+                            # if "ValuesSystOnly" in u: rowTitle = rowTitle[6:]
+                            rowTitle += "_" + str(y)[-2:]
+                            if "Shp" in u: rowTitle+= "_" + str(i-1)
+                            # if "Shp" in u: 
+                            #     rowTitle += "_" + str(i-1)
+                            #     print(rowTitle)
+                            while len(rowTitle)<17: rowTitle += " "
+                            rowTitle += "lnN"
+                            # print(y, s, pname, u, colTitle)
+                            if "pdfShp" in u:
+                                if ("sig" in u) and ("sig" in pname):
+                                    sigma = round(bdtSystDict[str(y)][s][pname][u[:-4]][colTitle[:-4]]["up"],6)
+                                    sigma = sigma - round(bdtSystDict[str(y)][s][pname][u[:-4]][colTitle[:-4]]["down"],6)
+                                    sigma = sigma/2
+                                    fill = str(1-abs(sigma))
+                                    # fill = str(round(bdtSystDict[str(y)][s][pname][u[:-4]][colTitle[:-4]]["down"],6))
+                                    fill += "/"
+                                    # fill += str(round(bdtSystDict[str(y)][s][pname][u[:-4]][colTitle[:-4]]["up"],6))
+                                    fill += str(1+abs(sigma))
+                                    while len(fill)<20: fill += " "
+                                    bdt_df[colTitle][rowTitle] = fill
+                                    print(colTitle, rowTitle, fill)
+                                elif ("bkg" in u) and ("sig" not in pname):
+                                    sigma = round(bdtSystDict[str(y)][s][pname][u[:-4]][colTitle[:-4]]["up"],6)
+                                    sigma = sigma - round(bdtSystDict[str(y)][s][pname][u[:-4]][colTitle[:-4]]["down"],6)
+                                    sigma = sigma/2
+                                    fill = str(1-abs(sigma))
+                                    # fill = str(round(bdtSystDict[str(y)][s][pname][u[:-4]][colTitle[:-4]]["down"],6))
+                                    fill += "/"
+                                    # fill += str(round(bdtSystDict[str(y)][s][pname][u[:-4]][colTitle[:-4]]["up"],6))
+                                    fill += str(1+abs(sigma))
+                                    while len(fill)<20: fill += " "
+                                    bdt_df[colTitle][rowTitle] = fill
+                            else:
+                                fill = str(round(bdtSystDict[str(y)][s][pname][u][colTitle[:-4]]["down"],6))
+                                fill += "/"
+                                fill += str(round(bdtSystDict[str(y)][s][pname][u][colTitle[:-4]]["up"],6))
+                                if (("bFrag" in u) and (y==2018)): fill = "-"
+                                while len(fill)<20: fill += " "
+                                bdt_df[colTitle][rowTitle] = fill
+                            # while len(rowTitle)<17: rowTitle += " "
+                            # rowTitle += "lnN"
+                            # fill = str(round(bdtSystDict[str(y)][s][pname][u][colTitle[:-4]]["down"],6))
+                            # fill += "/"
+                            # fill += str(round(bdtSystDict[str(y)][s][pname][u][colTitle[:-4]]["up"],6))
+                            # if (("bFrag" in u) and (y==2018)): fill = "-"
+                            # while len(fill)<20: fill += " "
+                            # bdt_df[colTitle][rowTitle] = fill
 
 
         ## FILL DATA DRIVEN ESTIMATES ##
-        for p in ddProcs:
-            ccFileName = inFileCC + "data_" + str(y) + "_hists.root" 
-            # bdtFileName = inFileBDT + "data_" + str(y) + "_hists.root" 
-            
-            if "fakes" in p: 
-                raresFilecc = inFileCC + "rares_" + str(y) + "_hists.root"
-                raresFilebdt = inFileBDT + "rares_" + str(y) + "_hists.root"
-                bdtFileName = inFileBDT_fakes + "data_" + str(y) + "_hists.root" 
+        if not flatSystBool:
+            for p in ddProcs:
+                ccFileName = inFileCC + "data_" + str(y) + "_hists.root" 
+                # bdtFileName = inFileBDT + "data_" + str(y) + "_hists.root" 
+                
+                if "fakes" in p: 
+                    raresFilecc = inFileCC + "rares_" + str(y) + "_hists.root"
+                    raresFilebdt = inFileBDT + "rares_" + str(y) + "_hists.root"
+                    bdtFileName = inFileBDT_fakes + "data_" + str(y) + "_hists.root" 
+                    # bdtFileName = inFileBDT + "data_" + str(y) + "_hists.root" 
 
-                sfHist = getObjFromFile(ccFileName, "h_sfest_fakecr_data")
-                mlsfHist = getObjFromFile(ccFileName, "h_mlsfest_fakecr_data")
-                dfHist = getObjFromFile(ccFileName, "h_dfest_fakecr_data")
-                mldfHist = getObjFromFile(ccFileName, "h_mldfest_fakecr_data")
-                sfppHist = getObjFromFile(raresFilecc, "h_sfppest_fakecr_rares")
-                mlsfpppHist = getObjFromFile(raresFilecc, "h_mlsfpppest_fakecr_rares")
+                    sfHist = getObjFromFile(ccFileName, "h_sfest_fakecr_data")
+                    mlsfHist = getObjFromFile(ccFileName, "h_mlsfest_fakecr_data")
+                    dfHist = getObjFromFile(ccFileName, "h_dfest_fakecr_data")
+                    mldfHist = getObjFromFile(ccFileName, "h_mldfest_fakecr_data")
+                    sfppHist = getObjFromFile(raresFilecc, "h_sfppest_fakecr_rares")
+                    mlsfpppHist = getObjFromFile(raresFilecc, "h_mlsfpppest_fakecr_rares")
 
-                ccHist = sfHist.Clone()
-                ccHist.Add(mlsfHist)
-                ccHist.Add(dfHist, -2)
-                ccHist.Add(mldfHist, -2)
-                ccHist.Add(sfppHist, -1)
-                ccHist.Add(mlsfpppHist, -1)
+                    ccHist = sfHist.Clone()
+                    ccHist.Add(mlsfHist)
+                    ccHist.Add(dfHist, -2)
+                    ccHist.Add(mldfHist, -2)
+                    ccHist.Add(sfppHist, -1)
+                    ccHist.Add(mlsfpppHist, -1)
 
-                sfHist = getObjFromFile(bdtFileName, "h_sfest_bdtScore_"+altSig+"_data")
-                mlsfHist = getObjFromFile(bdtFileName, "h_mlsfest_bdtScore_"+altSig+"_data")
-                dfHist = getObjFromFile(bdtFileName, "h_dfest_bdtScore_"+altSig+"_data")
-                mldfHist = getObjFromFile(bdtFileName, "h_mldfest_bdtScore_"+altSig+"_data")
-                sfppHist = getObjFromFile(raresFilebdt, "h_sfppest_bdtScore_"+altSig+"_rares")
-                mlsfpppHist = getObjFromFile(raresFilebdt, "h_mlsfpppest_bdtScore_"+altSig+"_rares")
+                    sfHist = getObjFromFile(bdtFileName, "h_sfest_bdtScore_"+altSig+"_data")
+                    mlsfHist = getObjFromFile(bdtFileName, "h_mlsfest_bdtScore_"+altSig+"_data")
+                    dfHist = getObjFromFile(bdtFileName, "h_dfest_bdtScore_"+altSig+"_data")
+                    mldfHist = getObjFromFile(bdtFileName, "h_mldfest_bdtScore_"+altSig+"_data")
+                    sfppHist = getObjFromFile(raresFilebdt, "h_sfppest_bdtScore_"+altSig+"_rares")
+                    mlsfpppHist = getObjFromFile(raresFilebdt, "h_mlsfpppest_bdtScore_"+altSig+"_rares")
 
-                bdtHist = sfHist.Clone()
-                bdtHist.Add(mlsfHist)
-                bdtHist.Add(dfHist, -2)
-                bdtHist.Add(mldfHist, -2)
-                bdtHist.Add(sfppHist, -1)
-                bdtHist.Add(mlsfpppHist, -1)
-            else:
-                bdtFileName = inFileBDT + "data_" + str(y) + "_hists.root" 
-                ccHist = getObjFromFile(ccFileName, "h_osest_flipcr_data")
-                bdtHist = getObjFromFile(bdtFileName, "h_osest_bdtScore_"+altSig+"_data")
+                    bdtHist = sfHist.Clone()
+                    bdtHist.Add(mlsfHist)
+                    bdtHist.Add(dfHist, -2)
+                    bdtHist.Add(mldfHist, -2)
+                    bdtHist.Add(sfppHist, -1)
+                    bdtHist.Add(mlsfpppHist, -1)
+                else:
+                    bdtFileName = inFileBDT + "data_" + str(y) + "_hists.root" 
+                    ccHist = getObjFromFile(ccFileName, "h_osest_flipcr_data")
+                    bdtHist = getObjFromFile(bdtFileName, "h_osest_bdtScore_"+altSig+"_data")
 
-            ##LOOP TO FILL CC##
-            for i in range(1, numCCSRs+1):
-                binDict = getCCSRBin(i, ccHist, ccSRDict)
+                ##LOOP TO FILL CC##
+                for i in range(1, numCCSRs+1):
+                    binDict = getCCSRBin(i, ccHist, ccSRDict)
 
-                ccYld[binDict["name"]][p] = binDict["yield"]
-                if "signal" not in p: ccObs[binDict["name"]] += binDict["yield"]
+                    ccYld[binDict["name"]][p] = binDict["yield"]
+                    if "signal" not in p: ccObs[binDict["name"]] += binDict["yield"]
 
-                if "flip" in p and ccCRDict[str(y)][p][binDict["name"]]["yield"]==0: continue
-                colTitle = binDict["name"] + "_" + p[:3]
-                rowTitle = p[:2] + "_st" + str(i-1) + "_" + str(y)[-2:] + " "
-                rowTitle2 = str(int(ccCRDict[str(y)][p][binDict["name"]]["yield"]))
-                while len(rowTitle+rowTitle2)<16: rowTitle += " "
-                rowTitle += "gmN "
-                rowTitle += rowTitle2
-                fill = round(binDict["yield"]/ccCRDict[str(y)][p][binDict["name"]]["yield"], 6)
-                fill = str(fill)
-                while len(fill)<20: fill += " "
-                cc_df[colTitle][rowTitle] = fill
-                rowTitle = p[:4] + "RateSyst_" + str(y)[-2:]
-                while len(rowTitle)<17: rowTitle += " "
-                rowTitle += "lnN"
-                fill = round(1+ (ccCRDict[str(y)][p][binDict["name"]]["syst"]/100), 6)
-                fill = str(fill)
-                while len(fill)<20: fill += " "
-                cc_df[colTitle][rowTitle] = fill
-                rowTitle = p[:3] + "_norm" + str(y)[-2:]
-                while len(rowTitle)<17: rowTitle+=" "
-                rowTitle += "lnN"
-                if "fakes" in p: fill = "0.7/1.3"
-                else: fill = "0.7/1.3"
-                while len(fill)<20: fill += " "
-                cc_df[colTitle][rowTitle] = fill
+                    if "flip" in p and ccCRDict[str(y)][p][binDict["name"]]["yield"]==0: continue
+                    colTitle = binDict["name"] + "_" + p[:3]
+                    rowTitle = p[:2] + "_st" + str(i-1) + "_" + str(y)[-2:] + " "
+                    rowTitle2 = str(int(ccCRDict[str(y)][p][binDict["name"]]["yield"]))
+                    while len(rowTitle+rowTitle2)<16: rowTitle += " "
+                    rowTitle += "gmN "
+                    rowTitle += rowTitle2
+                    fill = round(binDict["yield"]/ccCRDict[str(y)][p][binDict["name"]]["yield"], 6)
+                    fill = str(fill)
+                    while len(fill)<20: fill += " "
+                    cc_df[colTitle][rowTitle] = fill
+                    rowTitle = p[:4] + "RateSyst_" + str(y)[-2:]
+                    while len(rowTitle)<17: rowTitle += " "
+                    rowTitle += "lnN"
+                    fill = round(1+ (ccCRDict[str(y)][p][binDict["name"]]["syst"]/100), 6)
+                    fill = str(fill)
+                    while len(fill)<20: fill += " "
+                    cc_df[colTitle][rowTitle] = fill
+                    rowTitle = p[:3] + "_norm" + str(y)[-2:]
+                    while len(rowTitle)<17: rowTitle+=" "
+                    rowTitle += "lnN"
+                    if "fakes" in p: fill = "0.7/1.3"
+                    else: fill = "0.7/1.3"
+                    while len(fill)<20: fill += " "
+                    cc_df[colTitle][rowTitle] = fill
 
-            ##LOOP TO FILL BDT##
-            for i in range(1, numBDTSRs+1):
-                yld = bdtHist.GetBinContent(i)
-                err = bdtHist.GetBinError(i)
+                ##LOOP TO FILL BDT##
+                for i in range(1, numBDTSRs+1):
+                    yld = bdtHist.GetBinContent(i)
+                    err = bdtHist.GetBinError(i)
 
-                bdtYld["bin_"+str(i-1)][p] = yld
-                if "signal" not in p: bdtObs["bin_"+str(i-1)] += yld
+                    bdtYld["bin_"+str(i-1)][p] = yld
+                    if "signal" not in p: bdtObs["bin_"+str(i-1)] += yld
 
-                colTitle = "bin_"+str(i-1) + "_" + p[:3]
-                rowTitle = p[:2] + "_st" + str(i-1) + "_" + str(y)[-2:] + " "
-                rowTitle2 = str(int(bdtCRDict[str(y)][s][p]["bin_"+str(i-1)]["yield"]))
-                while len(rowTitle+rowTitle2)<16: rowTitle += " "
-                rowTitle += "gmN "
-                rowTitle += rowTitle2
-                fill = round(yld/bdtCRDict[str(y)][s][p]["bin_"+str(i-1)]["yield"], 6)
-                fill = str(fill)
-                while len(fill)<20: fill += " "
-                bdt_df[colTitle][rowTitle] = fill
-                rowTitle = p[:4].capitalize() + "Rate_" + str(y)
-                while len(rowTitle)<17: rowTitle += " "
-                rowTitle += "lnN"
-                fill = round(1+ (bdtCRDict[str(y)][s][p]["bin_"+str(i-1)]["syst"]/100), 6)
-                fill = str(fill)
-                while len(fill)<20: fill += " "
-                bdt_df[colTitle][rowTitle] = fill
-                rowTitle = p[:3] + "_norm" + str(y)[-2:]
-                while len(rowTitle)<17: rowTitle+=" "
-                rowTitle += "lnN"
-                # if "fakes" in p: fill = "0.60/1.40"
-                if "fakes" in p: fill = "0.7/1.3"
-                else: fill = "0.7/1.3"
-                while len(fill)<20: fill += " "
-                bdt_df[colTitle][rowTitle] = fill
+                    colTitle = "bin_"+str(i-1) + "_" + p[:3]
+                    rowTitle = p[:2] + "_st" + str(i-1) + "_" + str(y)[-2:] + " "
+                    rowTitle2 = str(int(bdtCRDict[str(y)][s][p]["bin_"+str(i-1)]["yield"]))
+                    while len(rowTitle+rowTitle2)<16: rowTitle += " "
+                    rowTitle += "gmN "
+                    rowTitle += rowTitle2
+                    fill = round(yld/bdtCRDict[str(y)][s][p]["bin_"+str(i-1)]["yield"], 6)
+                    fill = str(fill)
+                    while len(fill)<20: fill += " "
+                    bdt_df[colTitle][rowTitle] = fill
+                    rowTitle = p[:4].capitalize() + "Rate_" + str(y)
+                    while len(rowTitle)<17: rowTitle += " "
+                    rowTitle += "lnN"
+                    fill = round(1+ (bdtCRDict[str(y)][s][p]["bin_"+str(i-1)]["syst"]/100), 6)
+                    fill = str(fill)
+                    while len(fill)<20: fill += " "
+                    bdt_df[colTitle][rowTitle] = fill
+                    rowTitle = p[:3] + "_norm" + str(y)[-2:]
+                    while len(rowTitle)<17: rowTitle+=" "
+                    rowTitle += "lnN"
+                    # if "fakes" in p: fill = "0.60/1.40"
+                    if "fakes" in p: fill = "0.7/1.3"
+                    else: fill = "0.7/1.3"
+                    while len(fill)<20: fill += " "
+                    bdt_df[colTitle][rowTitle] = fill
 
         # UNBLINDING
         if blindBool == 0:
-            print("making unblinded cards!")
+            print("making unblinded CC cards!")
+            ccFileName = inFileCC + "data_" + str(y) + "_hists.root"
+            ccHist = getObjFromFile(ccFileName, "h_br_sr_data")
+
+            for i in range(1, numCCSRs+1):
+                binDict = getCCSRBin(i, ccHist, ccSRDict)
+                yld = ccHist.GetBinContent(i)
+                ccObs[binDict["name"]] = yld
+
+            print("making unblinded BDT cards!")
             bdtFileName = inFileBDT + "data_" + str(y) + "_hists.root"
             bdtHist = getObjFromFile(bdtFileName, "h_br_bdtScore_"+altSig+"_data")
             for i in range(1, numBDTSRs+1):
@@ -813,5 +852,9 @@ for y in years:
                 bdtObs["bin_"+str(i-1)] = yld
 
         ## write to output file
-        writeToTxt(cc_df, "/home/users/ksalyer/FCNCAnalysis/analysis/datacards/CC/"+args.tag+"_datacard_"+s+"_"+str(y)+".txt", ccSRs, procs, ccObs, ccYld, sigTitle)
-        writeToTxt(bdt_df, "/home/users/ksalyer/FCNCAnalysis/analysis/datacards/BDT/"+args.tag+"_datacard_"+s+"_"+str(y)+".txt", bdtSRs, procs, bdtObs, bdtYld, sigTitle)
+        if not os.path.exists("/home/users/ksalyer/FCNCAnalysis/analysis/datacards/CC/"+args.tag):
+            os.makedirs("/home/users/ksalyer/FCNCAnalysis/analysis/datacards/CC/"+args.tag)
+        if not os.path.exists("/home/users/ksalyer/FCNCAnalysis/analysis/datacards/BDT/"+args.tag):
+            os.makedirs("/home/users/ksalyer/FCNCAnalysis/analysis/datacards/BDT/"+args.tag)
+        writeToTxt(cc_df, "/home/users/ksalyer/FCNCAnalysis/analysis/datacards/CC/"+args.tag+"/datacard_"+s+"_"+str(y)+".txt", ccSRs, procs, ccObs, ccYld, sigTitle)
+        writeToTxt(bdt_df, "/home/users/ksalyer/FCNCAnalysis/analysis/datacards/BDT/"+args.tag+"/datacard_"+s+"_"+str(y)+".txt", bdtSRs, procs, bdtObs, bdtYld, sigTitle)

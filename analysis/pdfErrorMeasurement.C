@@ -99,6 +99,43 @@ int pdfError(std::string inputDir, bool isBDT=0)
 
 
 
+    // std::vector<float> tuhScales = {1.,0.173061,1.04433,0.154513,1.00851,0.0340528,1.02598,0.964487,0.0837268,1.00252,1.06095,
+    //                                 0.118896,0.851838,0.0360263,0.863192,1.02527,1.03578,1.01024,0.867273,0.350178,0.0346282,
+    //                                 0.997886,0.136668,0.538447,0.0795671,0.877956,0.93457,1.01015,0.942823,0.285507,0.3712,
+    //                                 0.511653,0.27039,0.748098,1.03028,1.01651,0.010258,1.02918,1.01781,0.0949934,0.514596,
+    //                                 0.060455,0.485153,1.01051,1.00946,1.01039,0.20011,0.484449,0.975955,1.01938,0.106196,
+    //                                 0.883983,0.0414871,0.641944,0.793193,1.01583,0.81924,0.695235,0.0103493,0.431149,1.00546,
+    //                                 1.00251,0.0128327,0.865042,0.0688829,0.0737047,0.0400489,0.890453,0.586563,1.00988,1.00641,
+    //                                 0.660502,0.0693972,1.01134,0.34503,1.02698,1.02032,1.07989,0.0811073,1.0223,0.81964,
+    //                                 0.045889,0.0294785,1.00539,0.0148912,0.494365,0.0117779,0.597911,0.21107,0.436732,0.0802873,
+    //                                 0.756001,1.02372,0.27099,0.440053,0.673136,1.01349,0.655437,0.080912,0.754459,1.0272
+    //                             };
+
+    // std::vector<float> tchScales = {1.,0.0328721,1.08654,0.461469,1.00164,0.0477424,0.68778,0.947524,0.176,0.322479,1.11387,
+    //                                 0.968236,0.0403011,0.0755094,0.214923,0.735651,1.08058,0.167903,0.82221,0.611512,0.17191,
+    //                                 0.99535,1.0332,0.131292,1.05622,0.835532,0.897847,1.00421,0.902104,0.164205,1.05091,
+    //                                 0.0464163,0.231554,0.348393,1.06965,1.05473,0.0100952,0.805646,0.327187,0.481458,0.373283,
+    //                                 0.0360673,1.01056,0.982612,1.02289,0.986858,0.399886,0.0465935,0.938527,1.06644,0.0725113,
+    //                                 0.41891,0.115623,0.989001,0.731528,0.324871,0.586183,0.81397,0.655092,0.782229,1.02045,
+    //                                 0.991395,0.021971,0.932687,0.0856454,0.14217,0.0641687,0.816378,0.967449,1.01247,1.03106,
+    //                                 0.997561,0.0576365,0.986075,1.01347,1.00207,0.938942,1.11939,0.055062,1.03432,0.682735,
+    //                                 0.103491,0.0756117,0.943854,0.93599,0.683066,0.0207498,0.831684,0.189688,0.824395,0.120751,
+    //                                 0.622781,0.0346739,0.0635013,0.575956,0.332667,1.01617,1.05006,0.577232,0.77237,1.03778
+    //                             };
+    // std::vector<float> raresScales = {1.,0.947374,0.928332,0.931703,1.01442,0.959377,0.938159,0.948056,0.937667,0.924681,0.949396,
+    //                                     0.945433,0.931221,0.934888,0.938708,0.952736,0.94921,0.96698,0.943136,0.946183,0.91882,
+    //                                     0.938858,0.908073,0.930147,0.942274,0.931872,0.957473,0.939293,0.952579,0.938748,0.92424,
+    //                                     0.930867,0.931682,0.93318,0.91832,0.948043,0.947949,0.961138,0.958063,0.937271,0.934018,
+    //                                     0.937872,0.934603,0.939322,0.924279,0.94514,0.951355,0.948049,0.95455,0.935298,0.93533,
+    //                                     0.944052,0.931283,0.931476,0.934222,0.956987,0.944081,0.938322,0.9368,0.935361,0.944924,
+    //                                     0.94379,0.939398,0.961186,0.925782,0.938507,0.899433,0.936024,0.942008,0.944692,0.935904,
+    //                                     0.94767,0.972327,0.922225,0.949209,0.939757,0.936415,0.9311,0.947458,0.937161,0.92608,
+    //                                     0.938241,0.953574,0.93984,0.948266,0.943036,0.934449,0.943513,0.950454,0.934867,0.939085,
+    //                                     0.942271,0.951616,0.937833,0.967327,0.938154,0.940238,0.928374,0.937387,0.974647,0
+    //                                 };
+
+
+
 
 
 
@@ -122,14 +159,14 @@ int pdfError(std::string inputDir, bool isBDT=0)
             if(samples[s]=="signal_tch"){
                 file = tchFile;
                 scales = tchScales;
-                if(isBDT){histName = "bdtScore_syst_hct"+years[y];}
+                if(isBDT){histName = "bdtScore_syst_hct";}
                 else{histName = "sr_syst";}
                 samp = "signal_tch";
             }
             if(samples[s]=="signal_tuh"){
                 file = tuhFile;
                 scales = tuhScales;
-                if(isBDT){histName = "bdtScore_syst_hut"+years[y];}
+                if(isBDT){histName = "bdtScore_syst_hut";}
                 else{histName = "sr_syst";}
                 samp = "signal_tuh";
             }
@@ -142,17 +179,18 @@ int pdfError(std::string inputDir, bool isBDT=0)
             if(samples[s]=="rares_tch"){
                 file = raresFile;
                 scales = raresScales;
-                histName = "bdtScore_syst_hct"+years[y];
+                histName = "bdtScore_syst_hct";
                 samp = "rares";
             }
             if(samples[s]=="rares_tuh"){
                 file = raresFile;
                 scales = raresScales;
-                histName = "bdtScore_syst_hut"+years[y];
+                histName = "bdtScore_syst_hut";
                 samp = "rares";
             }
 
             std::cout << samples[s] << std::endl;
+            // cout << "h_0_0_pdf_scale_"+histName+"_"+samp << endl;
 
             TH1D* temp_0 = (TH1D*) file->Get(TString("h_0_0_pdf_scale_"+histName+"_"+samp).Data());
             TH1D* temp_1 = (TH1D*) file->Get(TString("h_1_1_pdf_scale_"+histName+"_"+samp).Data());
@@ -362,107 +400,107 @@ int pdfError(std::string inputDir, bool isBDT=0)
 
             std::cout << "cloned histos" << std::endl;
 
-            pdf_0->Scale(scales[0]);
-            pdf_1->Scale(scales[1]);
-            pdf_2->Scale(scales[2]);
-            pdf_3->Scale(scales[3]);
-            pdf_4->Scale(scales[4]);
-            pdf_5->Scale(scales[5]);
-            pdf_6->Scale(scales[6]);
-            pdf_7->Scale(scales[7]);
-            pdf_8->Scale(scales[8]);
-            pdf_9->Scale(scales[9]);
-            pdf_10->Scale(scales[10]);
-            pdf_11->Scale(scales[11]);
-            pdf_12->Scale(scales[12]);
-            pdf_13->Scale(scales[13]);
-            pdf_14->Scale(scales[14]);
-            pdf_15->Scale(scales[15]);
-            pdf_16->Scale(scales[16]);
-            pdf_17->Scale(scales[17]);
-            pdf_18->Scale(scales[18]);
-            pdf_19->Scale(scales[19]);
-            pdf_20->Scale(scales[20]);
-            pdf_21->Scale(scales[21]);
-            pdf_22->Scale(scales[22]);
-            pdf_23->Scale(scales[23]);
-            pdf_24->Scale(scales[24]);
-            pdf_25->Scale(scales[25]);
-            pdf_26->Scale(scales[26]);
-            pdf_27->Scale(scales[27]);
-            pdf_28->Scale(scales[28]);
-            pdf_29->Scale(scales[29]);
-            pdf_30->Scale(scales[30]);
-            pdf_31->Scale(scales[31]);
-            pdf_32->Scale(scales[32]);
-            pdf_33->Scale(scales[33]);
-            pdf_34->Scale(scales[34]);
-            pdf_35->Scale(scales[35]);
-            pdf_36->Scale(scales[36]);
-            pdf_37->Scale(scales[37]);
-            pdf_38->Scale(scales[38]);
-            pdf_39->Scale(scales[39]);
-            pdf_40->Scale(scales[40]);
-            pdf_41->Scale(scales[41]);
-            pdf_42->Scale(scales[42]);
-            pdf_43->Scale(scales[43]);
-            pdf_44->Scale(scales[44]);
-            pdf_45->Scale(scales[45]);
-            pdf_46->Scale(scales[46]);
-            pdf_47->Scale(scales[47]);
-            pdf_48->Scale(scales[48]);
-            pdf_49->Scale(scales[49]);
-            pdf_50->Scale(scales[50]);
-            pdf_51->Scale(scales[51]);
-            pdf_52->Scale(scales[52]);
-            pdf_53->Scale(scales[53]);
-            pdf_54->Scale(scales[54]);
-            pdf_55->Scale(scales[55]);
-            pdf_56->Scale(scales[56]);
-            pdf_57->Scale(scales[57]);
-            pdf_58->Scale(scales[58]);
-            pdf_59->Scale(scales[59]);
-            pdf_60->Scale(scales[60]);
-            pdf_61->Scale(scales[61]);
-            pdf_62->Scale(scales[62]);
-            pdf_63->Scale(scales[63]);
-            pdf_64->Scale(scales[64]);
-            pdf_65->Scale(scales[65]);
-            pdf_66->Scale(scales[66]);
-            pdf_67->Scale(scales[67]);
-            pdf_68->Scale(scales[68]);
-            pdf_69->Scale(scales[69]);
-            pdf_70->Scale(scales[70]);
-            pdf_71->Scale(scales[71]);
-            pdf_72->Scale(scales[72]);
-            pdf_73->Scale(scales[73]);
-            pdf_74->Scale(scales[74]);
-            pdf_75->Scale(scales[75]);
-            pdf_76->Scale(scales[76]);
-            pdf_77->Scale(scales[77]);
-            pdf_78->Scale(scales[78]);
-            pdf_79->Scale(scales[79]);
-            pdf_80->Scale(scales[80]);
-            pdf_81->Scale(scales[81]);
-            pdf_82->Scale(scales[82]);
-            pdf_83->Scale(scales[83]);
-            pdf_84->Scale(scales[84]);
-            pdf_85->Scale(scales[85]);
-            pdf_86->Scale(scales[86]);
-            pdf_87->Scale(scales[87]);
-            pdf_88->Scale(scales[88]);
-            pdf_89->Scale(scales[89]);
-            pdf_90->Scale(scales[90]);
-            pdf_91->Scale(scales[91]);
-            pdf_92->Scale(scales[92]);
-            pdf_93->Scale(scales[93]);
-            pdf_94->Scale(scales[94]);
-            pdf_95->Scale(scales[95]);
-            pdf_96->Scale(scales[96]);
-            pdf_97->Scale(scales[97]);
-            pdf_98->Scale(scales[98]);
-            pdf_99->Scale(scales[99]);
-            pdf_100->Scale(scales[100]);
+            // pdf_0->Scale(scales[0]);
+            // pdf_1->Scale(scales[1]);
+            // pdf_2->Scale(scales[2]);
+            // pdf_3->Scale(scales[3]);
+            // pdf_4->Scale(scales[4]);
+            // pdf_5->Scale(scales[5]);
+            // pdf_6->Scale(scales[6]);
+            // pdf_7->Scale(scales[7]);
+            // pdf_8->Scale(scales[8]);
+            // pdf_9->Scale(scales[9]);
+            // pdf_10->Scale(scales[10]);
+            // pdf_11->Scale(scales[11]);
+            // pdf_12->Scale(scales[12]);
+            // pdf_13->Scale(scales[13]);
+            // pdf_14->Scale(scales[14]);
+            // pdf_15->Scale(scales[15]);
+            // pdf_16->Scale(scales[16]);
+            // pdf_17->Scale(scales[17]);
+            // pdf_18->Scale(scales[18]);
+            // pdf_19->Scale(scales[19]);
+            // pdf_20->Scale(scales[20]);
+            // pdf_21->Scale(scales[21]);
+            // pdf_22->Scale(scales[22]);
+            // pdf_23->Scale(scales[23]);
+            // pdf_24->Scale(scales[24]);
+            // pdf_25->Scale(scales[25]);
+            // pdf_26->Scale(scales[26]);
+            // pdf_27->Scale(scales[27]);
+            // pdf_28->Scale(scales[28]);
+            // pdf_29->Scale(scales[29]);
+            // pdf_30->Scale(scales[30]);
+            // pdf_31->Scale(scales[31]);
+            // pdf_32->Scale(scales[32]);
+            // pdf_33->Scale(scales[33]);
+            // pdf_34->Scale(scales[34]);
+            // pdf_35->Scale(scales[35]);
+            // pdf_36->Scale(scales[36]);
+            // pdf_37->Scale(scales[37]);
+            // pdf_38->Scale(scales[38]);
+            // pdf_39->Scale(scales[39]);
+            // pdf_40->Scale(scales[40]);
+            // pdf_41->Scale(scales[41]);
+            // pdf_42->Scale(scales[42]);
+            // pdf_43->Scale(scales[43]);
+            // pdf_44->Scale(scales[44]);
+            // pdf_45->Scale(scales[45]);
+            // pdf_46->Scale(scales[46]);
+            // pdf_47->Scale(scales[47]);
+            // pdf_48->Scale(scales[48]);
+            // pdf_49->Scale(scales[49]);
+            // pdf_50->Scale(scales[50]);
+            // pdf_51->Scale(scales[51]);
+            // pdf_52->Scale(scales[52]);
+            // pdf_53->Scale(scales[53]);
+            // pdf_54->Scale(scales[54]);
+            // pdf_55->Scale(scales[55]);
+            // pdf_56->Scale(scales[56]);
+            // pdf_57->Scale(scales[57]);
+            // pdf_58->Scale(scales[58]);
+            // pdf_59->Scale(scales[59]);
+            // pdf_60->Scale(scales[60]);
+            // pdf_61->Scale(scales[61]);
+            // pdf_62->Scale(scales[62]);
+            // pdf_63->Scale(scales[63]);
+            // pdf_64->Scale(scales[64]);
+            // pdf_65->Scale(scales[65]);
+            // pdf_66->Scale(scales[66]);
+            // pdf_67->Scale(scales[67]);
+            // pdf_68->Scale(scales[68]);
+            // pdf_69->Scale(scales[69]);
+            // pdf_70->Scale(scales[70]);
+            // pdf_71->Scale(scales[71]);
+            // pdf_72->Scale(scales[72]);
+            // pdf_73->Scale(scales[73]);
+            // pdf_74->Scale(scales[74]);
+            // pdf_75->Scale(scales[75]);
+            // pdf_76->Scale(scales[76]);
+            // pdf_77->Scale(scales[77]);
+            // pdf_78->Scale(scales[78]);
+            // pdf_79->Scale(scales[79]);
+            // pdf_80->Scale(scales[80]);
+            // pdf_81->Scale(scales[81]);
+            // pdf_82->Scale(scales[82]);
+            // pdf_83->Scale(scales[83]);
+            // pdf_84->Scale(scales[84]);
+            // pdf_85->Scale(scales[85]);
+            // pdf_86->Scale(scales[86]);
+            // pdf_87->Scale(scales[87]);
+            // pdf_88->Scale(scales[88]);
+            // pdf_89->Scale(scales[89]);
+            // pdf_90->Scale(scales[90]);
+            // pdf_91->Scale(scales[91]);
+            // pdf_92->Scale(scales[92]);
+            // pdf_93->Scale(scales[93]);
+            // pdf_94->Scale(scales[94]);
+            // pdf_95->Scale(scales[95]);
+            // pdf_96->Scale(scales[96]);
+            // pdf_97->Scale(scales[97]);
+            // pdf_98->Scale(scales[98]);
+            // pdf_99->Scale(scales[99]);
+            // pdf_100->Scale(scales[100]);
 
             std::cout << "scaled histos" << std::endl;
 
@@ -524,13 +562,17 @@ int pdfError(std::string inputDir, bool isBDT=0)
                 outputTxtFile << samples[s] << ":";
                 for(int i = 0; i < upVariations.size(); i++){
                     if(samp=="rares"){
-                        std::cout << "\t" << 1.+(1.-upVariations[i]) << "/" << upVariations[i] << endl;
-                        // std::cout << "\t" << downVariations[i] << "/" << upVariations[i] << endl;
-                        outputTxtFile << "\t" << 1.+(1.-upVariations[i]) << "/" << upVariations[i];
+                        // std::cout << "\t" << 
+                        // std::cout << "\t" << 1.+(1.-upVariations[i]) << "/" << upVariations[i] << endl;
+                        std::cout << "\t"
+                        std::cout << "\t" << downVariations[i] << "/" << upVariations[i] << endl;
+                        std::cout << "\t" << h_sig_down->GetBinContent(i)/pdf_0->GetBinContent(i) << "/";
+                        std::cout << h_sig_up->GetBinContent(i)/pdf_0->GetBinContent(i) << endl;
+                        // outputTxtFile << "\t" << 1.+(1.-upVariations[i]) << "/" << upVariations[i];
                     }else{
                         // std::cout << downVariations[i] << " " << upVariations[i] << std::endl;
                         std::cout << "\t" << downVariations[i] << "/" << upVariations[i] << endl;
-                        outputTxtFile << "\t" << 1.-downVariations[i] << "/" << upVariations[i];
+                        outputTxtFile << "\t" << downVariations[i] << "/" << upVariations[i];
                     }
                 }
                 outputTxtFile << endl;
