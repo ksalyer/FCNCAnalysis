@@ -39,8 +39,10 @@ inputBDTJESDown = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr27_jesDo
 
 # inputBDTHistos = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/mar27_smalltuhBDT/"
 # inputBDTFakeEst = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/mar27_smalltuhBDT/"
-inputBDTHistos = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/mar2_ctag_all/"
-inputBDTFakeEst = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr27_fakeEst/"
+inputBDTHistos = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr7_fuckedupdata/"
+inputBDTFakeEst = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr7_fuckedupdata/"
+# inputBDTHistos = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/mar2_ctag_all/"
+# inputBDTFakeEst = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr27_fakeEst/"
 inputBDTSyst = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr26_syst/"
 inputBDTCtagSyst = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr26_syst/"
 inputBDTLeptonSyst = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr26_syst/"
@@ -87,8 +89,8 @@ with open('./ccSRbins.json') as ccbins_json: ccSRDict = json.load(ccbins_json)
 
 years = [2016, 2017, 2018]
 # years = [2016]
-signals = ["tuh"]
-# signals = ["tch", "tuh"]
+# signals = ["tuh"]
+signals = ["tch", "tuh"]
 procs = ["signal","rares","fakes_mc","flips_mc"]
 mcProcs = ["signal_tch", "signal_tuh", "rares"]
 ddProcs = ["fakes_mc","flips_mc"]
@@ -195,7 +197,7 @@ for y in years:
             bdtMCsyst[str(y)][s][p] = {}
             bdtFileName = inputBDTHistos + p + "_" + str(y) + "_hists.root"
             centralHist = getObjFromFile(bdtFileName, "h_br_bdtScore_" + altSig + "_" + p)
-            # print(bdtFileName,"h_br_bdtScore_" + altSig + str(y) + "_" + p)
+            print(bdtFileName, "h_br_bdtScore_" + altSig + "_" + p)
             ##Trigger,Lepton,PU,BTagging
             for t in bdt_systSources:
                 # print(t)
@@ -248,9 +250,9 @@ for y in years:
                     else:
                         upHist = getObjFromFile(bdtSystFileName, "h_"+t+"_up_bdtScore_syst_"+ altSig + "_" +p)
                         downHist = getObjFromFile(bdtSystFileName, "h_"+t+"_down_bdtScore_syst_"+ altSig + "_" +p)
-                        # print(bdtSystFileName)
-                        # print("h_"+t+"_up_bdtScore_syst_"+ altSig + "_" +p)
-                        # print("h_"+t+"_down_bdtScore_syst_"+ altSig + "_" +p)
+                        print(bdtSystFileName)
+                        print("h_"+t+"_up_bdtScore_syst_"+ altSig + "_" +p)
+                        print("h_"+t+"_down_bdtScore_syst_"+ altSig + "_" +p)
 
                         upHist.Divide(centralHist)
                         downHist.Divide(centralHist)

@@ -43,6 +43,7 @@ print("imported libraries")
 # path_fakes = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/mar20_llpt_ogBDT_jet25/'
 # path = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/mar21_nele_ogBDT_jet25/'
 path = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr4_bdtcutfix/'
+pathdata = '/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr6cutflow/'
 
 regions =   [ #"mr",
              # "os",
@@ -110,9 +111,9 @@ variables = [
                 # ["mll", 1, r'$m_{lead.\ lep,\ sublead.\ lep}$'],
 
                 # ["LeadLep_pt", 1, r'$p_T\ (lead.\ lep.)\ (GeV)$'],
-                # ["llpt", 1, r'$p_T\ (lead.\ lep.)\ (GeV)$'],
-                # ["lept", 1, r'$p_T\ (lead.\ lep. (electron))\ (GeV)$'],
-                # ["lmpt", 1, r'$p_T\ (lead.\ lep. (muon))\ (GeV)$'],
+                ["llpt", 5, r'$p_T\ (lead.\ lep.)\ (GeV)$'],
+                ["lept", 5, r'$p_T\ (lead.\ lep. (electron))\ (GeV)$'],
+                ["lmpt", 5, r'$p_T\ (lead.\ lep. (muon))\ (GeV)$'],
                 # ["lleta", 1, r'$\eta\ (lead.\ lep.)$'],
                 # ["lldxy", 4, r'$dxy\ (lead.\ lep.)$'],
                 # ["lldz", 4, r'$dz\ (lead.\ lep.)$'],
@@ -135,8 +136,8 @@ variables = [
                 # ['mt_thirdl_met', 1, r'$m_{T}\ (subsublead.\ lep,\ MET)\ (GeV)$'],
             ]
 
-years = ["2016","2017","2018"]
-# years = ["2016","2017","2018","run2"]
+# years = ["2016","2017","2018"]
+years = ["2016","2017","2018","run2"]
 # years = ["run2"]
 blind = False
 tuh_comb_systErrors = [615.1665225299698,229.3378743634561,153.31590751454064,126.47454331366515,100.17508163074972,79.31856523263973,67.05120343632984,60.816837025990196,49.39348645304188,46.25768369645387,42.89094924729396,37.2297690783601,32.89658317458452,30.219155596438103,29.681932828956924,21.638294897172862,18.516797909000495,21.5654660490506,13.503299002646026,9.133055915397582]
@@ -259,7 +260,7 @@ for y in years:
                     # # 'mlsfppp':  uproot3.open(path+'rares_'+y+'_hists.root')['h_mlsfpppest_'+v+'_rares'],
                     # # 'flips': uproot3.open(path+'data_'+y+'_hists.root')['h_osest_'+v+'_data'],
                     'rares': uproot3.open(path+'rares_'+y+'_hists.root')['h_'+r+'_'+v+'_rares'],
-                    'data': uproot3.open(path+'data_'+y+'_hists.root')['h_'+r+'_'+v+'_data'],
+                    'data': uproot3.open(pathdata+'data_'+y+'_hists.root')['h_'+r+'_'+v+'_data'],
                     'tch': uproot3.open(path+'signal_tch_'+y+'_hists.root')['h_'+r+'_'+v+'_signal_tch'],
                     'tuh': uproot3.open(path+'signal_tuh_'+y+'_hists.root')['h_'+r+'_'+v+'_signal_tuh'],
 
@@ -662,6 +663,6 @@ for y in years:
 
             #plt.show()
 
-            fig.savefig('/home/users/ksalyer/public_html/FCNC_plots_apr4_neles_debug_bdtcutfix/'+histName+'.png')
-            fig.savefig('/home/users/ksalyer/public_html/FCNC_plots_apr4_neles_debug_bdtcutfix/'+histName+'.pdf')
+            fig.savefig('/home/users/ksalyer/public_html/FCNC_plots_apr6_neles_debug/'+histName+'.png')
+            fig.savefig('/home/users/ksalyer/public_html/FCNC_plots_apr6_neles_debug/'+histName+'.pdf')
             #plt.close()
