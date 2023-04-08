@@ -2095,7 +2095,7 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
                     if(print_comparison_file){print_comparison(comparison_file,hct_pred[0],hut_pred[0],inputFeatures);}
 
                     if(hct_pred_value<0){cout << hct_pred_value << endl;}
-                    // if(hct_pred_value==-999 && hut_pred_value==-999){continue;}
+                    if(hct_pred_value==-999 && hut_pred_value==-999){continue;}
 
                 }
             }
