@@ -751,11 +751,11 @@ if __name__ == "__main__":
             # "flips": make_obj(basedirs[2018] + get_sample_path("data", 2018,args.tag) + ".root",options=options[2018] + " doFlips doData "),
             "data": make_obj([
                 datadirs[2018] + get_sample_path("double_muon_data", 2018,args.tag) + ".root",
-                datadirs[2018] + get_sample_path("eg_data", 2018,args.tag) + ".root",
-                # datadirs[2018] + get_sample_path("eg_data1", 2018,args.tag) + ".root",
-                # datadirs[2018] + get_sample_path("eg_data2", 2018,args.tag) + ".root",
-                # datadirs[2018] + get_sample_path("eg_data3", 2018,args.tag) + ".root",
-                # datadirs[2018] + get_sample_path("eg_data4", 2018,args.tag) + ".root",
+                # datadirs[2018] + get_sample_path("eg_data", 2018,args.tag) + ".root",
+                datadirs[2018] + get_sample_path("eg_data1", 2018,args.tag) + ".root",
+                datadirs[2018] + get_sample_path("eg_data2", 2018,args.tag) + ".root",
+                datadirs[2018] + get_sample_path("eg_data3", 2018,args.tag) + ".root",
+                datadirs[2018] + get_sample_path("eg_data4", 2018,args.tag) + ".root",
                 datadirs[2018] + get_sample_path("muon_eg_data", 2018,args.tag) + ".root",
                 ], options=options[2018] + " doData "),
             "signal_tuh": make_obj([

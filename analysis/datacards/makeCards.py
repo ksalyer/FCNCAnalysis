@@ -44,10 +44,13 @@ inFileCC    = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/nov16_ccYields/
 # inFileBDT   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/mar2_ctag_all/"
 # inFileBDT_fakes   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr27_fakeEst/"
 # inFileBDT_signal   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/may6_ctag_signal/"
-inFileBDT   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr7_fuckedupdata/"
-inFileBDT_fakes   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr7_fuckedupdata/"
-inFileBDT_signal   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr7_fuckedupdata/"
+# inFileBDT   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr7_fuckedupdata/"
+# inFileBDT_fakes   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr7_fuckedupdata/"
+# inFileBDT_signal   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr7_fuckedupdata/"
 # inFileBDT = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/feb22_jetpt30_SRylds/"
+inFileBDT   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr8_fixedDataEG/"
+inFileBDT_fakes   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr8_fixedDataEG/"
+inFileBDT_signal   = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr8_fixedDataEG/"
 
 ##define functions
 #function to get multiplicities for a given cc bin

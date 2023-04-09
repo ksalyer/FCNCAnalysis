@@ -39,8 +39,10 @@ inputBDTJESDown = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr27_jesDo
 
 # inputBDTHistos = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/mar27_smalltuhBDT/"
 # inputBDTFakeEst = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/mar27_smalltuhBDT/"
-inputBDTHistos = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr7_fuckedupdata/"
-inputBDTFakeEst = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr7_fuckedupdata/"
+# inputBDTHistos = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr7_fuckedupdata/"
+# inputBDTFakeEst = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr7_fuckedupdata/"
+inputBDTHistos = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr8_fixedDataEG/"
+inputBDTFakeEst = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr8_fixedDataEG/"
 # inputBDTHistos = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/mar2_ctag_all/"
 # inputBDTFakeEst = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr27_fakeEst/"
 inputBDTSyst = "/home/users/ksalyer/FCNCAnalysis/analysis/outputs/apr26_syst/"
